@@ -17,23 +17,71 @@ public class Ball {
         this.runningapp = app;
         xpos = 200;
         ypos = 200;
+        xspeed = 1;
+        yspeed = 1;
         // put ball in center
     }
 
     public void updateLocation(){
-
+        switch (paddleHit()) {
+            case 0:
+                yspeed = -yspeed;
+                // Player0 update
+                break;
+            case 1:
+                xspeed = -xspeed;
+                // Player1 update
+                break;
+            case 2:
+                yspeed = -yspeed;
+                // Player2 update
+                break;
+            case 3:
+                xspeed = -xspeed;
+                // Player3 update
+                break;
+            default:
+                break;
+        }
+        switch (wallHit()) {
+            case 0:
+                yspeed = -yspeed;
+                // Player0 update
+                break;
+            case 1:
+                xspeed = -xspeed;
+                // Player1 update
+                break;
+            case 2:
+                yspeed = -yspeed;
+                // Player2 update
+                break;
+            case 3:
+                xspeed = -xspeed;
+                // Player3 update
+                break;
+            default:
+                break;
+        }
+        xpos += xspeed;
+        ypos += yspeed;
     }
 
     public void updateSpeed(){
 
     }
 
-    public boolean paddleHit(){
-        return false;
+    public int paddleHit(){
+
+        return -1;
     }
 
-    public boolean wallHit(){
-        return false;
+    public int wallHit(){
+        if(ypos == 0 ) return 0;
+        if(xpos == runningapp.getWidth()) return 1;
+        if(ypos == runningapp.getHeight() - radius ) return 2;
+        if(xpos == radius) return 3;
+        return -1;
     }
 
     public void draw(Graphics g){
