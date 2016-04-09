@@ -1,3 +1,7 @@
+package src;
+
+import java.awt.*;
+
 /**
  * Created by arnavkansal on 09/04/16.
  */
@@ -7,7 +11,7 @@ public class Paddle {
     private int width;
     private int xpos;
     private int ypos;
-    private enum paddleType { HORIZONTAL, VERTICAL}
+    public enum paddleType { HORIZONTAL, VERTICAL}
     private paddleType type;
 
     public Paddle(PingPong app, int x, int y, paddleType type){
@@ -18,4 +22,19 @@ public class Paddle {
         this.width = WD;
     }
 
+    public void updateLocation(){
+
+    }
+
+    public void updateSize(){
+
+    }
+
+    public void draw(Graphics g){
+        g.setColor(Color.WHITE);
+        if(this.type == paddleType.HORIZONTAL)
+            g.fillRect(xpos,ypos,width,length);
+        else
+            g.fillRect(xpos,ypos,length,width);
+    }
 }

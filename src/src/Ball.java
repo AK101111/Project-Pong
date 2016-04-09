@@ -1,4 +1,5 @@
-import javax.swing.*;
+package src;
+
 import java.awt.*;
 
 /**
@@ -9,15 +10,21 @@ public class Ball {
     private int ypos;
     private int xspeed;
     private int yspeed;
-    private int radius;
+    private int radius=5;
     private PingPong runningapp;
 
     public Ball(PingPong app){
         this.runningapp = app;
+        xpos = 200;
+        ypos = 200;
         // put ball in center
     }
 
     public void updateLocation(){
+
+    }
+
+    public void updateSpeed(){
 
     }
 
