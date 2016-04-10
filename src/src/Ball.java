@@ -1,6 +1,11 @@
 package src;
 
+import sun.jvm.hotspot.memory.PlaceholderEntry;
+
+import javax.tools.Tool;
 import java.awt.*;
+
+import static src.constants.*;
 
 /**
  * Created by arnavkansal on 09/04/16.
@@ -10,16 +15,29 @@ public class Ball {
     private int ypos;
     private int xspeed;
     private int yspeed;
-    private int radius=5;
+    private int radius=RADIUS;
+    private int widthBound = SCREEN_WIDTH;
+    private int heightBound;
     private PingPong runningapp;
+    int[] paddlexPos;
+    int[] paddleyPos;
 
     public Ball(PingPong app){
         this.runningapp = app;
-        xpos = 200;
-        ypos = 200;
-        xspeed = 1;
-        yspeed = 1;
+        xpos = XCENTER;
+        ypos = YCENTER;
+        xspeed = XSPEED;
+        yspeed = YSPEED;
         // put ball in center
+        getWorkingScreenSize();
+    }
+
+    public int getxpos(){
+        return xpos;
+    }
+
+    public int getypos(){
+        return ypos;
     }
 
     public void updateLocation(){
@@ -70,22 +88,59 @@ public class Ball {
     public void updateSpeed(){
 
     }
+//    Player0 = new Paddle(app,200,5, HORIZONTAL, HUMAN);
+//    Player1 = new Paddle(app,390,182, VERTICAL, AI);
+//    Player2 = new Paddle(app,200,370, HORIZONTAL, AI);
+//    Player3 = new Paddle(app,5,182, VERTICAL, AI);
 
     public int paddleHit(){
-
+//        paddlexPos = new int[4];
+//        paddleyPos = new int[4];
+//        if(ypos == 5 && (xpos> ) ) {
+//            System.out.println(String.format("case = %d, xpos = %d, ypos = %d",0,xpos,ypos));
+//            return 0;
+//        }
+//        if(xpos + 2*radius >= SCREEN_WIDTH){
+//            System.out.println(String.format("case = %d, xpos = %d, ypos = %d",1,xpos,ypos));
+//            return 1;
+//        }
+//        if(ypos >= heightBound) {
+//            System.out.println(String.format("case = %d, xpos = %d, ypos = %d",2,xpos,ypos));
+//            return 2;
+//        }
+//        if(xpos <= 0){
+//            System.out.println(String.format("case = %d, xpos = %d, ypos = %d",3,xpos,ypos));
+//            return 3;
+//        }
         return -1;
     }
 
     public int wallHit(){
-        if(ypos == 0 ) return 0;
-        if(xpos == runningapp.getWidth()) return 1;
-        if(ypos == runningapp.getHeight() - radius ) return 2;
-        if(xpos == radius) return 3;
+        if(ypos <= 0 ) {
+            System.out.println(String.format("case = %d, xpos = %d, ypos = %d",0,xpos,ypos));
+            return 0;
+        }
+        if(xpos + 2*radius >= SCREEN_WIDTH){
+            System.out.println(String.format("case = %d, xpos = %d, ypos = %d",1,xpos,ypos));
+            return 1;
+        }
+        if(ypos >= heightBound) {
+            System.out.println(String.format("case = %d, xpos = %d, ypos = %d",2,xpos,ypos));
+            return 2;
+        }
+        if(xpos <= 0){
+            System.out.println(String.format("case = %d, xpos = %d, ypos = %d",3,xpos,ypos));
+            return 3;
+        }
         return -1;
     }
 
     public void draw(Graphics g){
         g.setColor(Color.ORANGE);
-        g.fillOval(xpos,ypos,radius,radius);
+        g.fillOval(xpos,ypos,2*radius,2*radius);
+    }
+
+    public void getWorkingScreenSize() {
+        heightBound = SCREEN_HEIGHT - 29;
     }
 }

@@ -3,11 +3,15 @@ package src;
 import javax.swing.*;
 import java.awt.*;
 
+import static src.constants.SCREEN_HEIGHT;
+import static src.constants.SCREEN_WIDTH;
+
 /**
  * Created by arnavkansal on 09/04/16.
  */
 public class PingPong extends JFrame{
     private pongBoard Board;
+
     public PingPong(){
         renderDisplay();
     }
@@ -17,9 +21,9 @@ public class PingPong extends JFrame{
     }
 
     private void renderDisplay(){
-        setSize(400,400);
+        setSize(SCREEN_WIDTH,SCREEN_HEIGHT);
         setResizable(true);
-        //setTitle("Ping Pong");
+        setTitle("Ping Pong");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         //setBackground(Color.BLACK);
         Container c = this.getContentPane();
