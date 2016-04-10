@@ -19,7 +19,7 @@ public class Paddle {
     private int xpos;
     private int ypos;
 
-    public enum paddleType { HORIZONTAL, VERTICAL};
+    public enum paddleType { HORIZONTAL, VERTICAL}; // todo use {HORIZONTAL=0,VERTICAL=1}
     public enum playerType { AI,HUMAN,OTHER};
     private paddleType type;
     private playerType ptype;
@@ -46,12 +46,12 @@ public class Paddle {
         return ypos;
     }
 
-    public int getxCollisionBounds(){
-        return xpos;
+    public void setxpos(int xpos){
+        this.xpos = xpos;
     }
 
-    public int getyCollisionBounds(){
-        return ypos;
+    public void setypos(int ypos){
+        this.ypos = ypos;
     }
 
     public void updateLocation() {
@@ -73,17 +73,17 @@ public class Paddle {
 
     public void findposAI() {
         if(this.type == HORIZONTAL){
-            if(runningapp.getBoard().ballinfo.getXpos()> xpos){
+            if(runningapp.getBoard().getBall().getxpos() > xpos + WD/2){
                 xchange = 1;
-            } else if(runningapp.getBoard().ballinfo.getXpos()< xpos){
+            } else if(runningapp.getBoard().getBall().getxpos()< xpos + WD/2){
                 xchange = -1;
             }else {
                 xchange = 0;
             }
         }else{
-            if(runningapp.getBoard().ballinfo.getYpos()> ypos){
+            if(runningapp.getBoard().getBall().getypos()> ypos + WD/2){
                 ychange = 1;
-            } else if(runningapp.getBoard().ballinfo.getYpos()< ypos){
+            } else if(runningapp.getBoard().getBall().getypos()< ypos + WD/2){
                 ychange = -1;
             }else{
                 ychange = 0;
@@ -116,16 +116,28 @@ public class Paddle {
     }
 
     public void keypress(int keyCode) {
-        if(type == paddleType.VERTICAL) {
+        if (type == paddleType.VERTICAL) {
             if (keyCode == VK_UP)
                 ychange = 1;
             if (keyCode == VK_DOWN)
                 ychange = -1;
-        }else{
+        } else {
             if (keyCode == VK_LEFT)
                 xchange = -1;
             if (keyCode == VK_RIGHT)
                 xchange = 1;
         }
+    }
+
+    public utility.pair getxCollisionBounds(int pos){
+        return utility.pair.make_pair(xpos,xpos+WD);
+    }
+
+    public utility.pair getyCollisionBounds(int pos){
+        return utility.pair.make_pair(ypos,ypos+WD);
+    }
+
+    public paddleType type(){
+        return this.type;
     }
 }

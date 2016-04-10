@@ -5,6 +5,7 @@ import sun.jvm.hotspot.memory.PlaceholderEntry;
 import javax.tools.Tool;
 import java.awt.*;
 
+import static src.Paddle.paddleType.HORIZONTAL;
 import static src.constants.*;
 
 /**
@@ -19,8 +20,6 @@ public class Ball {
     private int widthBound = SCREEN_WIDTH;
     private int heightBound;
     private PingPong runningapp;
-    int[] paddlexPos;
-    int[] paddleyPos;
 
     public Ball(PingPong app){
         this.runningapp = app;
@@ -30,14 +29,6 @@ public class Ball {
         yspeed = YSPEED;
         // put ball in center
         getWorkingScreenSize();
-    }
-
-    public int getxpos(){
-        return xpos;
-    }
-
-    public int getypos(){
-        return ypos;
     }
 
     public void updateLocation(){
@@ -94,41 +85,53 @@ public class Ball {
 //    Player3 = new Paddle(app,5,182, VERTICAL, AI);
 
     public int paddleHit(){
-//        paddlexPos = new int[4];
-//        paddleyPos = new int[4];
-//        if(ypos == 5 && (xpos> ) ) {
-//            System.out.println(String.format("case = %d, xpos = %d, ypos = %d",0,xpos,ypos));
-//            return 0;
-//        }
-//        if(xpos + 2*radius >= SCREEN_WIDTH){
-//            System.out.println(String.format("case = %d, xpos = %d, ypos = %d",1,xpos,ypos));
-//            return 1;
-//        }
-//        if(ypos >= heightBound) {
-//            System.out.println(String.format("case = %d, xpos = %d, ypos = %d",2,xpos,ypos));
-//            return 2;
-//        }
-//        if(xpos <= 0){
-//            System.out.println(String.format("case = %d, xpos = %d, ypos = %d",3,xpos,ypos));
-//            return 3;
-//        }
+        Paddle[] Players = runningapp.getBoard().getPlayers();
+        for(int i=0; i< Players.length; ++i) {
+            switch (i){
+                case 0:
+                    if(Players[i].getxCollisionBounds(1).left<= xpos && xpos <= Players[i].getxCollisionBounds(1).right && ypos==Players[i].getypos()){
+                        System.out.println(String.format("Collide with %d Paddle",i+1));
+                        return i;
+                    }
+                    break;
+                case 1:
+                    //System.out.println(String.format("up %d down %d ball %d",Players[i].getyCollisionBounds().left,Players[i].getyCollisionBounds().right,ypos));
+                    if(Players[i].getyCollisionBounds(1).left<= ypos && ypos <= Players[i].getyCollisionBounds(1).right && xpos+2*radius-LEN==Players[i].getxpos()){
+                        System.out.println(String.format("Collide with %d Paddle",i+1));
+                        return i;
+                    }
+                    break;
+                case 2:
+                    if(Players[i].getxCollisionBounds(-1).left<= xpos && xpos <= Players[i].getxCollisionBounds(-1).right && ypos+2*radius-LEN==Players[i].getypos()){
+                        System.out.println(String.format("Collide with %d Paddle",i+1));
+                        return i;
+                    }
+                    break;
+                case 3:
+                    if(Players[i].getyCollisionBounds(-1).left<= ypos && ypos <= Players[i].getyCollisionBounds(-1).right && xpos==Players[i].getxpos()){
+                        System.out.println(String.format("Collide with %d Paddle",i+1));
+                        return i;
+                    }
+                    break;
+            }
+        }
         return -1;
     }
 
     public int wallHit(){
-        if(ypos <= 0 ) {
+        if(ypos < 0 ) {
             System.out.println(String.format("case = %d, xpos = %d, ypos = %d",0,xpos,ypos));
             return 0;
         }
-        if(xpos + 2*radius >= SCREEN_WIDTH){
+        if(xpos + 2*radius > SCREEN_WIDTH){
             System.out.println(String.format("case = %d, xpos = %d, ypos = %d",1,xpos,ypos));
             return 1;
         }
-        if(ypos >= heightBound) {
+        if(ypos + 2*radius > heightBound) {
             System.out.println(String.format("case = %d, xpos = %d, ypos = %d",2,xpos,ypos));
             return 2;
         }
-        if(xpos <= 0){
+        if(xpos < 0){
             System.out.println(String.format("case = %d, xpos = %d, ypos = %d",3,xpos,ypos));
             return 3;
         }
@@ -141,6 +144,14 @@ public class Ball {
     }
 
     public void getWorkingScreenSize() {
-        heightBound = SCREEN_HEIGHT - 29;
+        heightBound = SCREEN_HEIGHT - 21;
+    }
+
+    public int getxpos() {
+        return xpos;
+    }
+
+    public int getypos() {
+        return ypos;
     }
 }

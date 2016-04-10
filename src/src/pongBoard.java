@@ -11,7 +11,8 @@ import static src.Paddle.paddleType.HORIZONTAL;
 import static src.Paddle.paddleType.VERTICAL;
 import static src.Paddle.playerType.AI;
 import static src.Paddle.playerType.HUMAN;
-import static src.constants.INIT_SPEED;
+import static src.Paddle.playerType.OTHER;
+import static src.constants.*;
 
 /**
  * Created by arnavkansal on 09/04/16.
@@ -20,64 +21,55 @@ public class pongBoard extends JPanel implements ActionListener, KeyListener{
 
     private PingPong runningApp;
     private Ball ball;
-    //private Paddle[] Players;
-    private Paddle Player0;
-    private Paddle Player1;
-    private Paddle Player2;
-    private Paddle Player3;
+    private Paddle[] Players;
+    private int activePlayer;
+    //private int otherPlayers[];
+    private int computerPlayers[];
     private int speed=INIT_SPEED;
-    public ballInfo ballinfo;
-    public paddleInfo paddleinfo0;
-    public paddleInfo paddleinfo1;
-    public paddleInfo paddleinfo2;
-    public paddleInfo paddleinfo3;
 
+    public Paddle[] getPlayers(){
+        return this.Players;
+    }
 
-    public pongBoard(PingPong app){
+    public Ball getBall(){
+        return this.ball;
+    }
+
+    public pongBoard(PingPong app, int activePlayer, int[] computerPlayers){//, int[] otherPlayers)
         this.runningApp = app;
+        Players = new Paddle[MAXPLAYERS];
+        this.activePlayer = activePlayer;
+        //this.otherPlayers = otherPlayers;
+        this.computerPlayers = computerPlayers;
         setBoard(app);
         Timer timer = new Timer(speed, this);
         timer.start();
         addKeyListener(this);
         setFocusable(true);
-        ballinfo = new ballInfo();
-        ballinfo.setXpos(ball.getxpos());
-        ballinfo.setYpos(ball.getypos());
-        paddleinfo0 = new paddleInfo();
-        paddleinfo1 = new paddleInfo();
-        paddleinfo2 = new paddleInfo();
-        paddleinfo3 = new paddleInfo();
-        paddleinfo1.setXpos(Player1.getxpos());
-        paddleinfo1.setYpos(Player1.getypos());
-        paddleinfo2.setXpos(Player2.getxpos());
-        paddleinfo2.setYpos(Player2.getypos());
-        paddleinfo3.setXpos(Player3.getxpos());
-        paddleinfo3.setYpos(Player3.getypos());
     }
 
     public void setBoard(PingPong app) {
+        // set Ball
         ball = new Ball(app);
-        //Players[0] = new Paddle(app,200,10, Paddle.paddleType.HORIZONTAL);
-        //Players[1] = new Paddle(app,390,200, Paddle.paddleType.VERTICAL);
-        //Players[2] = new Paddle(app,200,390, Paddle.paddleType.HORIZONTAL);
-        //Players[3] = new Paddle(app,10,200, Paddle.paddleType.VERTICAL);
-        Player0 = new Paddle(app,200,5, HORIZONTAL, HUMAN);
-        Player1 = new Paddle(app,390,182, VERTICAL, AI);
-        Player2 = new Paddle(app,200,370, HORIZONTAL, AI);
-        Player3 = new Paddle(app,5,182, VERTICAL, AI);
+        // set AI players
+        for(int index: computerPlayers){
+            Players[index] = new Paddle(app, xinit[index], yinit[index], Paddle.paddleType.values()[index%2], AI);
+        }
+        // set other network players
+//        for(int index: otherPlayers){
+//            Players[index] = new Paddle(app, xinit[index], yinit[index], Paddle.paddleType.values()[index%2], OTHER);
+//        }
+        // set game player
+        Players[activePlayer] = new Paddle(app, xinit[activePlayer], yinit[activePlayer], Paddle.paddleType.values()[activePlayer%2], HUMAN);
     }
 
     @Override
     public void paintComponent(Graphics g){
         super.paintComponent(g);
         ball.draw(g);
-//        for(Paddle player: Players) {
-//            player.draw(g);
-//        }
-        Player0.draw(g);
-        Player1.draw(g);
-        Player2.draw(g);
-        Player3.draw(g);
+        for(Paddle player: Players) {
+            player.draw(g);
+        }
     }
 
     @Override
@@ -88,18 +80,9 @@ public class pongBoard extends JPanel implements ActionListener, KeyListener{
 
     private void updateBoard() {
         ball.updateLocation();
-        ballinfo.setXpos(ball.getxpos());
-        ballinfo.setYpos(ball.getypos());
-        Player0.updateLocation();
-        Player1.updateLocation();
-        paddleinfo1.setXpos(Player1.getxpos());
-        paddleinfo1.setYpos(Player1.getypos());
-        Player2.updateLocation();
-        paddleinfo2.setXpos(Player2.getxpos());
-        paddleinfo2.setYpos(Player2.getypos());
-        Player3.updateLocation();
-        paddleinfo3.setXpos(Player3.getxpos());
-        paddleinfo3.setYpos(Player3.getypos());
+        for(Paddle player: Players) {
+            player.updateLocation();
+        }
     }
 
     @Override
@@ -109,11 +92,11 @@ public class pongBoard extends JPanel implements ActionListener, KeyListener{
 
     @Override
     public void keyPressed(KeyEvent e) {
-        Player0.keypress(e.getKeyCode());
+        Players[activePlayer].keypress(e.getKeyCode());
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        Player0.keyrelease(e.getKeyCode());
+        Players[activePlayer].keyrelease(e.getKeyCode());
     }
 }

@@ -3,8 +3,7 @@ package src;
 import javax.swing.*;
 import java.awt.*;
 
-import static src.constants.SCREEN_HEIGHT;
-import static src.constants.SCREEN_WIDTH;
+import static src.constants.*;
 
 /**
  * Created by arnavkansal on 09/04/16.
@@ -30,7 +29,7 @@ public class PingPong extends JFrame{
         c.setBackground(Color.BLACK);
         // center window on screen
         setLocationRelativeTo(null);
-        Board = new src.pongBoard(this);
+        Board = new src.pongBoard(this,testactive,testcomp);//,testother);
         add(Board);
     }
     public static void main(String args[]){
