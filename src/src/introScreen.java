@@ -5,8 +5,8 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.plaf.LayerUI;
 
-import static src.constants.WINDOW_XSIZE;
-import static src.constants.WINDOW_YSIZE;
+import static src.constants.*;
+
 // some of source taken from docs.oracle.com/javase/
 // gradient idea copied
 public class introScreen {
@@ -46,6 +46,8 @@ public class introScreen {
         northPanel.add(radioButton = new JRadioButton("Insane"));
         entreeGroup.add(radioButton);
 
+        JPanel centerPanel = new AnimatedJPanel("fireball");
+
         JButton orderButton = new JButton("Start");
         //orderButton.setLocation(WINDOW_XSIZE/2,WINDOW_YSIZE/2);
         //orderButton.setBounds(WINDOW_XSIZE/2,WINDOW_YSIZE/2,50,50);
@@ -53,14 +55,47 @@ public class introScreen {
             @Override
             public void mouseClicked(MouseEvent e) {
                 String[] args = {};
+                //centerPanel.pausePanel();
                 PingPong.main(args);
                 //super.mouseClicked(e);
             }
         });
         southPanel.add(orderButton);
         mainPanel.add(northPanel,BorderLayout.NORTH);
+        mainPanel.add(centerPanel,BorderLayout.CENTER);
         mainPanel.add(southPanel,BorderLayout.SOUTH);
         return mainPanel;
+    }
+}
+class AnimatedJPanel extends JPanel implements ActionListener{
+    private Timer clock;
+    private ImageIcon imageArray[];
+    private int delay=PHOTO_DELAY, totalFrames=N_PHOTOS, currentFrame=0;
+
+    public AnimatedJPanel(String photo){
+        imageArray = new ImageIcon[totalFrames];
+        for(int i=1;i<=imageArray.length; ++i){
+            imageArray[i-1] = new ImageIcon(IMAGES_PATH+photo+i+".png");
+        }
+        clock = new Timer(delay,this);
+        clock.start();
+    }
+    @Override
+    public void paintComponent(Graphics g){
+        super.paintComponent(g);
+        if(currentFrame==imageArray.length) currentFrame = 0;
+        imageArray[currentFrame++].paintIcon(this,g,this.getWidth()/2-25,this.getHeight()/2-25);
+    }
+    @Override
+    public void actionPerformed(ActionEvent e){
+        System.out.println("Here");
+        repaint();
+    }
+    public static void pausePanel(){
+        //clock.stop();
+    }
+    public void resumePanel(){
+        //clock.start();
     }
 }
 
@@ -95,8 +130,8 @@ class SpotlightLayerUI extends LayerUI<JPanel> {
         if (mActive) {
             // Create a radial gradient, transparent in the middle.
             java.awt.geom.Point2D center = new java.awt.geom.Point2D.Float(mX, mY);
-            float radius = 15;
-            float[] dist = {0.7f, 1.0f};
+            float radius = 30;
+            float[] dist = {0.3f, 1.0f};
             Color[] colors = {new Color(0.0f, 0.0f, 0.0f, 0.0f), Color.BLACK};
             RadialGradientPaint p =
                     new RadialGradientPaint(center, radius, dist, colors);
