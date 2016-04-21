@@ -22,11 +22,9 @@ public class PingPong extends JFrame{
     private void renderDisplay(){
         setSize(SCREEN_WIDTH,SCREEN_HEIGHT);
         setResizable(true);
-        setTitle("Ping Pong");
+        //setTitle("Ping Pong");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         //setBackground(Color.BLACK);
-        Container c = this.getContentPane();
-        c.setBackground(Color.BLACK);
         // center window on screen
         setLocationRelativeTo(null);
         Board = new src.pongBoard(this,testactive,testcomp);//,testother);

@@ -49,6 +49,7 @@ public class introScreen {
         JPanel centerPanel = new AnimatedJPanel("fireball");
 
         JButton orderButton = new JButton("Start");
+        System.out.println(String.format("ht %d, wd%d",mainPanel.getHeight(),mainPanel.getWidth()));
         //orderButton.setLocation(WINDOW_XSIZE/2,WINDOW_YSIZE/2);
         //orderButton.setBounds(WINDOW_XSIZE/2,WINDOW_YSIZE/2,50,50);
         orderButton.addMouseListener(new MouseAdapter() {
@@ -64,6 +65,7 @@ public class introScreen {
         mainPanel.add(northPanel,BorderLayout.NORTH);
         mainPanel.add(centerPanel,BorderLayout.CENTER);
         mainPanel.add(southPanel,BorderLayout.SOUTH);
+        //System.out.println(String.format("ht %d, wd%d",mainPanel.getHeight(),mainPanel.getWidth()));
         return mainPanel;
     }
 }
@@ -88,7 +90,7 @@ class AnimatedJPanel extends JPanel implements ActionListener{
     }
     @Override
     public void actionPerformed(ActionEvent e){
-        System.out.println("Here");
+       // System.out.println("Here");
         repaint();
     }
     public static void pausePanel(){

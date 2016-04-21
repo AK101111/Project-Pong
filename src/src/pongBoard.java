@@ -23,6 +23,7 @@ public class pongBoard extends JPanel implements ActionListener, KeyListener{
     private Ball ball;
     private Paddle[] Players;
     private int activePlayer;
+    private Dashboard dashboard;
     //private int otherPlayers[];
     private int computerPlayers[];
     private int speed=INIT_SPEED;
@@ -37,8 +38,17 @@ public class pongBoard extends JPanel implements ActionListener, KeyListener{
 
     public pongBoard(PingPong app, int activePlayer, int[] computerPlayers){//, int[] otherPlayers)
         this.runningApp = app;
+//        xinit[0] = app.getWidth()/2;
+//        xinit[1] = app.getWidth();
+//        xinit[2] = app.getWidth()/2;
+//        xinit[3] = 0;
+//        yinit[0] = 0;
+//        yinit[1] = app.getHeight()/2;
+//        yinit[2] = app.getHeight();
+//        yinit[3] = app.getHeight()/2;
         Players = new Paddle[MAXPLAYERS];
         this.activePlayer = activePlayer;
+        this.dashboard = new Dashboard(4);
         //this.otherPlayers = otherPlayers;
         this.computerPlayers = computerPlayers;
         setBoard(app);
@@ -46,6 +56,10 @@ public class pongBoard extends JPanel implements ActionListener, KeyListener{
         timer.start();
         addKeyListener(this);
         setFocusable(true);
+    }
+
+    public Dashboard getDashboard() {
+        return this.dashboard;
     }
 
     public void setBoard(PingPong app) {
@@ -70,6 +84,7 @@ public class pongBoard extends JPanel implements ActionListener, KeyListener{
         for(Paddle player: Players) {
             player.draw(g);
         }
+        dashboard.draw(g);
     }
 
     @Override

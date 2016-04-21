@@ -20,6 +20,7 @@ public class Ball {
     private int widthBound = SCREEN_WIDTH;
     private int heightBound;
     private PingPong runningapp;
+    private int lasthit;
 
     public Ball(PingPong app){
         this.runningapp = app;
@@ -29,6 +30,7 @@ public class Ball {
         yspeed = YSPEED;
         // put ball in center
         getWorkingScreenSize();
+        lasthit = -1;
     }
 
     public void updateLocation(){
@@ -36,18 +38,22 @@ public class Ball {
             case 0:
                 yspeed = -yspeed;
                 // Player0 update
+                lasthit = 0;
                 break;
             case 1:
                 xspeed = -xspeed;
                 // Player1 update
+                lasthit = 1;
                 break;
             case 2:
                 yspeed = -yspeed;
                 // Player2 update
+                lasthit = 2;
                 break;
             case 3:
                 xspeed = -xspeed;
                 // Player3 update
+                lasthit = 3;
                 break;
             default:
                 break;
@@ -56,18 +62,26 @@ public class Ball {
             case 0:
                 yspeed = -yspeed;
                 // Player0 update
+                runningapp.getBoard().getDashboard().updateScore(0,-1);
+                runningapp.getBoard().getDashboard().updateScore(lasthit,1);
                 break;
             case 1:
                 xspeed = -xspeed;
                 // Player1 update
+                runningapp.getBoard().getDashboard().updateScore(1,-1);
+                runningapp.getBoard().getDashboard().updateScore(lasthit,1);
                 break;
             case 2:
                 yspeed = -yspeed;
                 // Player2 update
+                runningapp.getBoard().getDashboard().updateScore(2,-1);
+                runningapp.getBoard().getDashboard().updateScore(lasthit,1);
                 break;
             case 3:
                 xspeed = -xspeed;
                 // Player3 update
+                runningapp.getBoard().getDashboard().updateScore(3,-1);
+                runningapp.getBoard().getDashboard().updateScore(lasthit,1);
                 break;
             default:
                 break;
