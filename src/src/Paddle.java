@@ -188,7 +188,7 @@ public class Paddle {
 
     public void draw(Graphics g){
         //System.out.println("Here");
-        g.setColor(Color.BLACK);
+        g.setColor(Color.WHITE);
         if(this.type == HORIZONTAL)
             g.fillRect(xpos,ypos,width,length);
         else

@@ -153,7 +153,7 @@ public class Ball {
     }
 
     public void draw(Graphics g){
-        g.setColor(Color.ORANGE);
+        g.setColor(Color.WHITE);
         g.fillOval(xpos,ypos,2*radius,2*radius);
     }
 

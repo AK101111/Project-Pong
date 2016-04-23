@@ -1,11 +1,15 @@
 package src;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 import static src.Paddle.paddleType.HORIZONTAL;
 import static src.Paddle.paddleType.VERTICAL;
@@ -27,6 +31,7 @@ public class pongBoard extends JPanel implements ActionListener, KeyListener{
     //private int otherPlayers[];
     private int computerPlayers[];
     private int speed;//=INIT_SPEED;
+    private BufferedImage img;
 
     public Paddle[] getPlayers(){
         return this.Players;
@@ -44,6 +49,11 @@ public class pongBoard extends JPanel implements ActionListener, KeyListener{
         this.speed = INIT_SPEED[runningApp.difficulty];
         //this.otherPlayers = otherPlayers;
         this.computerPlayers = computerPlayers;
+        try {
+            img = ImageIO.read(new File(IMAGES_PATH+"2"+".JPG"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         setBoard(app);
         Timer timer = new Timer(speed, this);
         timer.start();
@@ -73,6 +83,7 @@ public class pongBoard extends JPanel implements ActionListener, KeyListener{
     @Override
     public void paintComponent(Graphics g){
         super.paintComponent(g);
+        g.drawImage(img, 0, 0, getWidth(), getHeight(), this);
         ball.draw(g);
         for(Paddle player: Players) {
             player.draw(g);
