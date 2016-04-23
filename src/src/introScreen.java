@@ -2,6 +2,7 @@ package src;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Enumeration;
 import javax.swing.*;
 import javax.swing.plaf.LayerUI;
 
@@ -55,7 +56,7 @@ public class introScreen {
         orderButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                String[] args = {};
+                String[] args = {getSelectedButtonText(entreeGroup)};
                 //centerPanel.pausePanel();
                 PingPong.main(args);
                 //super.mouseClicked(e);
@@ -67,6 +68,18 @@ public class introScreen {
         mainPanel.add(southPanel,BorderLayout.SOUTH);
         //System.out.println(String.format("ht %d, wd%d",mainPanel.getHeight(),mainPanel.getWidth()));
         return mainPanel;
+    }
+
+    public static String getSelectedButtonText(ButtonGroup buttonGroup) {
+        for (Enumeration<AbstractButton> buttons = buttonGroup.getElements(); buttons.hasMoreElements();) {
+            AbstractButton button = buttons.nextElement();
+
+            if (button.isSelected()) {
+                return button.getText();
+            }
+        }
+
+        return null;
     }
 }
 class AnimatedJPanel extends JPanel implements ActionListener{
@@ -160,4 +173,5 @@ class SpotlightLayerUI extends LayerUI<JPanel> {
         mY = p.y;
         l.repaint();
     }
+
 }

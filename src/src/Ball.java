@@ -103,26 +103,26 @@ public class Ball {
         for(int i=0; i< Players.length; ++i) {
             switch (i){
                 case 0:
-                    if(Players[i].getxCollisionBounds(1).left<= xpos && xpos <= Players[i].getxCollisionBounds(1).right && ypos==Players[i].getypos()){
+                    if(Players[i].getxCollisionBounds(1).left<= xpos && xpos <= Players[i].getxCollisionBounds(1).right && ypos-LEN==Players[i].getypos()){
                         System.out.println(String.format("Collide with %d Paddle",i+1));
                         return i;
                     }
                     break;
                 case 1:
                     //System.out.println(String.format("up %d down %d ball %d",Players[i].getyCollisionBounds().left,Players[i].getyCollisionBounds().right,ypos));
-                    if(Players[i].getyCollisionBounds(1).left<= ypos && ypos <= Players[i].getyCollisionBounds(1).right && xpos+2*radius-LEN==Players[i].getxpos()){
-                        System.out.println(String.format("Collide with %d Paddle",i+1));
+                    if(Players[i].getyCollisionBounds(1).left<= ypos && ypos <= Players[i].getyCollisionBounds(1).right && xpos+(2*radius)>=Players[i].getxpos()){
+                        System.out.println(String.format("Collide with %d Paddle %d %d",i+1,xpos,ypos));
                         return i;
                     }
                     break;
                 case 2:
-                    if(Players[i].getxCollisionBounds(-1).left<= xpos && xpos <= Players[i].getxCollisionBounds(-1).right && ypos+2*radius-LEN==Players[i].getypos()){
+                    if(Players[i].getxCollisionBounds(-1).left<= xpos && xpos <= Players[i].getxCollisionBounds(-1).right && ypos+(2*radius)==Players[i].getypos()){
                         System.out.println(String.format("Collide with %d Paddle",i+1));
                         return i;
                     }
                     break;
                 case 3:
-                    if(Players[i].getyCollisionBounds(-1).left<= ypos && ypos <= Players[i].getyCollisionBounds(-1).right && xpos==Players[i].getxpos()){
+                    if(Players[i].getyCollisionBounds(-1).left<= ypos && ypos <= Players[i].getyCollisionBounds(-1).right && xpos-LEN<=Players[i].getxpos()){
                         System.out.println(String.format("Collide with %d Paddle",i+1));
                         return i;
                     }
@@ -134,19 +134,19 @@ public class Ball {
 
     public int wallHit(){
         if(ypos < 0 ) {
-            System.out.println(String.format("case = %d, xpos = %d, ypos = %d",0,xpos,ypos));
+            System.out.println(String.format("case = %d, xpos = %d, ypos = %d,ball pos %d %d",0,xpos,ypos,this.runningapp.getBoard().getPlayers()[0].getxpos(),this.runningapp.getBoard().getPlayers()[0].getypos()));
             return 0;
         }
-        if(xpos + 2*radius > SCREEN_WIDTH){
-            System.out.println(String.format("case = %d, xpos = %d, ypos = %d",1,xpos,ypos));
+        if(xpos + 2*radius >= SCREEN_WIDTH){
+            System.out.println(String.format("case = %d, xpos = %d, ypos = %d,ball pos %d %d",1,xpos,ypos,this.runningapp.getBoard().getPlayers()[1].getxpos(),this.runningapp.getBoard().getPlayers()[1].getypos()));
             return 1;
         }
-        if(ypos + 2*radius > heightBound) {
-            System.out.println(String.format("case = %d, xpos = %d, ypos = %d",2,xpos,ypos));
+        if(ypos + 2*radius >= heightBound) {
+            System.out.println(String.format("case = %d, xpos = %d, ypos = %d,ball pos %d %d",2,xpos,ypos,this.runningapp.getBoard().getPlayers()[2].getxpos(),this.runningapp.getBoard().getPlayers()[2].getypos()));
             return 2;
         }
         if(xpos < 0){
-            System.out.println(String.format("case = %d, xpos = %d, ypos = %d",3,xpos,ypos));
+            System.out.println(String.format("case = %d, xpos = %d, ypos = %d,ball pos %d %d",3,xpos,ypos,this.runningapp.getBoard().getPlayers()[3].getxpos(),this.runningapp.getBoard().getPlayers()[3].getypos()));
             return 3;
         }
         return -1;
