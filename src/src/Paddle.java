@@ -20,6 +20,7 @@ public class Paddle {
     private int ypos;
     private Random rn;
     private int direction;
+    private boolean setOutside;
 
     public enum paddleType { HORIZONTAL, VERTICAL}; // todo use {HORIZONTAL=0,VERTICAL=1}
     public enum playerType { AI,HUMAN,OTHER};
@@ -38,6 +39,7 @@ public class Paddle {
         this.runningapp = app;
         this.ptype = ptype;
         rn = new Random();
+        this.setOutside = false;
         //System.out.println("Here");
         direction = rn.nextInt(2);
     }
@@ -50,12 +52,22 @@ public class Paddle {
         return ypos;
     }
 
-    public void setxpos(int xpos){
-        this.xpos = xpos;
+    public boolean setxpos(int deltaxpos){
+        if(this.xpos +deltaxpos + WD < SCREEN_WIDTH){
+            this.xpos += deltaxpos;
+            this.setOutside = true;
+            return true;
+        }
+        return false;
     }
 
-    public void setypos(int ypos){
-        this.ypos = ypos;
+    public boolean setypos(int deltaypos){
+        if(this.ypos + deltaypos + WD < SCREEN_HEIGHT){
+            this.ypos += deltaypos;
+            this.setOutside = true;
+            return true;
+        }
+        return false;
     }
 
     public void updateLocation() {
@@ -68,6 +80,9 @@ public class Paddle {
     }
 
     private void locUpdate() {
+        if(this.setOutside==true){
+            runningapp.getBoard().setOnInternalPaddleMoveListener(runningapp.getBoard().getPaddleMoveListener());
+        }
         if (this.type == HORIZONTAL) {
             if (xpos + xchange + width < runningapp.getWidth() && xpos + xchange > 0) xpos += xchange;
         } else {

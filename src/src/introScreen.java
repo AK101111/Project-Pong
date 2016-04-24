@@ -40,11 +40,11 @@ public class introScreen {
         JPanel southPanel = new JPanel();
         ButtonGroup entreeGroup = new ButtonGroup();
         JRadioButton radioButton;
-        northPanel.add(radioButton = new JRadioButton("Easy", true));
+        northPanel.add(radioButton = new JRadioButton("Easy"));
         entreeGroup.add(radioButton);
         northPanel.add(radioButton = new JRadioButton("Hard"));
         entreeGroup.add(radioButton);
-        northPanel.add(radioButton = new JRadioButton("Insane"));
+        northPanel.add(radioButton = new JRadioButton("Insane",true));
         entreeGroup.add(radioButton);
 
         JPanel centerPanel = new AnimatedJPanel("fireball");

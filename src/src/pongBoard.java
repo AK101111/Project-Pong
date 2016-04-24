@@ -1,5 +1,7 @@
 package src;
 
+import integration.AbstractGameUI;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -21,7 +23,7 @@ import static src.constants.*;
 /**
  * Created by arnavkansal on 09/04/16.
  */
-public class pongBoard extends JPanel implements ActionListener, KeyListener{
+public class pongBoard extends JPanel implements ActionListener, KeyListener, AbstractGameUI {
 
     private PingPong runningApp;
     private Ball ball;
@@ -32,6 +34,7 @@ public class pongBoard extends JPanel implements ActionListener, KeyListener{
     private int computerPlayers[];
     private int speed;//=INIT_SPEED;
     private BufferedImage img;
+    private PaddleMoveListener paddleMoveListener;
 
     public Paddle[] getPlayers(){
         return this.Players;
@@ -117,5 +120,19 @@ public class pongBoard extends JPanel implements ActionListener, KeyListener{
     @Override
     public void keyReleased(KeyEvent e) {
         Players[activePlayer].keyrelease(e.getKeyCode());
+    }
+
+    @Override
+    public boolean movePaddle(int id, int delX, int delY) {
+        return (Players[id].setxpos(delX) && Players[id].setypos(delY));
+    }
+
+    @Override
+    public void setOnInternalPaddleMoveListener(PaddleMoveListener paddleMoveListener) {
+        this.paddleMoveListener = paddleMoveListener;
+    }
+
+    public PaddleMoveListener getPaddleMoveListener(){
+        return this.paddleMoveListener;
     }
 }
