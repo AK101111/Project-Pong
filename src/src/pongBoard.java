@@ -48,7 +48,7 @@ public class pongBoard extends JPanel implements ActionListener, KeyListener, Ab
         this.runningApp = app;
         Players = new Paddle[MAXPLAYERS];
         this.activePlayer = activePlayer;
-        this.dashboard = new Dashboard(4);
+
         this.speed = INIT_SPEED[runningApp.difficulty];
         //this.otherPlayers = otherPlayers;
         this.computerPlayers = computerPlayers;
@@ -58,6 +58,7 @@ public class pongBoard extends JPanel implements ActionListener, KeyListener, Ab
             e.printStackTrace();
         }
         setBoard(app);
+        this.dashboard = new Dashboard(4,app);
         Timer timer = new Timer(speed, this);
         timer.start();
         addKeyListener(this);
@@ -73,14 +74,14 @@ public class pongBoard extends JPanel implements ActionListener, KeyListener, Ab
         ball = new Ball(app);
         // set AI players
         for(int index: computerPlayers){
-            Players[index] = new Paddle(app, xinit[index], yinit[index], Paddle.paddleType.values()[index%2], AI);
+            Players[index] = new Paddle(app, xinit[index], yinit[index], Paddle.paddleType.values()[index%2], AI,index);
         }
         // set other network players
 //        for(int index: otherPlayers){
 //            Players[index] = new Paddle(app, xinit[index], yinit[index], Paddle.paddleType.values()[index%2], OTHER);
 //        }
         // set game player
-        Players[activePlayer] = new Paddle(app, xinit[activePlayer], yinit[activePlayer], Paddle.paddleType.values()[activePlayer%2], HUMAN);
+        Players[activePlayer] = new Paddle(app, xinit[activePlayer], yinit[activePlayer], Paddle.paddleType.values()[activePlayer%2], HUMAN,activePlayer);
     }
 
     @Override
@@ -89,7 +90,9 @@ public class pongBoard extends JPanel implements ActionListener, KeyListener, Ab
         g.drawImage(img, 0, 0, getWidth(), getHeight(), this);
         ball.draw(g);
         for(Paddle player: Players) {
-            player.draw(g);
+            if(!(player.getdead())){
+                player.draw(g);
+            }
         }
         dashboard.draw(g);
     }

@@ -21,6 +21,15 @@ public class Paddle {
     private Random rn;
     private int direction;
     private boolean setOutside;
+    private boolean dead;// = false;
+
+    public int getxchange() {
+        return xchange;
+    }
+
+    public int getychange() {
+        return ychange;
+    }
 
     public enum paddleType { HORIZONTAL, VERTICAL}; // todo use {HORIZONTAL=0,VERTICAL=1}
     public enum playerType { AI,HUMAN,OTHER};
@@ -29,8 +38,9 @@ public class Paddle {
     private int xchange;
     private int ychange;
     private PingPong runningapp;
+    private int tage;
 
-    public Paddle(PingPong app, int x, int y, paddleType type, playerType ptype){
+    public Paddle(PingPong app, int x, int y, paddleType type, playerType ptype,int tage){
         this.xpos = x;
         this.ypos = y;
         this.type = type;
@@ -42,7 +52,20 @@ public class Paddle {
         this.setOutside = false;
         //System.out.println("Here");
         direction = rn.nextInt(2);
+        this.dead = false;
+        this.tage = tage;
     }
+
+    public void setdead(boolean dead){
+        this.dead = dead;
+        deadProc();
+    }
+
+    private void deadProc() {
+
+    }
+
+    public boolean getdead(){return this.dead;}
 
     public int getxpos(){
         return xpos;
@@ -208,6 +231,19 @@ public class Paddle {
             g.fillRect(xpos,ypos,width,length);
         else
             g.fillRect(xpos,ypos,length,width);
+        g.setColor(Color.RED);
+        if(this.xchange == 1) {
+            g.fillRect(xpos+width-INDICATOR,ypos,INDICATOR,length);
+        }
+        if(this.xchange == -1) {
+            g.fillRect(xpos, ypos, INDICATOR, length);
+        }
+        if(this.ychange == 1) {
+            g.fillRect(xpos,ypos+width-INDICATOR,length,INDICATOR);
+        }
+        if(this.ychange == -1) {
+            g.fillRect(xpos, ypos, length,INDICATOR);
+        }
     }
 
     public void keyrelease(int keyCode) {

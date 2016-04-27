@@ -145,7 +145,7 @@ class SpotlightLayerUI extends LayerUI<JPanel> {
         if (mActive) {
             // Create a radial gradient, transparent in the middle.
             java.awt.geom.Point2D center = new java.awt.geom.Point2D.Float(mX, mY);
-            float radius = 30;
+            float radius = 150;
             float[] dist = {0.3f, 1.0f};
             Color[] colors = {new Color(0.0f, 0.0f, 0.0f, 0.0f), Color.BLACK};
             RadialGradientPaint p =
