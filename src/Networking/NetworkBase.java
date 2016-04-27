@@ -72,11 +72,11 @@ public class NetworkBase {
 
     public NetworkBase() {
         myServer = new MyServer(8080);
-        (new Thread(myServer)).run();
+        (new Thread(myServer)).start();
         peerSockets = new HashMap<>();
     }
 
-    public void addPeer(String name,String ip, int port) {
+    public void addPeer(String name, String ip, int port) {
         try {
             Socket peerSocket = new Socket(ip, port);
             peerSockets.put(name,peerSocket);
@@ -102,5 +102,6 @@ public class NetworkBase {
 
     public static void main(String[] args) {
         NetworkBase networkBase = new NetworkBase();
+        System.out.println("Server started");
     }
 }
