@@ -26,6 +26,8 @@ public class Paddle {
     private boolean dead;// = false;
     private AbstractGameUI.PaddleMoveListener paddleMoveListener;
 
+
+
     public int getxchange() {
         return xchange;
     }

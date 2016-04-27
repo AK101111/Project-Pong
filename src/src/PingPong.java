@@ -47,7 +47,7 @@ public class PingPong extends JFrame{
         Board.setOnInternalPaddleMoveListener(new AbstractGameUI.PaddleMoveListener() {
             @Override
             public void handlePaddleMove(int id, int delX, int delY) {
-                System.out.println(String.format("id =%d, delx =%d, dely = %d",id,delX,delY));
+               // System.out.println(String.format("id =%d, delx =%d, dely = %d",id,delX,delY));
                 if (id == 0) {
                     Board.movePaddle(2, -delX, delY);
 //                    Board.movePaddle(2,-delX,-delY);
@@ -60,6 +60,11 @@ public class PingPong extends JFrame{
 //        for(int i=0;i<1000;++i){
 //            Board.movePaddle(0,1,0);
 //        }
+        Board.setPaddleAsKeyboardControlled(0,true);
+        Board.setPaddleAsAiControlled(1);
+        Board.setPaddleAsAiControlled(2);
+        Board.setPaddleAsAiControlled(3);
+        Board.startpongBoard(this);
         add(Board);
     }
     public static void main(String args[]){
