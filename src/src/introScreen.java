@@ -2,6 +2,7 @@ package src;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Enumeration;
 import javax.swing.*;
 import javax.swing.plaf.LayerUI;
 
@@ -39,22 +40,23 @@ public class introScreen {
         JPanel southPanel = new JPanel();
         ButtonGroup entreeGroup = new ButtonGroup();
         JRadioButton radioButton;
-        northPanel.add(radioButton = new JRadioButton("Easy", true));
+        northPanel.add(radioButton = new JRadioButton("Easy"));
         entreeGroup.add(radioButton);
         northPanel.add(radioButton = new JRadioButton("Hard"));
         entreeGroup.add(radioButton);
-        northPanel.add(radioButton = new JRadioButton("Insane"));
+        northPanel.add(radioButton = new JRadioButton("Insane",true));
         entreeGroup.add(radioButton);
 
         JPanel centerPanel = new AnimatedJPanel("fireball");
 
         JButton orderButton = new JButton("Start");
+        System.out.println(String.format("ht %d, wd%d",mainPanel.getHeight(),mainPanel.getWidth()));
         //orderButton.setLocation(WINDOW_XSIZE/2,WINDOW_YSIZE/2);
         //orderButton.setBounds(WINDOW_XSIZE/2,WINDOW_YSIZE/2,50,50);
         orderButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                String[] args = {};
+                String[] args = {getSelectedButtonText(entreeGroup)};
                 //centerPanel.pausePanel();
                 PingPong.main(args);
                 //super.mouseClicked(e);
@@ -64,7 +66,20 @@ public class introScreen {
         mainPanel.add(northPanel,BorderLayout.NORTH);
         mainPanel.add(centerPanel,BorderLayout.CENTER);
         mainPanel.add(southPanel,BorderLayout.SOUTH);
+        //System.out.println(String.format("ht %d, wd%d",mainPanel.getHeight(),mainPanel.getWidth()));
         return mainPanel;
+    }
+
+    public static String getSelectedButtonText(ButtonGroup buttonGroup) {
+        for (Enumeration<AbstractButton> buttons = buttonGroup.getElements(); buttons.hasMoreElements();) {
+            AbstractButton button = buttons.nextElement();
+
+            if (button.isSelected()) {
+                return button.getText();
+            }
+        }
+
+        return null;
     }
 }
 class AnimatedJPanel extends JPanel implements ActionListener{
@@ -88,7 +103,7 @@ class AnimatedJPanel extends JPanel implements ActionListener{
     }
     @Override
     public void actionPerformed(ActionEvent e){
-        System.out.println("Here");
+       // System.out.println("Here");
         repaint();
     }
     public static void pausePanel(){
@@ -130,7 +145,7 @@ class SpotlightLayerUI extends LayerUI<JPanel> {
         if (mActive) {
             // Create a radial gradient, transparent in the middle.
             java.awt.geom.Point2D center = new java.awt.geom.Point2D.Float(mX, mY);
-            float radius = 30;
+            float radius = 150;
             float[] dist = {0.3f, 1.0f};
             Color[] colors = {new Color(0.0f, 0.0f, 0.0f, 0.0f), Color.BLACK};
             RadialGradientPaint p =
@@ -158,4 +173,5 @@ class SpotlightLayerUI extends LayerUI<JPanel> {
         mY = p.y;
         l.repaint();
     }
+
 }

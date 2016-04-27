@@ -1,11 +1,17 @@
 package src;
 
+import integration.AbstractGameUI;
+
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 import static src.Paddle.paddleType.HORIZONTAL;
 import static src.Paddle.paddleType.VERTICAL;
@@ -17,15 +23,18 @@ import static src.constants.*;
 /**
  * Created by arnavkansal on 09/04/16.
  */
-public class pongBoard extends JPanel implements ActionListener, KeyListener{
+public class pongBoard extends JPanel implements ActionListener, KeyListener, AbstractGameUI {
 
     private PingPong runningApp;
     private Ball ball;
     private Paddle[] Players;
     private int activePlayer;
+    private Dashboard dashboard;
     //private int otherPlayers[];
     private int computerPlayers[];
-    private int speed=INIT_SPEED;
+    private int speed;//=INIT_SPEED;
+    private BufferedImage img;
+    private PaddleMoveListener paddleMoveListener;
 
     public Paddle[] getPlayers(){
         return this.Players;
@@ -39,13 +48,25 @@ public class pongBoard extends JPanel implements ActionListener, KeyListener{
         this.runningApp = app;
         Players = new Paddle[MAXPLAYERS];
         this.activePlayer = activePlayer;
+
+        this.speed = INIT_SPEED[runningApp.difficulty];
         //this.otherPlayers = otherPlayers;
         this.computerPlayers = computerPlayers;
+        try {
+            img = ImageIO.read(new File(IMAGES_PATH+"2"+".JPG"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         setBoard(app);
+        this.dashboard = new Dashboard(4,app);
         Timer timer = new Timer(speed, this);
         timer.start();
         addKeyListener(this);
         setFocusable(true);
+    }
+
+    public Dashboard getDashboard() {
+        return this.dashboard;
     }
 
     public void setBoard(PingPong app) {
@@ -53,23 +74,27 @@ public class pongBoard extends JPanel implements ActionListener, KeyListener{
         ball = new Ball(app);
         // set AI players
         for(int index: computerPlayers){
-            Players[index] = new Paddle(app, xinit[index], yinit[index], Paddle.paddleType.values()[index%2], AI);
+            Players[index] = new Paddle(app, xinit[index], yinit[index], Paddle.paddleType.values()[index%2], AI,index);
         }
         // set other network players
 //        for(int index: otherPlayers){
 //            Players[index] = new Paddle(app, xinit[index], yinit[index], Paddle.paddleType.values()[index%2], OTHER);
 //        }
         // set game player
-        Players[activePlayer] = new Paddle(app, xinit[activePlayer], yinit[activePlayer], Paddle.paddleType.values()[activePlayer%2], HUMAN);
+        Players[activePlayer] = new Paddle(app, xinit[activePlayer], yinit[activePlayer], Paddle.paddleType.values()[activePlayer%2], HUMAN,activePlayer);
     }
 
     @Override
     public void paintComponent(Graphics g){
         super.paintComponent(g);
+        g.drawImage(img, 0, 0, getWidth(), getHeight(), this);
         ball.draw(g);
         for(Paddle player: Players) {
-            player.draw(g);
+            if(!(player.getdead())){
+                player.draw(g);
+            }
         }
+        dashboard.draw(g);
     }
 
     @Override
@@ -98,5 +123,19 @@ public class pongBoard extends JPanel implements ActionListener, KeyListener{
     @Override
     public void keyReleased(KeyEvent e) {
         Players[activePlayer].keyrelease(e.getKeyCode());
+    }
+
+    @Override
+    public boolean movePaddle(int id, int delX, int delY) {
+        return (Players[id].setxpos(delX) && Players[id].setypos(delY));
+    }
+
+    @Override
+    public void setOnInternalPaddleMoveListener(PaddleMoveListener paddleMoveListener) {
+        this.paddleMoveListener = paddleMoveListener;
+    }
+
+    public PaddleMoveListener getPaddleMoveListener(){
+        return this.paddleMoveListener;
     }
 }

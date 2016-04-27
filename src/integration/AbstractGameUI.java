@@ -1,20 +1,20 @@
 package integration;
 
 /**
-* Represents the game UI (things that can be seen and manipulated by the user) on a single machine.
-* Contains handles to change the UI (move paddle), which will be used by the networking code.
-*
-* Assumptions :
-* 1. Exactly 4 players (user/other player/AI) play the game.
-* 2. Each player is assigned a unique ID (an integer), which is also consistent for all machines in the game network.
-*    Let's use this simple scheme :
-*		Top player -> 0, Right player -> 1, Bottom player -> 2, Right player -> 3
-*				0
-*			3		1
-*				2
-*	 (Some other scheme may equally be chosen, only condition is that (same) id must uniquely identify player (paddle)
-*	  on the boards of all machines playing simultaneously)
-*/
+ * Represents the game UI (things that can be seen and manipulated by the user) on a single machine.
+ * Contains handles to change the UI (move paddle), which will be used by the networking code.
+ *
+ * Assumptions :
+ * 1. Exactly 4 players (user/other player/AI) play the game.
+ * 2. Each player is assigned a unique ID (an integer), which is also consistent for all machines in the game network.
+ *    Let's use this simple scheme :
+ *		Top player -> 0, Right player -> 1, Bottom player -> 2, Right player -> 3
+ *				0
+ *			3		1
+ *				2
+ *	 (Some other scheme may equally be chosen, only condition is that (same) id must uniquely identify player (paddle)
+ *	  on the boards of all machines playing simultaneously)
+ */
 public interface AbstractGameUI {
 
     /**
@@ -25,7 +25,7 @@ public interface AbstractGameUI {
      * @param delY number of pixels to be moved in the +ve Y direction
      * @return True if the motion is possible and successful, false if not (due blockage by wall etc.)
      */
-     boolean movePaddle (int id, int delX, int delY);
+    boolean movePaddle (int id, int delX, int delY);
 
 
     interface PaddleMoveListener {
