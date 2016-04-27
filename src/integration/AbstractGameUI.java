@@ -37,4 +37,12 @@ public interface AbstractGameUI {
      * @param paddleMoveListener Call the {@code handlePaddleMove} with appropriate values when paddles are moved internally.
      */
     void setOnInternalPaddleMoveListener(PaddleMoveListener paddleMoveListener);
+
+    //These methods need to be called before the game actually starts
+    //Ensures that the paddle is controlled by pressing keys on the keyboard.
+    void setPaddleAsKeyboardControlled (int paddleId);
+    //Ensure that the paddle is controlled by the AI.
+    void setPaddleAsAiControlled (int paddleId);
+    //NOTE : make the Paddles AI/keyboard controlled only if these methods have been called before start of the game.
+    //Paddles that haven't been marked as AI/keyboard controlled remain still on the board (unless they are moved by the `movePaddle` method).
 }

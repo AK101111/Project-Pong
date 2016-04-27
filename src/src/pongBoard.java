@@ -48,7 +48,6 @@ public class pongBoard extends JPanel implements ActionListener, KeyListener, Ab
         this.runningApp = app;
         Players = new Paddle[MAXPLAYERS];
         this.activePlayer = activePlayer;
-
         this.speed = INIT_SPEED[runningApp.difficulty];
         //this.otherPlayers = otherPlayers;
         this.computerPlayers = computerPlayers;
@@ -133,9 +132,21 @@ public class pongBoard extends JPanel implements ActionListener, KeyListener, Ab
     @Override
     public void setOnInternalPaddleMoveListener(PaddleMoveListener paddleMoveListener) {
         this.paddleMoveListener = paddleMoveListener;
+        // line
+    }
+
+    @Override
+    public void setPaddleAsKeyboardControlled(int paddleId) {
+
+    }
+
+    @Override
+    public void setPaddleAsAiControlled(int paddleId) {
+
     }
 
     public PaddleMoveListener getPaddleMoveListener(){
         return this.paddleMoveListener;
     }
+
 }

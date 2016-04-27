@@ -1,5 +1,7 @@
 package src;
 
+import integration.AbstractGameUI;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -40,7 +42,24 @@ public class PingPong extends JFrame{
         //setBackground(Color.BLACK);
         // center window on screen
         setLocationRelativeTo(null);
+        // testcomp and testactive are to be set
         Board = new src.pongBoard(this,testactive,testcomp);//,testother);
+        Board.setOnInternalPaddleMoveListener(new AbstractGameUI.PaddleMoveListener() {
+            @Override
+            public void handlePaddleMove(int id, int delX, int delY) {
+                System.out.println(String.format("id =%d, delx =%d, dely = %d",id,delX,delY));
+                if (id == 0) {
+                    Board.movePaddle(2, -delX, delY);
+//                    Board.movePaddle(2,-delX,-delY);
+                }
+                if (id == 1) {
+                    Board.movePaddle(1,-delX,-delY);
+                }
+            }
+        });
+//        for(int i=0;i<1000;++i){
+//            Board.movePaddle(0,1,0);
+//        }
         add(Board);
     }
     public static void main(String args[]){
