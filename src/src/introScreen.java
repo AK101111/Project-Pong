@@ -34,13 +34,11 @@ public class introScreen {
     public static void createUI() {
         JFrame f = new JFrame ("Ping Pong");
 
-        LayerUI<JPanel> layerUI = new SpotlightLayerUI();
+//        LayerUI<JPanel> layerUI = new SpotlightLayerUI();
         JPanel panel = createPanel();
-        JLayer<JPanel> jlayer = new JLayer<JPanel>(panel, layerUI);
+        JLayer<JPanel> jlayer = new JLayer<JPanel>(panel);
 
         f.add (jlayer);
-
-//        f.setSize(WINDOW_XSIZE,WINDOW_YSIZE);
         f.pack();
         f.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
         f.setLocationRelativeTo (null);
@@ -65,8 +63,6 @@ public class introScreen {
         entreeGroup.add(radioButton);
 
 //        JPanel centerPanel = new AnimatedJPanel("fireball");
-
-
 
         GridLayout connectButtonLayout = new GridLayout(2,0);
         connectButtonLayout.setVgap(10);
@@ -265,16 +261,16 @@ class SpotlightLayerUI extends LayerUI<JPanel> {
 
         if (mActive) {
             // Create a radial gradient, transparent in the middle.
-//            java.awt.geom.Point2D center = new java.awt.geom.Point2D.Float(mX, mY);
-//            float radius = 150;
-//            float[] dist = {0.3f, 1.0f};
-//            Color[] colors = {new Color(0.0f, 0.0f, 0.0f, 0.0f), Color.BLACK};
-//            RadialGradientPaint p =
-//                    new RadialGradientPaint(center, radius, dist, colors);
-//            g2.setPaint(p);
-//            g2.setComposite(AlphaComposite.getInstance(
-//                    AlphaComposite.SRC_OVER, 1.0f));
-//            g2.fillRect(0, 0, c.getWidth(), c.getHeight());
+            java.awt.geom.Point2D center = new java.awt.geom.Point2D.Float(mX, mY);
+            float radius = 150;
+            float[] dist = {0.3f, 1.0f};
+            Color[] colors = {new Color(0.0f, 0.0f, 0.0f, 0.0f), Color.BLACK};
+            RadialGradientPaint p =
+                    new RadialGradientPaint(center, radius, dist, colors);
+            g2.setPaint(p);
+            g2.setComposite(AlphaComposite.getInstance(
+                    AlphaComposite.SRC_OVER, 1.0f));
+            g2.fillRect(0, 0, c.getWidth(), c.getHeight());
         }
 
         g2.dispose();
