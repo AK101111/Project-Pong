@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.stream.Stream;
 import javax.swing.*;
 import javax.swing.Timer;
+import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.LayerUI;
 import javax.swing.plaf.TextUI;
 
@@ -39,7 +40,8 @@ public class introScreen {
 
         f.add (jlayer);
 
-        f.setSize(WINDOW_XSIZE,WINDOW_YSIZE);
+//        f.setSize(WINDOW_XSIZE,WINDOW_YSIZE);
+        f.pack();
         f.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
         f.setLocationRelativeTo (null);
         f.setVisible (true);
@@ -47,9 +49,12 @@ public class introScreen {
 
     private static JPanel createPanel() {
         JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
         JPanel northPanel = new JPanel();
         JPanel southPanel = new JPanel();
+        southPanel.setBorder(new EmptyBorder(20, 0, 0, 0));
         JPanel centerPanel = new JPanel();
+        centerPanel.setBorder(new EmptyBorder(20, 0, 0, 0));
         ButtonGroup entreeGroup = new ButtonGroup();
         JRadioButton radioButton;
         northPanel.add(radioButton = new JRadioButton("Easy"));
@@ -63,7 +68,8 @@ public class introScreen {
 
 
 
-        GridLayout connectButtonLayout = new GridLayout(3,0);
+        GridLayout connectButtonLayout = new GridLayout(2,0);
+        connectButtonLayout.setVgap(10);
         JButton connectButton = new JButton("Connect");
         statusLabel = new JLabel();
         statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -97,10 +103,11 @@ public class introScreen {
         connectButton.addMouseListener(onConnectListener);
 
         JPanel textFieldPanel = new JPanel();
-        GridLayout textFieldLayout = new GridLayout(3,0);
-        ipTextField1 = new JTextField(10);;
-        ipTextField2 = new JTextField(10);;
-        ipTextField3 = new JTextField(10);;
+        GridLayout textFieldLayout = new GridLayout(3,1);
+        GridLayout centerLayout = new GridLayout(2,1);
+        ipTextField1 = new JTextField(10);
+        ipTextField2 = new JTextField(10);
+        ipTextField3 = new JTextField(10);
         ipLabel1 = new JLabel();
         ipLabel2 = new JLabel();
         ipLabel3 = new JLabel();
@@ -112,7 +119,8 @@ public class introScreen {
         centerPanel.add(myIPAddressText,BorderLayout.NORTH);
         centerPanel.add(textFieldPanel,BorderLayout.CENTER);
         centerPanel.setSize(10,10);
-        centerPanel.setLayout(textFieldLayout);
+        textFieldPanel.setLayout(textFieldLayout);
+        centerPanel.setLayout(centerLayout);
 
 
         southPanel.add(statusLabel,BorderLayout.NORTH);
