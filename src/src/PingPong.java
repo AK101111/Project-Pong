@@ -48,22 +48,26 @@ public class PingPong extends JFrame{
             @Override
             public void handlePaddleMove(int id, int delX, int delY) {
                // System.out.println(String.format("id =%d, delx =%d, dely = %d",id,delX,delY));
-                if (id == 0) {
-                    Board.movePaddle(2, -delX, delY);
-//                    Board.movePaddle(2,-delX,-delY);
-                }
-                if (id == 1) {
-                    Board.movePaddle(1,-delX,-delY);
-                }
+//                if (id == 0) {
+//                    Board.movePaddle(2, -delX, delY);
+////                    Board.movePaddle(2,-delX,-delY);
+//                }
+//                if (id == 1) {
+//                    Board.movePaddle(1,-delX,-delY);
+//                }
             }
         });
 //        for(int i=0;i<1000;++i){
 //            Board.movePaddle(0,1,0);
 //        }
-        Board.setPaddleAsKeyboardControlled(0,true);
-        Board.setPaddleAsAiControlled(1);
-        Board.setPaddleAsAiControlled(2);
-        Board.setPaddleAsAiControlled(3);
+        Board.setPaddleAsKeyboardControlled(0,false);
+        Board.setPaddleAsKeyboardControlled(1,false);
+        Board.setPaddleAsKeyboardControlled(2,true);
+        Board.setPaddleAsKeyboardControlled(3,false);
+
+//        Board.setPaddleAsAiControlled(1);
+//        Board.setPaddleAsAiControlled(2);
+//        Board.setPaddleAsAiControlled(3);
         Board.startpongBoard(this);
         add(Board);
     }
