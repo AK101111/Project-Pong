@@ -1,6 +1,8 @@
 package src;
 
 import Networking.NetworkBase;
+import Networking.PeerConnectionListener;
+import Networking.ReceiveObjectListener;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -21,6 +23,15 @@ public class introScreen {
     static JTextField ipTextField1,ipTextField2,ipTextField3;
     static JLabel ipLabel1,ipLabel2,ipLabel3,statusLabel;
     static MouseAdapter onConnectListener;
+
+    static ReceiveObjectListener receiveObjectListener = new ReceiveObjectListener() {
+        @Override
+        public void onReceive(Object obj) {
+            System.out.println("Received object " + obj);
+            //TODO
+        }
+    };
+    static NetworkBase network = new NetworkBase(8080,receiveObjectListener);
 
     public static void main(String[] args) {
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
@@ -83,15 +94,25 @@ public class introScreen {
 //                PingPong.main(args);
 
                 //super.mouseClicked(e);
-                System.out.println(getListedIpAddresses().toString());
-                if(ipTextField1.isVisible()) {
-                    hideTextField(0);
-                    statusLabel.setText("Connecting...");
-                }else {
-                    showTextField(0);
-                    statusLabel.setText("");
-                }
-//                disableButton(orderButton);
+
+                statusLabel.setText("Connecting...");
+
+
+                List<String> filledIps = getListedIpAddresses();
+                System.out.println(filledIps.toString());
+
+
+
+
+
+//                if(ipTextField1.isVisible()) {
+//                    hideTextField(0);
+//                    statusLabel.setText("Connecting...");
+//                }else {
+//                    showTextField(0);
+//                    statusLabel.setText("");
+//                }
+                disableButton(connectButton);
             }
         };
         connectButton.addMouseListener(onConnectListener);
@@ -124,6 +145,41 @@ public class introScreen {
         return mainPanel;
     }
 
+    //0, 1, 2
+    private static void connectToPeerList (Map<Integer,String> peerList, JLabel indicatorLabel) {
+        List<Integer> connectedPeers = new ArrayList<>();
+        List<Integer> failedToConnectPeers = new ArrayList<>();
+
+        for (Integer i : peerList.keySet()) {
+            network.addPeer("Peer#" + i, peerList.get(i), 8080, 1000, new PeerConnectionListener() {
+                @Override
+                public void onConnectionSuccess() {
+                    connectedPeers.add(i);
+                }
+
+                @Override
+                public void onConnectionFailure() {
+                    failedToConnectPeers.add(i);
+                }
+            });
+        }
+
+        while (connectedPeers.size() + failedToConnectPeers.size() < peerList.size()) {}
+        if (failedToConnectPeers.size() > 0 ) {
+            StringBuilder failedIndicatorString = new StringBuilder();
+            failedIndicatorString.append("Failed to connect to ");
+            for (Integer i : failedToConnectPeers) {
+                failedIndicatorString.append(i);
+            }
+            failedIndicatorString.append(". Please remove them.");
+
+            indicatorLabel.setText(failedIndicatorString.toString());
+        } else {
+            //Proceed ahead
+            System.out.println("Start Playing!");
+        }
+    }
+
     private static void hideTextField(int textFieldId){
         switch (textFieldId){
             case 0:
@@ -132,7 +188,7 @@ public class introScreen {
                 break;
             case 1:
                 ipLabel2.setText("Connected to "+ ipTextField2.getText());
-                ipTextField3.setVisible(false);
+                ipTextField2.setVisible(false);
                 break;
             case 2:
                 ipLabel3.setText("Connected to "+ ipTextField3.getText());
@@ -149,7 +205,7 @@ public class introScreen {
                 break;
             case 1:
                 ipLabel2.setText("Player 3 IP Address :");
-                ipTextField3.setVisible(true);
+                ipTextField2.setVisible(true);
                 break;
             case 2:
                 ipLabel3.setText("Player 4 IP Address :");
