@@ -3,6 +3,7 @@ package Networking;
 import Utils.Utils;
 
 import java.io.*;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -64,6 +65,16 @@ public class NetworkBase {
         }
     }
 
+    private static String getIPAddress() {
+        try {
+            InetAddress localAdd = InetAddress.getLocalHost();
+            return localAdd.getHostAddress();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public static class TestClass implements Serializable {
         String msg;
         int i;
@@ -90,8 +101,8 @@ public class NetworkBase {
                 System.out.println(asTobj);
             }
         });
-        System.out.println("Server started");
-        networkBase.addPeer("ashish", "10.192.38.55", 8080, 1, new PeerConnectionListener() {
+        System.out.println("Server started @ IP:" + getIPAddress());
+        networkBase.addPeer("ashish", "10.192.38.55", 8080, 10000, new PeerConnectionListener() {
             @Override
             public void onConnectionSuccess() {
                 System.out.println("Connected to Ashish");
@@ -103,34 +114,5 @@ public class NetworkBase {
                 System.out.println("Failed to connect to Ashish");
             }
         });
-
-//
-//        try {
-//            Thread.sleep(2000);
-//            System.out.println("Recovered from sleep");
-//            networkBase.addPeer("ashish","10.192.38.55",8080);
-//            networkBase.sendMsgToPeer("ashish","[kd] Hello from kedia");
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-
-//        try {
-////            Socket s = new Socket("10.192.38.55", 8080);
-////            System.out.println("Connected to ashish : "+s);
-//            Socket s = new Socket();
-//            InetSocketAddress ashAdd = new InetSocketAddress("10.192.38.55", 8080);
-//            s.connect(ashAdd);
-//            OutputStream o = s.getOutputStream();
-//            ObjectOutputStream os = new ObjectOutputStream(o);
-//
-//            TestClass obj = new TestClass("gandu",10000);
-//            os.writeObject(obj);
-//
-//
-////            o.write("hi from kedia\n".getBytes());
-//            System.out.println(s);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
     }
 }
