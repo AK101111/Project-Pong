@@ -75,21 +75,10 @@ public class NetworkBase {
         }
     }
 
-    public static class TestClass implements Serializable {
-        String msg;
-        int i;
-        AbstractList<String> msgs;
-
-        TestClass(String m, int in) {
-            msg = m;
-            i = in;
-            msgs = new ArrayList<>();
-            msgs.add("Test 1");
-            msgs.add("Test 2");
-        }
-
-        public String toString () {
-            return String.format("TestClass{msg=%s,i=%d,msgs=%s}",msg,i,msgs.toString());
+    public static class TimeStamp implements Serializable {
+        public long time;
+        TimeStamp () {
+            time = System.currentTimeMillis();
         }
     }
     public static void main(String[] args) {
@@ -97,8 +86,9 @@ public class NetworkBase {
         NetworkBase networkBase = new NetworkBase(8080, new ReceiveObjectListener() {
             @Override
             public void onReceive(Object obj) {
-                TestClass asTobj = (TestClass) obj;
-                System.out.println(asTobj);
+                long currentTime = System.currentTimeMillis();
+                TimeStamp sendTime = (TimeStamp) obj;
+                System.out.println("Network-delay : " + (currentTime - sendTime.time));
             }
         });
         System.out.println("Server started @ IP:" + getIPAddress());
@@ -106,7 +96,7 @@ public class NetworkBase {
             @Override
             public void onConnectionSuccess() {
                 System.out.println("Connected to Ashish");
-                networkBase.sendObjectToPeer("ashish",new TestClass("Hello from kd",10));
+                networkBase.sendObjectToPeer("ashish",new TimeStamp());
             }
 
             @Override
