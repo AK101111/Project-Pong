@@ -22,7 +22,7 @@ public class NetworkBase {
     private Map<String,Socket> peerSockets;
 
     public NetworkBase(int port, ReceiveObjectListener receiveObjectListener) {
-        server = new ConnectionServer(8080,receiveObjectListener);
+        server = new ConnectionServer(port,receiveObjectListener);
         (new Thread(server)).start();
         peerSockets = new HashMap<>();
     }
