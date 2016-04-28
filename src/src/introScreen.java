@@ -50,7 +50,7 @@ public class introScreen {
         mainPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
         JPanel northPanel = new JPanel();
         JPanel southPanel = new JPanel();
-        southPanel.setBorder(new EmptyBorder(20, 0, 0, 0));
+        southPanel.setBorder(new EmptyBorder(20, 50, 0, 50));
         JPanel centerPanel = new JPanel();
         centerPanel.setBorder(new EmptyBorder(20, 0, 0, 0));
         ButtonGroup entreeGroup = new ButtonGroup();
@@ -67,6 +67,7 @@ public class introScreen {
         GridLayout connectButtonLayout = new GridLayout(2,0);
         connectButtonLayout.setVgap(10);
         JButton connectButton = new JButton("Connect");
+        connectButton.setPreferredSize(new Dimension(50, 30));
         statusLabel = new JLabel();
         statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
         System.out.println(String.format("ht %d, wd%d",mainPanel.getHeight(),mainPanel.getWidth()));
@@ -99,8 +100,8 @@ public class introScreen {
         connectButton.addMouseListener(onConnectListener);
 
         JPanel textFieldPanel = new JPanel();
-        GridLayout textFieldLayout = new GridLayout(3,1);
-        GridLayout centerLayout = new GridLayout(2,1);
+        GridLayout textFieldLayout = new GridLayout(3,0);
+        GridLayout centerLayout = new GridLayout(2,0);
         ipTextField1 = new JTextField(10);
         ipTextField2 = new JTextField(10);
         ipTextField3 = new JTextField(10);
