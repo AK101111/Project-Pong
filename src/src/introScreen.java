@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.stream.Stream;
 import javax.swing.*;
 import javax.swing.Timer;
+import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.LayerUI;
 import javax.swing.plaf.TextUI;
 
@@ -50,7 +51,8 @@ public class introScreen {
 
         f.add (jlayer);
 
-        f.setSize(WINDOW_XSIZE,WINDOW_YSIZE);
+//        f.setSize(WINDOW_XSIZE,WINDOW_YSIZE);
+        f.pack();
         f.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
         f.setLocationRelativeTo (null);
         f.setVisible (true);
@@ -58,9 +60,12 @@ public class introScreen {
 
     private static JPanel createPanel() {
         JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
         JPanel northPanel = new JPanel();
         JPanel southPanel = new JPanel();
+        southPanel.setBorder(new EmptyBorder(20, 0, 0, 0));
         JPanel centerPanel = new JPanel();
+        centerPanel.setBorder(new EmptyBorder(20, 0, 0, 0));
         ButtonGroup entreeGroup = new ButtonGroup();
         JRadioButton radioButton;
         northPanel.add(radioButton = new JRadioButton("Easy"));
@@ -74,7 +79,8 @@ public class introScreen {
 
 
 
-        GridLayout connectButtonLayout = new GridLayout(3,0);
+        GridLayout connectButtonLayout = new GridLayout(2,0);
+        connectButtonLayout.setVgap(10);
         JButton connectButton = new JButton("Connect");
         statusLabel = new JLabel();
         statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -98,10 +104,8 @@ public class introScreen {
                 statusLabel.setText("Connecting...");
 
 
-                List<String> filledIps = getListedIpAddresses();
+                Map<Integer,String> filledIps = getListedIpAddresses();
                 System.out.println(filledIps.toString());
-
-
 
 
 
@@ -113,15 +117,17 @@ public class introScreen {
 //                    statusLabel.setText("");
 //                }
                 disableButton(connectButton);
+                connectToPeerList(filledIps,statusLabel,connectButton);
             }
         };
         connectButton.addMouseListener(onConnectListener);
 
         JPanel textFieldPanel = new JPanel();
-        GridLayout textFieldLayout = new GridLayout(3,0);
-        ipTextField1 = new JTextField(10);;
-        ipTextField2 = new JTextField(10);;
-        ipTextField3 = new JTextField(10);;
+        GridLayout textFieldLayout = new GridLayout(3,1);
+        GridLayout centerLayout = new GridLayout(2,1);
+        ipTextField1 = new JTextField(10);
+        ipTextField2 = new JTextField(10);
+        ipTextField3 = new JTextField(10);
         ipLabel1 = new JLabel();
         ipLabel2 = new JLabel();
         ipLabel3 = new JLabel();
@@ -132,7 +138,9 @@ public class introScreen {
 
         centerPanel.add(myIPAddressText,BorderLayout.NORTH);
         centerPanel.add(textFieldPanel,BorderLayout.CENTER);
-        centerPanel.setLayout(textFieldLayout);
+        centerPanel.setSize(10,10);
+        textFieldPanel.setLayout(textFieldLayout);
+        centerPanel.setLayout(centerLayout);
 
 
         southPanel.add(statusLabel,BorderLayout.NORTH);
@@ -145,53 +153,95 @@ public class introScreen {
         return mainPanel;
     }
 
-    //0, 1, 2
-    private static void connectToPeerList (Map<Integer,String> peerList, JLabel indicatorLabel) {
-        List<Integer> connectedPeers = new ArrayList<>();
-        List<Integer> failedToConnectPeers = new ArrayList<>();
 
-        for (Integer i : peerList.keySet()) {
-            network.addPeer("Peer#" + i, peerList.get(i), 8080, 1000, new PeerConnectionListener() {
-                @Override
-                public void onConnectionSuccess() {
-                    connectedPeers.add(i);
-                }
-
-                @Override
-                public void onConnectionFailure() {
-                    failedToConnectPeers.add(i);
-                }
-            });
+    private static class PeerConnectionStore {
+        interface AllConnectionsResListener {
+            void onAllConnectionsRes(List<Integer> failedList);
         }
 
-        while (connectedPeers.size() + failedToConnectPeers.size() < peerList.size()) {}
-        if (failedToConnectPeers.size() > 0 ) {
-            StringBuilder failedIndicatorString = new StringBuilder();
-            failedIndicatorString.append("Failed to connect to ");
-            for (Integer i : failedToConnectPeers) {
-                failedIndicatorString.append(i);
+        AllConnectionsResListener listener;
+        int numPeers;
+        int limit;
+        List<Integer> failedToConnectPeers;
+        void incrementNumPeers() {
+            numPeers++;
+            if (numPeers == limit) {
+                listener.onAllConnectionsRes(failedToConnectPeers);
             }
-            failedIndicatorString.append(". Please remove them.");
+        }
 
-            indicatorLabel.setText(failedIndicatorString.toString());
-        } else {
-            //Proceed ahead
-            System.out.println("Start Playing!");
+        public void setConnected (Integer i) {
+            incrementNumPeers();
+        }
+        public void setNotConnected (Integer i) {
+            failedToConnectPeers.add(i);
+            incrementNumPeers();
+        }
+        public PeerConnectionStore(int limit, AllConnectionsResListener listener){
+            this.limit = limit;
+            this.listener = listener;
+            this.numPeers = 0;
+            this.failedToConnectPeers = new ArrayList<>();
         }
     }
 
-    private static void hideTextField(int textFieldId){
+    //0, 1, 2
+    private static void connectToPeerList (Map<Integer,String> peerList, JLabel indicatorLabel,JButton connectButton) {
+
+        PeerConnectionStore connectionStore = new PeerConnectionStore(peerList.size(), new PeerConnectionStore.AllConnectionsResListener() {
+            @Override
+            public void onAllConnectionsRes(List<Integer> failedList) {
+                if (failedList.size() > 0) {
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("Failed to connect to ");
+                    for (Integer i : failedList) {
+                        sb.append(i + ",");
+                    }
+                    sb.append(".Please remove.");
+                    indicatorLabel.setText(sb.toString());
+                    reEnableButton(connectButton);
+                } else {
+                    System.out.println("Move ahead");
+                }
+            }
+        });
+
+        for (Integer i : peerList.keySet()) {
+            if (!peerList.get(i).isEmpty()) {
+                network.addPeer("Peer#" + i, peerList.get(i), 8080, 1, new PeerConnectionListener() {
+                    @Override
+                    public void onConnectionSuccess() {
+                        hideTextField(i, "Connected to : " + peerList.get(i));
+//                        connectedPeers.add(i);
+                        connectionStore.setConnected(i);
+                    }
+
+                    @Override
+                    public void onConnectionFailure() {
+//                        failedToConnectPeers.add(i);
+                        connectionStore.setNotConnected(i);
+                    }
+                });
+            }
+        }
+    }
+
+
+    private static void hideTextField(int textFieldId,String statusText){
         switch (textFieldId){
             case 0:
-                ipLabel1.setText("Connected to "+ ipTextField1.getText());
+//                ipLabel1.setText("Connected to "+ ipTextField1.getText());
+                ipLabel1.setText(statusText);
                 ipTextField1.setVisible(false);
                 break;
             case 1:
-                ipLabel2.setText("Connected to "+ ipTextField2.getText());
+//                ipLabel2.setText("Connected to "+ ipTextField2.getText());
+                ipLabel2.setText(statusText);
                 ipTextField2.setVisible(false);
                 break;
             case 2:
-                ipLabel3.setText("Connected to "+ ipTextField3.getText());
+//                ipLabel3.setText("Connected to "+ ipTextField3.getText());
+                ipLabel3.setText(statusText);
                 ipTextField3.setVisible(false);
                 break;
 
@@ -219,6 +269,12 @@ public class introScreen {
         button.setEnabled(false);
         button.removeMouseListener(onConnectListener);
     }
+
+    private static void reEnableButton(JButton button){
+        button.setEnabled(true);
+        button.addMouseListener(onConnectListener);
+    }
+
     private static JPanel getTextFieldLayout(String hintText, JTextField textField,JLabel label){
         JPanel textFieldPanel = new JPanel();
         label.setText(hintText);
@@ -227,11 +283,14 @@ public class introScreen {
         return textFieldPanel;
     }
 
-    public static java.util.List<String> getListedIpAddresses(){
-        List<String> ipList = new ArrayList<>();
-        if(!ipTextField1.getText().isEmpty())ipList.add(ipTextField1.getText());
-        if(!ipTextField2.getText().isEmpty())ipList.add(ipTextField2.getText());
-        if(!ipTextField3.getText().isEmpty())ipList.add(ipTextField3.getText());
+    public static Map<Integer, String> getListedIpAddresses(){
+        Map<Integer,String> ipList = new HashMap<>();
+        if (!ipTextField1.getText().isEmpty())
+            ipList.put(0,ipTextField1.getText());
+        if (!ipTextField2.getText().isEmpty())
+            ipList.put(1,ipTextField2.getText());
+        if (!ipTextField3.getText().isEmpty())
+            ipList.put(2,ipTextField3.getText());
         return ipList;
     }
 
