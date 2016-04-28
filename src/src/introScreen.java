@@ -85,7 +85,7 @@ public class introScreen {
                 //super.mouseClicked(e);
                 System.out.println(getListedIpAddresses().toString());
                 if(ipTextField1.isVisible()) {
-                    hideTextField(0);
+                    hideTextField(0,"Can't connect to : " + ipTextField1.getText());
                     statusLabel.setText("Connecting...");
                 }else {
                     showTextField(0);
@@ -111,6 +111,7 @@ public class introScreen {
 
         centerPanel.add(myIPAddressText,BorderLayout.NORTH);
         centerPanel.add(textFieldPanel,BorderLayout.CENTER);
+        centerPanel.setSize(10,10);
         centerPanel.setLayout(textFieldLayout);
 
 
@@ -124,18 +125,21 @@ public class introScreen {
         return mainPanel;
     }
 
-    private static void hideTextField(int textFieldId){
+    private static void hideTextField(int textFieldId,String statusText){
         switch (textFieldId){
             case 0:
-                ipLabel1.setText("Connected to "+ ipTextField1.getText());
+//                ipLabel1.setText("Connected to "+ ipTextField1.getText());
+                ipLabel1.setText(statusText);
                 ipTextField1.setVisible(false);
                 break;
             case 1:
-                ipLabel2.setText("Connected to "+ ipTextField2.getText());
-                ipTextField3.setVisible(false);
+//                ipLabel2.setText("Connected to "+ ipTextField2.getText());
+                ipLabel2.setText(statusText);
+                ipTextField2.setVisible(false);
                 break;
             case 2:
-                ipLabel3.setText("Connected to "+ ipTextField3.getText());
+//                ipLabel3.setText("Connected to "+ ipTextField3.getText());
+                ipLabel3.setText(statusText);
                 ipTextField3.setVisible(false);
                 break;
 
@@ -171,11 +175,11 @@ public class introScreen {
         return textFieldPanel;
     }
 
-    public static java.util.List<String> getListedIpAddresses(){
-        List<String> ipList = new ArrayList<>();
-        if(!ipTextField1.getText().isEmpty())ipList.add(ipTextField1.getText());
-        if(!ipTextField2.getText().isEmpty())ipList.add(ipTextField2.getText());
-        if(!ipTextField3.getText().isEmpty())ipList.add(ipTextField3.getText());
+    public static Map<Integer, String> getListedIpAddresses(){
+        Map<Integer,String> ipList = new HashMap<>();
+        ipList.put(0,ipTextField1.getText());
+        ipList.put(1,ipTextField2.getText());
+        ipList.put(2,ipTextField3.getText());
         return ipList;
     }
 
