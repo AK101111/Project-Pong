@@ -65,7 +65,7 @@ public class NetworkBase {
         }
     }
 
-    private static String getIPAddress() {
+    public static String getIPAddress() {
         try {
             InetAddress localAdd = InetAddress.getLocalHost();
             return localAdd.getHostAddress();
@@ -92,16 +92,16 @@ public class NetworkBase {
             }
         });
         System.out.println("Server started @ IP:" + getIPAddress());
-        networkBase.addPeer("ashish", "10.192.38.55", 8080, 10000, new PeerConnectionListener() {
+        networkBase.addPeer("kedia", "10.192.37.237", 8080, 10000, new PeerConnectionListener() {
             @Override
             public void onConnectionSuccess() {
-                System.out.println("Connected to Ashish");
-                networkBase.sendObjectToPeer("ashish",new TimeStamp());
+                System.out.println("Connected to kedia");
+                networkBase.sendObjectToPeer("kedia",new TimeStamp());
             }
 
             @Override
             public void onConnectionFailure() {
-                System.out.println("Failed to connect to Ashish");
+                System.out.println("Failed to connect to kedia");
             }
         });
     }

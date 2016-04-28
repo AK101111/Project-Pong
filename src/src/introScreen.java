@@ -1,16 +1,27 @@
 package src;
 
+import Networking.NetworkBase;
+
 import java.awt.*;
 import java.awt.event.*;
-import java.util.Enumeration;
+import java.lang.reflect.Array;
+import java.util.*;
+import java.util.List;
+import java.util.stream.Stream;
 import javax.swing.*;
+import javax.swing.Timer;
 import javax.swing.plaf.LayerUI;
+import javax.swing.plaf.TextUI;
 
 import static src.constants.*;
 
 // some of source taken from docs.oracle.com/javase/
 // gradient idea copied
 public class introScreen {
+    static JTextField ipTextField1,ipTextField2,ipTextField3;
+    static JLabel ipLabel1,ipLabel2,ipLabel3,statusLabel;
+    static MouseAdapter onConnectListener;
+
     public static void main(String[] args) {
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
@@ -38,6 +49,7 @@ public class introScreen {
         JPanel mainPanel = new JPanel(new BorderLayout());
         JPanel northPanel = new JPanel();
         JPanel southPanel = new JPanel();
+        JPanel centerPanel = new JPanel();
         ButtonGroup entreeGroup = new ButtonGroup();
         JRadioButton radioButton;
         northPanel.add(radioButton = new JRadioButton("Easy"));
@@ -47,27 +59,124 @@ public class introScreen {
         northPanel.add(radioButton = new JRadioButton("Insane",true));
         entreeGroup.add(radioButton);
 
-        JPanel centerPanel = new AnimatedJPanel("fireball");
+//        JPanel centerPanel = new AnimatedJPanel("fireball");
 
-        JButton orderButton = new JButton("Start");
+
+
+        GridLayout connectButtonLayout = new GridLayout(3,0);
+        JButton connectButton = new JButton("Connect");
+        statusLabel = new JLabel();
+        statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
         System.out.println(String.format("ht %d, wd%d",mainPanel.getHeight(),mainPanel.getWidth()));
         //orderButton.setLocation(WINDOW_XSIZE/2,WINDOW_YSIZE/2);
         //orderButton.setBounds(WINDOW_XSIZE/2,WINDOW_YSIZE/2,50,50);
-        orderButton.addMouseListener(new MouseAdapter() {
+
+
+        JLabel myIPAddressText = new JLabel("Your IP Address : ");
+        myIPAddressText.setHorizontalAlignment(SwingConstants.CENTER);
+        myIPAddressText.setText(myIPAddressText.getText() + NetworkBase.getIPAddress());
+        onConnectListener = new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                String[] args = {getSelectedButtonText(entreeGroup)};
-                //centerPanel.pausePanel();
-                PingPong.main(args);
+//                String[] args = {getSelectedButtonText(entreeGroup)};
+//                //centerPanel.pausePanel();
+//                PingPong.main(args);
+
                 //super.mouseClicked(e);
+                System.out.println(getListedIpAddresses().toString());
+                if(ipTextField1.isVisible()) {
+                    hideTextField(0);
+                    statusLabel.setText("Connecting...");
+                }else {
+                    showTextField(0);
+                    statusLabel.setText("");
+                }
+//                disableButton(orderButton);
             }
-        });
-        southPanel.add(orderButton);
+        };
+        connectButton.addMouseListener(onConnectListener);
+
+        JPanel textFieldPanel = new JPanel();
+        GridLayout textFieldLayout = new GridLayout(3,0);
+        ipTextField1 = new JTextField(10);;
+        ipTextField2 = new JTextField(10);;
+        ipTextField3 = new JTextField(10);;
+        ipLabel1 = new JLabel();
+        ipLabel2 = new JLabel();
+        ipLabel3 = new JLabel();
+
+        textFieldPanel.add(getTextFieldLayout("Player 2 IP Address :",ipTextField1,ipLabel1),BorderLayout.NORTH);
+        textFieldPanel.add(getTextFieldLayout("Player 3 IP Address :",ipTextField2,ipLabel2),BorderLayout.CENTER);
+        textFieldPanel.add(getTextFieldLayout("Player 4 IP Address :",ipTextField3,ipLabel3),BorderLayout.SOUTH);
+
+        centerPanel.add(myIPAddressText,BorderLayout.NORTH);
+        centerPanel.add(textFieldPanel,BorderLayout.CENTER);
+        centerPanel.setLayout(textFieldLayout);
+
+
+        southPanel.add(statusLabel,BorderLayout.NORTH);
+        southPanel.add(connectButton,BorderLayout.SOUTH);
+        southPanel.setLayout(connectButtonLayout);
         mainPanel.add(northPanel,BorderLayout.NORTH);
         mainPanel.add(centerPanel,BorderLayout.CENTER);
         mainPanel.add(southPanel,BorderLayout.SOUTH);
         //System.out.println(String.format("ht %d, wd%d",mainPanel.getHeight(),mainPanel.getWidth()));
         return mainPanel;
+    }
+
+    private static void hideTextField(int textFieldId){
+        switch (textFieldId){
+            case 0:
+                ipLabel1.setText("Connected to "+ ipTextField1.getText());
+                ipTextField1.setVisible(false);
+                break;
+            case 1:
+                ipLabel2.setText("Connected to "+ ipTextField2.getText());
+                ipTextField3.setVisible(false);
+                break;
+            case 2:
+                ipLabel3.setText("Connected to "+ ipTextField3.getText());
+                ipTextField3.setVisible(false);
+                break;
+
+        }
+    }
+    private static void showTextField(int textFieldId){
+        switch (textFieldId){
+            case 0:
+                ipLabel1.setText("Player 2 IP Address :");
+                ipTextField1.setVisible(true);
+                break;
+            case 1:
+                ipLabel2.setText("Player 3 IP Address :");
+                ipTextField3.setVisible(true);
+                break;
+            case 2:
+                ipLabel3.setText("Player 4 IP Address :");
+                ipTextField3.setVisible(true);
+                break;
+
+        }
+    }
+
+    private static void disableButton(JButton button){
+        button.setEnabled(false);
+        button.removeMouseListener(onConnectListener);
+    }
+    private static JPanel getTextFieldLayout(String hintText, JTextField textField,JLabel label){
+        JPanel textFieldPanel = new JPanel();
+        label.setText(hintText);
+        textFieldPanel.add(label,BorderLayout.WEST);
+        textFieldPanel.add(textField,BorderLayout.EAST);
+        return textFieldPanel;
+    }
+
+    public static java.util.List<String> getListedIpAddresses(){
+        List<String> ipList = new ArrayList<>();
+        if(!ipTextField1.getText().isEmpty())ipList.add(ipTextField1.getText());
+        if(!ipTextField2.getText().isEmpty())ipList.add(ipTextField2.getText());
+        if(!ipTextField3.getText().isEmpty())ipList.add(ipTextField3.getText());
+        return ipList;
     }
 
     public static String getSelectedButtonText(ButtonGroup buttonGroup) {
@@ -144,16 +253,16 @@ class SpotlightLayerUI extends LayerUI<JPanel> {
 
         if (mActive) {
             // Create a radial gradient, transparent in the middle.
-            java.awt.geom.Point2D center = new java.awt.geom.Point2D.Float(mX, mY);
-            float radius = 150;
-            float[] dist = {0.3f, 1.0f};
-            Color[] colors = {new Color(0.0f, 0.0f, 0.0f, 0.0f), Color.BLACK};
-            RadialGradientPaint p =
-                    new RadialGradientPaint(center, radius, dist, colors);
-            g2.setPaint(p);
-            g2.setComposite(AlphaComposite.getInstance(
-                    AlphaComposite.SRC_OVER, 1.0f));
-            g2.fillRect(0, 0, c.getWidth(), c.getHeight());
+//            java.awt.geom.Point2D center = new java.awt.geom.Point2D.Float(mX, mY);
+//            float radius = 150;
+//            float[] dist = {0.3f, 1.0f};
+//            Color[] colors = {new Color(0.0f, 0.0f, 0.0f, 0.0f), Color.BLACK};
+//            RadialGradientPaint p =
+//                    new RadialGradientPaint(center, radius, dist, colors);
+//            g2.setPaint(p);
+//            g2.setComposite(AlphaComposite.getInstance(
+//                    AlphaComposite.SRC_OVER, 1.0f));
+//            g2.fillRect(0, 0, c.getWidth(), c.getHeight());
         }
 
         g2.dispose();
