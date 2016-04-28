@@ -45,13 +45,11 @@ public class introScreen {
     public static void createUI() {
         JFrame f = new JFrame ("Ping Pong");
 
-        LayerUI<JPanel> layerUI = new SpotlightLayerUI();
+//        LayerUI<JPanel> layerUI = new SpotlightLayerUI();
         JPanel panel = createPanel();
-        JLayer<JPanel> jlayer = new JLayer<JPanel>(panel, layerUI);
+        JLayer<JPanel> jlayer = new JLayer<JPanel>(panel);
 
         f.add (jlayer);
-
-//        f.setSize(WINDOW_XSIZE,WINDOW_YSIZE);
         f.pack();
         f.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
         f.setLocationRelativeTo (null);
@@ -63,7 +61,7 @@ public class introScreen {
         mainPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
         JPanel northPanel = new JPanel();
         JPanel southPanel = new JPanel();
-        southPanel.setBorder(new EmptyBorder(20, 0, 0, 0));
+        southPanel.setBorder(new EmptyBorder(20, 50, 0, 50));
         JPanel centerPanel = new JPanel();
         centerPanel.setBorder(new EmptyBorder(20, 0, 0, 0));
         ButtonGroup entreeGroup = new ButtonGroup();
@@ -77,11 +75,10 @@ public class introScreen {
 
 //        JPanel centerPanel = new AnimatedJPanel("fireball");
 
-
-
         GridLayout connectButtonLayout = new GridLayout(2,0);
         connectButtonLayout.setVgap(10);
         JButton connectButton = new JButton("Connect");
+        connectButton.setPreferredSize(new Dimension(50, 30));
         statusLabel = new JLabel();
         statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
         System.out.println(String.format("ht %d, wd%d",mainPanel.getHeight(),mainPanel.getWidth()));
@@ -123,8 +120,8 @@ public class introScreen {
         connectButton.addMouseListener(onConnectListener);
 
         JPanel textFieldPanel = new JPanel();
-        GridLayout textFieldLayout = new GridLayout(3,1);
-        GridLayout centerLayout = new GridLayout(2,1);
+        GridLayout textFieldLayout = new GridLayout(3,0);
+        GridLayout centerLayout = new GridLayout(2,0);
         ipTextField1 = new JTextField(10);
         ipTextField2 = new JTextField(10);
         ipTextField3 = new JTextField(10);
@@ -368,16 +365,16 @@ class SpotlightLayerUI extends LayerUI<JPanel> {
 
         if (mActive) {
             // Create a radial gradient, transparent in the middle.
-//            java.awt.geom.Point2D center = new java.awt.geom.Point2D.Float(mX, mY);
-//            float radius = 150;
-//            float[] dist = {0.3f, 1.0f};
-//            Color[] colors = {new Color(0.0f, 0.0f, 0.0f, 0.0f), Color.BLACK};
-//            RadialGradientPaint p =
-//                    new RadialGradientPaint(center, radius, dist, colors);
-//            g2.setPaint(p);
-//            g2.setComposite(AlphaComposite.getInstance(
-//                    AlphaComposite.SRC_OVER, 1.0f));
-//            g2.fillRect(0, 0, c.getWidth(), c.getHeight());
+            java.awt.geom.Point2D center = new java.awt.geom.Point2D.Float(mX, mY);
+            float radius = 150;
+            float[] dist = {0.3f, 1.0f};
+            Color[] colors = {new Color(0.0f, 0.0f, 0.0f, 0.0f), Color.BLACK};
+            RadialGradientPaint p =
+                    new RadialGradientPaint(center, radius, dist, colors);
+            g2.setPaint(p);
+            g2.setComposite(AlphaComposite.getInstance(
+                    AlphaComposite.SRC_OVER, 1.0f));
+            g2.fillRect(0, 0, c.getWidth(), c.getHeight());
         }
 
         g2.dispose();
