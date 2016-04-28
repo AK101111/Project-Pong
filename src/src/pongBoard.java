@@ -12,10 +12,7 @@ import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-<<<<<<< HEAD
-=======
 import java.util.ArrayList;
->>>>>>> master
 
 import static src.Paddle.paddleType.HORIZONTAL;
 import static src.Paddle.paddleType.VERTICAL;
@@ -76,10 +73,6 @@ public class pongBoard extends JPanel implements ActionListener, KeyListener, Ab
         setFocusable(true);
         setBoard(app);
         this.dashboard = new Dashboard(4,app);
-    }
-
-    public Dashboard getDashboard() {
-        return this.dashboard;
     }
 
     public Dashboard getDashboard() {

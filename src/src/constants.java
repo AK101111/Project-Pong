@@ -21,7 +21,7 @@ public final class constants {
     public static final int[] scorewidth = new int[]{200,370,200,30};
     public static final int WINDOW_XSIZE = 300;
     public static final int WINDOW_YSIZE = 300;
-    public static final String IMAGES_PATH = "/Users/arnavkansal/Desktop/git/Project-Pong/src/res/img/";
+    public static final String IMAGES_PATH = "src/res/img/";
     public static final int PHOTO_DELAY = 50;
     public static final int N_PHOTOS = 4;
     public static final int[] DUMBNESS = {50,20,0};
