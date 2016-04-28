@@ -46,25 +46,25 @@ public class Ball {
         switch (paddleHit()) {
             case 0:
                 yspeed = -yspeed;
-                if(Players[0].getxchange()+xspeed>=-1 && Players[0].getxchange()+xspeed<=1) xspeed += Players[0].getxchange();
+                //if(Players[0].getxchange()+xspeed>=-1 && Players[0].getxchange()+xspeed<=1) xspeed += Players[0].getxchange();
                 // Player0 update
                 lasthit = 0;
                 break;
             case 1:
                 xspeed = -xspeed;
-                if(Players[1].getychange()+yspeed>=-1 && Players[1].getychange()+yspeed<=1) yspeed += Players[1].getychange();
+                //if(Players[1].getychange()+yspeed>=-1 && Players[1].getychange()+yspeed<=1) yspeed += Players[1].getychange();
                 // Player1 update
                 lasthit = 1;
                 break;
             case 2:
                 yspeed = -yspeed;
-                if(Players[2].getxchange()+xspeed>=-1 && Players[2].getxchange()+xspeed<=1) xspeed += Players[2].getxchange();
+                //if(Players[2].getxchange()+xspeed>=-1 && Players[2].getxchange()+xspeed<=1) xspeed += Players[2].getxchange();
                 // Player2 update
                 lasthit = 2;
                 break;
             case 3:
                 xspeed = -xspeed;
-                if(Players[3].getychange()+yspeed>=-1 && Players[3].getychange()+yspeed<=1) yspeed += Players[3].getychange();
+                //if(Players[3].getychange()+yspeed>=-1 && Players[3].getychange()+yspeed<=1) yspeed += Players[3].getychange();
                 // Player3 update
                 lasthit = 3;
                 break;

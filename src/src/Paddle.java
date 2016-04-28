@@ -1,5 +1,7 @@
 package src;
 
+import integration.AbstractGameUI;
+
 import java.awt.*;
 import java.util.Random;
 
@@ -22,6 +24,9 @@ public class Paddle {
     private int direction;
     private boolean setOutside;
     private boolean dead;// = false;
+    private AbstractGameUI.PaddleMoveListener paddleMoveListener;
+
+
 
     public int getxchange() {
         return xchange;
@@ -54,6 +59,7 @@ public class Paddle {
         direction = rn.nextInt(2);
         this.dead = false;
         this.tage = tage;
+        //
     }
 
     public void setdead(boolean dead){
@@ -76,7 +82,7 @@ public class Paddle {
     }
 
     public boolean setxpos(int deltaxpos){
-        if(this.xpos +deltaxpos + WD < SCREEN_WIDTH){
+        if(this.xpos +deltaxpos + WD < SCREEN_WIDTH && this.xpos +deltaxpos >0){
             this.xpos += deltaxpos;
             this.setOutside = true;
             return true;
@@ -85,7 +91,7 @@ public class Paddle {
     }
 
     public boolean setypos(int deltaypos){
-        if(this.ypos + deltaypos + WD < SCREEN_HEIGHT){
+        if(this.ypos + deltaypos + WD < SCREEN_HEIGHT && this.ypos+deltaypos>0){
             this.ypos += deltaypos;
             this.setOutside = true;
             return true;
@@ -94,6 +100,7 @@ public class Paddle {
     }
 
     public void updateLocation() {
+        this.paddleMoveListener = runningapp.getBoard().getPaddleMoveListener();
         if(this.ptype == AI) {
             findposAI();
         }else if(this.ptype == OTHER){
@@ -103,8 +110,10 @@ public class Paddle {
     }
 
     private void locUpdate() {
-        if(this.setOutside==true){
-            runningapp.getBoard().setOnInternalPaddleMoveListener(runningapp.getBoard().getPaddleMoveListener());
+        if(this.setOutside==false){
+            if((xchange!=0) || (ychange!=0)){
+                this.paddleMoveListener.handlePaddleMove(tage,xchange,ychange);
+            }
         }
         if (this.type == HORIZONTAL) {
             if (xpos + xchange + width < runningapp.getWidth() && xpos + xchange > 0) xpos += xchange;
@@ -114,6 +123,7 @@ public class Paddle {
     }
 
     public void findposAI() {
+        this.setOutside = false;
         switch (runningapp.difficulty) {
             case 0:
                 if(this.type == HORIZONTAL){
@@ -255,6 +265,7 @@ public class Paddle {
             if(keyCode == VK_UP || keyCode == VK_DOWN)
                 ychange = 0;
         }
+        this.setOutside = false;
     }
 
     public void keypress(int keyCode) {
@@ -263,12 +274,15 @@ public class Paddle {
                 ychange = 1;
             if (keyCode == VK_DOWN)
                 ychange = -1;
+            //
         } else {
             if (keyCode == VK_LEFT)
                 xchange = -1;
             if (keyCode == VK_RIGHT)
                 xchange = 1;
+            //
         }
+        this.setOutside = false;
     }
 
     public utility.pair getxCollisionBounds(int pos){

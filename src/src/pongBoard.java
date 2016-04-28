@@ -12,6 +12,10 @@ import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+<<<<<<< HEAD
+=======
+import java.util.ArrayList;
+>>>>>>> master
 
 import static src.Paddle.paddleType.HORIZONTAL;
 import static src.Paddle.paddleType.VERTICAL;
@@ -31,7 +35,11 @@ public class pongBoard extends JPanel implements ActionListener, KeyListener, Ab
     private int activePlayer;
     private Dashboard dashboard;
     //private int otherPlayers[];
-    private int computerPlayers[];
+    private ArrayList<Integer> computerPlayers;
+    private ArrayList<Integer> otherPlayers;
+    private ArrayList<Integer> keyboardPlayers;
+    //private  int computerPlayers[];
+    //private int otherPlayers[];
     private int speed;//=INIT_SPEED;
     private BufferedImage img;
     private PaddleMoveListener paddleMoveListener;
@@ -47,22 +55,31 @@ public class pongBoard extends JPanel implements ActionListener, KeyListener, Ab
     public pongBoard(PingPong app, int activePlayer, int[] computerPlayers){//, int[] otherPlayers)
         this.runningApp = app;
         Players = new Paddle[MAXPLAYERS];
-        this.activePlayer = activePlayer;
-
+        //this.activePlayer = activePlayer;
         this.speed = INIT_SPEED[runningApp.difficulty];
         //this.otherPlayers = otherPlayers;
-        this.computerPlayers = computerPlayers;
+        //this.computerPlayers = computerPlayers;
         try {
             img = ImageIO.read(new File(IMAGES_PATH+"2"+".JPG"));
         } catch (IOException e) {
             e.printStackTrace();
         }
-        setBoard(app);
-        this.dashboard = new Dashboard(4,app);
+        this.computerPlayers = new ArrayList<>();
+        this.otherPlayers = new ArrayList<>();
+        this.keyboardPlayers = new ArrayList<>();
+    }
+
+    public void startpongBoard(PingPong app){
         Timer timer = new Timer(speed, this);
         timer.start();
         addKeyListener(this);
         setFocusable(true);
+        setBoard(app);
+        this.dashboard = new Dashboard(4,app);
+    }
+
+    public Dashboard getDashboard() {
+        return this.dashboard;
     }
 
     public Dashboard getDashboard() {
@@ -73,15 +90,15 @@ public class pongBoard extends JPanel implements ActionListener, KeyListener, Ab
         // set Ball
         ball = new Ball(app);
         // set AI players
-        for(int index: computerPlayers){
-            Players[index] = new Paddle(app, xinit[index], yinit[index], Paddle.paddleType.values()[index%2], AI,index);
-        }
+//        for(int index: computerPlayers){
+//            Players[index] = new Paddle(app, xinit[index], yinit[index], Paddle.paddleType.values()[index%2], AI,index);
+//        }
         // set other network players
 //        for(int index: otherPlayers){
-//            Players[index] = new Paddle(app, xinit[index], yinit[index], Paddle.paddleType.values()[index%2], OTHER);
+//            Players[index] = new Paddle(app, xinit[index], yinit[index], Paddle.paddleType.values()[index%2], OTHER,index);
 //        }
         // set game player
-        Players[activePlayer] = new Paddle(app, xinit[activePlayer], yinit[activePlayer], Paddle.paddleType.values()[activePlayer%2], HUMAN,activePlayer);
+        //Players[activePlayer] = new Paddle(app, xinit[activePlayer], yinit[activePlayer], Paddle.paddleType.values()[activePlayer%2], HUMAN,activePlayer);
     }
 
     @Override
@@ -133,6 +150,25 @@ public class pongBoard extends JPanel implements ActionListener, KeyListener, Ab
     @Override
     public void setOnInternalPaddleMoveListener(PaddleMoveListener paddleMoveListener) {
         this.paddleMoveListener = paddleMoveListener;
+        // line
+    }
+
+    @Override
+    public void setPaddleAsKeyboardControlled(int paddleId, boolean owner) {
+        if(owner){
+            this.activePlayer = paddleId;
+            this.Players[paddleId] = new Paddle(this.runningApp, xinit[activePlayer], yinit[activePlayer], Paddle.paddleType.values()[activePlayer%2], HUMAN,activePlayer);
+        }
+        else{
+            this.keyboardPlayers.add(paddleId);
+            this.Players[paddleId] = new Paddle(this.runningApp, xinit[paddleId], yinit[paddleId], Paddle.paddleType.values()[paddleId%2], OTHER,paddleId);
+        }
+    }
+
+    @Override
+    public void setPaddleAsAiControlled(int paddleId) {
+        this.computerPlayers.add(paddleId);
+        this.Players[paddleId] = new Paddle(this.runningApp, xinit[paddleId], yinit[paddleId], Paddle.paddleType.values()[paddleId%2], AI,paddleId);
     }
 
     public PaddleMoveListener getPaddleMoveListener(){
