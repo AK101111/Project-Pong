@@ -49,6 +49,7 @@ public class IntroScreen {
                     int receiverName = jsonObject.getInt("receiverName");
                     myName = receiverName;
                     if (!network.isPeer(Integer.toString(senderName))) {
+                        System.out.println("[connectionRequest start] got connection request. senderIP=" + senderIP + ", senderName=" + senderName);
                         network.addPeer(Integer.toString(senderName), senderIP, 8080, 100, new PeerConnectionListener() {
                             @Override
                             public void onConnectionSuccess() {
@@ -56,6 +57,9 @@ public class IntroScreen {
 //                                hideTextField(getUnfilledConnectionLabel(),"Connected to : " + senderIP);
 //                                connectedIPs.add(senderIP);
                                 displayConnectedToPeer(getUnfilledConnectionLabel(),senderIP,senderName,false);
+                                System.out.println("[connectionRequest end] connected to (senderIP=" + senderIP + ", senderName=" + senderName + "). New peerNames :" + network.connectedPeersNames());
+
+
                             }
     //
                             @Override
@@ -81,6 +85,7 @@ public class IntroScreen {
                     network.addMultiplePeers(peersMap, 10, new NetworkBase.MultiplePeerConnectionListener() {
                         @Override
                         public void onAllConnectionsRes(boolean allSuccess, List<Integer> failedPeerList) {
+                            System.out.println("PeerList Connection result : allSuccess="+allSuccess + ", failedPeerList="+failedPeerList);
                             if (allSuccess) {
                                 statusLabel.setText("Connected to all.");
                                 myIPAddressText.setText(myIPAddressText.getText() +  " - Ready!");
@@ -98,8 +103,10 @@ public class IntroScreen {
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
+                            System.out.println("[Rx connectedToAll 'ready' start] senderName=" +senderName + ", peerNames="+network.connectedPeersNames());
                             while (!network.isPeer(Integer.toString(senderName))) {}
-                            setConnectionReadyLabel(senderIP);
+                            System.out.println("[Rx connectedToAll 'ready' end] peerNames="+network.connectedPeersNames());
+                            while(!setConnectionReadyLabel(senderIP)) {}
                         }
                     }).start();
                     isPeerReady.replace(jsonObject.getString("senderIP"),true);
@@ -198,14 +205,15 @@ public class IntroScreen {
         return true;
     }
 
-    private static void setConnectionReadyLabel(String ip){
+    private static boolean setConnectionReadyLabel(String ip){
         JLabel[] labels = {ipLabel1,ipLabel2,ipLabel3};
         for(JLabel label : labels){
             if(label.getText().contains(ip)){
                 label.setText(label.getText() + " - Ready!");
-                break;
+                return true;
             }
         }
+        return false;
     }
 
     public static void main(String[] args) {

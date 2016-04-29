@@ -143,6 +143,9 @@ public class NetworkBase {
     public boolean isPeer (String name) {
         return peerSockets.containsKey(name);
     }
+    public Set<String> connectedPeersNames () {
+        return peerSockets.keySet();
+    }
 
     public void sendToPeer (String peerName, String msg) {
         Socket peerSocket = peerSockets.get(peerName);
