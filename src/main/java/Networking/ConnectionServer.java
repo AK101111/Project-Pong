@@ -53,10 +53,23 @@ public class ConnectionServer implements Runnable {
     private void processClientRequest(Socket clientSocket) throws IOException{
         InputStream in = clientSocket.getInputStream();
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
-        String receiveString = bufferedReader.readLine();
-        if (receiveListener != null) {
-            receiveListener.onReceive(receiveString);
-        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    String receiveString = bufferedReader.readLine();
+                    while (receiveString != null) {
+                        if (receiveListener != null) {
+                            receiveListener.onReceive(receiveString);
+                        }
+                        receiveString = bufferedReader.readLine();
+                    }
+                    System.out.println("Disconnected peer");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
 }

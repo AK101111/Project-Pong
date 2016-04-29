@@ -25,74 +25,11 @@ public class IntroScreen {
     static JLabel ipLabel1,ipLabel2,ipLabel3,statusLabel;
     static JLabel myIPAddressText;
     static MouseAdapter onConnectListener;
+    static JButton connectButton;
 
     static Map<Integer,String> peersList;
     static int myName;
     static NetworkBase network;
-
-//    public static class ConnectionRequest implements Serializable {
-//        public String senderIP;
-//        public int senderName;
-//        public ConnectionRequest (String ip, int name) {
-//            senderIP = ip;
-//            senderName = name;
-//        }
-//        public String toString() {
-//            return String.format("ConnectionRequest[senderName:%d,senderIP:%s]",senderName,senderIP);
-//        }
-//    }
-//    public static class PeerList implements Serializable {
-//        public Map<Integer,String> peerIpAndNames;
-//        public PeerList(Map<Integer,String> peerIpAndNames, String myIp, int myName) {
-//            peerIpAndNames.put(myName,myIp);
-//            this.peerIpAndNames = peerIpAndNames;
-//        }
-//        public String toString() {
-//            return String.format("PeeList[map:%s]",peerIpAndNames);
-//        }
-//    }
-
-//    static ReceiveObjectListener receiveObjectListener = new ReceiveObjectListener() {
-//        @Override
-//        public void onReceive(Object obj) {
-//            System.out.println("Received object " + obj);
-//            if (obj instanceof ConnectionRequest) {
-//                System.out.println("Got connection request object");
-//                ConnectionRequest connectionRequest = (ConnectionRequest) obj;
-//                if (!network.isPeer(connectionRequest.senderIP)) {
-//                    network.addPeer(Integer.toString(connectionRequest.senderName), connectionRequest.senderIP, 8080, 100, new PeerConnectionListener() {
-//                        @Override
-//                        public void onConnectionSuccess() {
-//                            //connected
-//                            hideTextField(getUnfilledConnectionLabel(),"Connected to : " + connectionRequest.senderIP);
-//                        }
-//
-//                        @Override
-//                        public void onConnectionFailure() {
-//                            //Failed to connect
-//                        }
-//                    });
-//                }
-//            } else if (obj instanceof PeerList) {
-//                System.out.println("Got PeerList object");
-//                PeerList peerList = (PeerList) obj;
-//                for (Map.Entry<Integer,String> entry : peerList.peerIpAndNames.entrySet()) {
-//                    if (network.isPeer(entry.getValue()) || NetworkBase.getIPAddress().equals(entry.getValue()))
-//                        peerList.peerIpAndNames.remove(entry.getKey());
-//                    network.addMultiplePeers(peerList.peerIpAndNames, 10, new NetworkBase.MultiplePeerConnectionListener() {
-//                        @Override
-//                        public void onAllConnectionsRes(boolean allSuccess, List<Integer> failedPeerList) {
-//                            if (allSuccess) {
-//                                statusLabel.setText("Connected to all.");
-//                                //connected to all
-//                            }
-//                        }
-//                    });
-//                }
-//            }
-//            //TODO
-//        }
-//    };
 
     static ReceiveListener receiveListener = new ReceiveListener() {
         @Override
@@ -121,20 +58,28 @@ public class IntroScreen {
                         });
                     }
                 } else if (type.equals("peerList")) {
-                    Map<Integer,String> peerList = (Map) jsonObject.get("peers");
-                    for (Map.Entry<Integer,String> entry : peerList.entrySet()) {
-                        if (network.isPeer(entry.getValue()) || NetworkBase.getIPAddress().equals(entry.getValue()))
-                            peerList.remove(entry.getKey());
-                        network.addMultiplePeers(peerList, 10, new NetworkBase.MultiplePeerConnectionListener() {
-                            @Override
-                            public void onAllConnectionsRes(boolean allSuccess, List<Integer> failedPeerList) {
-                                if (allSuccess) {
-                                    statusLabel.setText("Connected to all.");
-                                    //connected to all
-                                }
-                            }
-                        });
+                    Map<Integer,String> peersMap = new HashMap<>();
+                    JSONObject peers = jsonObject.getJSONObject("peers");
+                    Iterator<String> keys = peers.keys();
+                    while (keys.hasNext()) {
+                        String key = keys.next();
+                        int name = Integer.valueOf(key);
+                        String ip = peers.getString(key);
+                        if (!network.isPeer(ip) && !NetworkBase.getIPAddress().equals(ip))
+                            peersMap.put(name,ip);
+
                     }
+                    network.addMultiplePeers(peersMap, 10, new NetworkBase.MultiplePeerConnectionListener() {
+                        @Override
+                        public void onAllConnectionsRes(boolean allSuccess, List<Integer> failedPeerList) {
+                            if (allSuccess) {
+                                statusLabel.setText("Connected to all.");
+                                disableButton(connectButton);
+                                //connected to all
+                            }
+                        }
+                    });
+
                 }
             } catch (JSONException ex) {
                 ex.printStackTrace();
@@ -187,7 +132,7 @@ public class IntroScreen {
 
         GridLayout connectButtonLayout = new GridLayout(2,0);
         connectButtonLayout.setVgap(10);
-        final JButton connectButton = new JButton("Connect");
+        connectButton = new JButton("Connect");
         connectButton.setPreferredSize(new Dimension(50, 30));
         statusLabel = new JLabel();
         statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
