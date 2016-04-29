@@ -30,6 +30,7 @@ public class IntroScreen {
     static int myName;
     static NetworkBase network;
     static ButtonGroup entreeGroup;
+    static Map<String,Boolean> isPeerReady;
 
     static Ball.BallVelocity ballVelocity;
 
@@ -67,8 +68,10 @@ public class IntroScreen {
                         String key = keys.next();
                         int name = Integer.valueOf(key);
                         String ip = peers.getString(key);
-                        if (!network.isPeer(ip) && !NetworkBase.getIPAddress().equals(ip))
-                            peersMap.put(name,ip);
+                        if (!network.isPeer(ip) && !NetworkBase.getIPAddress().equals(ip)) {
+                            peersMap.put(name, ip);
+                            isPeerReady.put("ip",false);
+                        }
 
                     }
                     network.addMultiplePeers(peersMap, 10, new NetworkBase.MultiplePeerConnectionListener() {
@@ -86,6 +89,7 @@ public class IntroScreen {
                 }
                 else if(type.equals("connectedToAll")){
                     setConnectionReadyLabel(jsonObject.getString("senderIP"));
+                    isPeerReady.replace(jsonObject.getString("senderIP"),true);
                     if(isAllConnectionReady()) {
                         if(myName == 0)
                             setActionButton(true, "Play", startGameListener);
@@ -168,10 +172,13 @@ public class IntroScreen {
     }
 
     private static boolean isAllConnectionReady(){
-        JLabel[] labels = {ipLabel1,ipLabel2,ipLabel3,myIPAddressText};
-        for(JLabel label : labels){
-            if(!label.getText().isEmpty() && !label.getText().contains(" - Ready!")){
-                return false;
+        if(isPeerReady == null)
+            return false;
+        else{
+            for(String key : isPeerReady.keySet()){
+                if(!isPeerReady.get(key)){
+                   return false;
+                }
             }
         }
         return true;
@@ -375,6 +382,8 @@ public class IntroScreen {
                     System.out.println("Move ahead");
 
                     myIPAddressText.setText(myIPAddressText.getText() +  " - Ready!");
+                    if(isPeerReady != null && isPeerReady.containsKey(NetworkBase.getIPAddress()))
+                        isPeerReady.replace(NetworkBase.getIPAddress(),true);
 //                    network.sendToAllPeers(new PeerList(peerList,NetworkBase.getIPAddress(),myName));
                     network.sendJSONToAll(getPeerListRequestObject(peerList,NetworkBase.getIPAddress(),myName));
                     network.sendJSONToAll(getConnectedToAllJson());
