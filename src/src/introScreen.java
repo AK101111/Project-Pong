@@ -39,11 +39,18 @@ public class introScreen {
             senderIP = ip;
             senderName = name;
         }
+        public String toString() {
+            return String.format("ConnectionRequest[senderName:%d,senderIP:%s]",senderName,senderIP);
+        }
     }
     public static class PeerList implements Serializable {
         public Map<Integer,String> peerIpAndNames;
-        public PeerList(Map<Integer,String> peerIpAndNames) {
+        public PeerList(Map<Integer,String> peerIpAndNames, String myIp, int myName) {
+            peerIpAndNames.put(myName,myIp);
             this.peerIpAndNames = peerIpAndNames;
+        }
+        public String toString() {
+            return String.format("PeeList[map:%s]",peerIpAndNames);
         }
     }
 
@@ -52,6 +59,7 @@ public class introScreen {
         public void onReceive(Object obj) {
             System.out.println("Received object " + obj);
             if (obj instanceof ConnectionRequest) {
+                System.out.println("Got connection request object");
                 ConnectionRequest connectionRequest = (ConnectionRequest) obj;
                 if (!network.isPeer(connectionRequest.senderIP)) {
                     network.addPeer(Integer.toString(connectionRequest.senderName), connectionRequest.senderIP, 8080, 100, new PeerConnectionListener() {
@@ -68,6 +76,7 @@ public class introScreen {
                     });
                 }
             } else if (obj instanceof PeerList) {
+                System.out.println("Got PeerList object");
                 PeerList peerList = (PeerList) obj;
                 for (Map.Entry<Integer,String> entry : peerList.peerIpAndNames.entrySet()) {
                     if (network.isPeer(entry.getValue()) || NetworkBase.getIPAddress().equals(entry.getValue()))
@@ -259,7 +268,7 @@ public class introScreen {
                     System.out.println("Move ahead");
 
                     myIPAddressText.setText(myIPAddressText.getText() +  " - Ready!");
-                    network.sendToAllPeers(new PeerList(peerList));
+                    network.sendToAllPeers(new PeerList(peerList,NetworkBase.getIPAddress(),myName));
                 }
             }
         });
@@ -272,8 +281,8 @@ public class introScreen {
                     public void onConnectionSuccess() {
                         hideTextField(i-1, "Connected to : " + peerList.get(i));
 //                        connectedPeers.add(i);
-                        connectionStore.setConnected(i);
                         network.sendObjectToPeer(Integer.toString(i),new ConnectionRequest(NetworkBase.getIPAddress(),myName));
+                        connectionStore.setConnected(i);
                     }
 
                     @Override
