@@ -157,14 +157,12 @@ public class IntroScreen {
                 @Override
                 public void run() {
                     if(myName == 0) {
+                        statusLabel.setText("Starting game...");
                         sendBallVelocity();
-                        for (int i = 1; i != 4; i++) {
-                            statusLabel.setText(i + "");
-                        }
                         startGame();
                     }
                 }
-            });
+            }).start();
         }
     };
 
