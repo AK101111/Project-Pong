@@ -26,7 +26,7 @@ public class IntroScreen {
     static JLabel myIPAddressText;
     static MouseAdapter onConnectListener;
     static Map<Integer,String> peersList;
-    static JButton actionButton;
+    static JButton actionButton = new JButton();
     static int myName;
     static NetworkBase network;
     static ButtonGroup entreeGroup;
@@ -92,9 +92,10 @@ public class IntroScreen {
                     setConnectionReadyLabel(jsonObject.getString("senderIP"));
                     isPeerReady.replace(jsonObject.getString("senderIP"),true);
                     if(isAllConnectionReady()) {
-                        if(myName == 0)
+                        if(myName == 0) {
+                            actionButton.removeMouseListener(onConnectListener);
                             setActionButton(true, "Play", startGameListener);
-                        else
+                        }else
                             statusLabel.setText("Waiting for game to commence...");
                     }
                 }else if(type.equals("ballVelocity") && myName != 0){
@@ -166,7 +167,7 @@ public class IntroScreen {
 
 
     private static void setActionButton(boolean enabled, String label, MouseAdapter mouseAdapter){
-        actionButton = new JButton(label);
+        actionButton.setText(label);
         actionButton.setPreferredSize(new Dimension(50, 30));
         actionButton.addMouseListener(mouseAdapter);
         actionButton.setEnabled(enabled);
