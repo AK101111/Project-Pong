@@ -7,15 +7,12 @@ import Networking.ReceiveObjectListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.Serializable;
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.List;
-import java.util.stream.Stream;
 import javax.swing.*;
 import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.LayerUI;
-import javax.swing.plaf.TextUI;
 
 import static src.constants.*;
 
@@ -25,10 +22,12 @@ import static src.constants.*;
 public class introScreen {
     static JTextField ipTextField1,ipTextField2,ipTextField3;
     static JLabel ipLabel1,ipLabel2,ipLabel3,statusLabel;
+    static JLabel myIPAddressText;
     static MouseAdapter onConnectListener;
-
+    static JButton actionButton;
     static int myName;
     static NetworkBase network;
+    static ButtonGroup entreeGroup;
 
     public static class ConnectionRequest implements Serializable {
         public String senderIP;
@@ -36,6 +35,21 @@ public class introScreen {
         public ConnectionRequest (String ip, int name) {
             senderIP = ip;
             senderName = name;
+        }
+    }
+
+    public static class MessageObject implements Serializable{
+        public String messageType;
+        public String message;
+        public String senderIP;
+        public int senderName;
+        public MessageObject(String msgType, String msg){
+            this.messageType = msgType;
+            this.message = msg;
+        }
+        public void setSenderDetails(String ip, int name){
+            this.senderIP = ip;
+            this.senderName = name;
         }
     }
 
@@ -50,7 +64,8 @@ public class introScreen {
                         @Override
                         public void onConnectionSuccess() {
                             //connected
-                            hideTextField(getUnfilledConnectionLabel(),"Connected to : " + connectionRequest.senderIP);
+                            int name = connectionRequest.senderName + 1;
+                            hideTextField(getUnfilledConnectionLabel(),"Connected to " + name + " (" + connectionRequest.senderIP + ")");
                         }
 
                         @Override
@@ -60,9 +75,55 @@ public class introScreen {
                     });
                 }
             }
+            else if(obj instanceof MessageObject){
+                MessageObject messageObject = (MessageObject) obj;
+                if(messageObject.messageType.equals("connection") && messageObject.message.equals("connectedToAll")){
+                    setConnectionReadyLabel(messageObject.senderIP);
+                    if(isAllConnectionReady())
+                        setActionButton(true,"Play",startGameListener);
+                }
+            }
             //TODO
         }
     };
+
+    static MouseAdapter startGameListener = new MouseAdapter() {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            super.mouseClicked(e);
+            String[] args = {Integer.toString(getSelectedButtonPosition(entreeGroup))};
+            PingPong.main(args);
+        }
+    };
+
+
+
+    private static void setActionButton(boolean enabled, String label, MouseAdapter mouseAdapter){
+        actionButton = new JButton(label);
+        actionButton.setPreferredSize(new Dimension(50, 30));
+        actionButton.addMouseListener(mouseAdapter);
+        actionButton.setEnabled(enabled);
+    }
+
+    private static boolean isAllConnectionReady(){
+        JLabel[] labels = {ipLabel1,ipLabel2,ipLabel3,myIPAddressText};
+        for(JLabel label : labels){
+            if(!label.getText().contains(" - Ready!")){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static void setConnectionReadyLabel(String ip){
+        JLabel[] labels = {ipLabel1,ipLabel2,ipLabel3};
+        for(JLabel label : labels){
+            if(label.getText().contains(ip)){
+                label.setText(label.getText() + " - Ready!");
+                break;
+            }
+        }
+    }
 
     public static void main(String[] args) {
         network = new NetworkBase(8080,receiveObjectListener);
@@ -96,7 +157,7 @@ public class introScreen {
         southPanel.setBorder(new EmptyBorder(20, 50, 0, 50));
         JPanel centerPanel = new JPanel();
         centerPanel.setBorder(new EmptyBorder(20, 0, 0, 0));
-        ButtonGroup entreeGroup = new ButtonGroup();
+        entreeGroup = new ButtonGroup();
         JRadioButton radioButton;
         northPanel.add(radioButton = new JRadioButton("Easy"));
         entreeGroup.add(radioButton);
@@ -109,8 +170,7 @@ public class introScreen {
 
         GridLayout connectButtonLayout = new GridLayout(2,0);
         connectButtonLayout.setVgap(10);
-        JButton connectButton = new JButton("Connect");
-        connectButton.setPreferredSize(new Dimension(50, 30));
+
         statusLabel = new JLabel();
         statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
         System.out.println(String.format("ht %d, wd%d",mainPanel.getHeight(),mainPanel.getWidth()));
@@ -118,7 +178,7 @@ public class introScreen {
         //orderButton.setBounds(WINDOW_XSIZE/2,WINDOW_YSIZE/2,50,50);
 
 
-        JLabel myIPAddressText = new JLabel("Your IP Address : ");
+        myIPAddressText = new JLabel("Your IP Address : ");
         myIPAddressText.setHorizontalAlignment(SwingConstants.CENTER);
         myIPAddressText.setText(myIPAddressText.getText() + NetworkBase.getIPAddress());
         onConnectListener = new MouseAdapter() {
@@ -145,11 +205,12 @@ public class introScreen {
 //                    showTextField(0);
 //                    statusLabel.setText("");
 //                }
-                disableButton(connectButton);
-                connectToPeerList(filledIps,statusLabel,connectButton);
+                disableButton(actionButton);
+                connectToPeerList(filledIps,statusLabel, actionButton);
             }
         };
-        connectButton.addMouseListener(onConnectListener);
+
+        setActionButton(true,"Connect",onConnectListener);
 
         JPanel textFieldPanel = new JPanel();
         GridLayout textFieldLayout = new GridLayout(3,0);
@@ -173,7 +234,7 @@ public class introScreen {
 
 
         southPanel.add(statusLabel,BorderLayout.NORTH);
-        southPanel.add(connectButton,BorderLayout.SOUTH);
+        southPanel.add(actionButton,BorderLayout.SOUTH);
         southPanel.setLayout(connectButtonLayout);
         mainPanel.add(northPanel,BorderLayout.NORTH);
         mainPanel.add(centerPanel,BorderLayout.CENTER);
@@ -242,7 +303,8 @@ public class introScreen {
                 network.addPeer(Integer.toString(i), peerList.get(i), 8080, 1, new PeerConnectionListener() {
                     @Override
                     public void onConnectionSuccess() {
-                        hideTextField(i-1, "Connected to : " + peerList.get(i));
+                        int name = i + 1;
+                        hideTextField(i-1, "Connected to " + name + " (" + peerList.get(i) + ")");
 //                        connectedPeers.add(i);
                         connectionStore.setConnected(i);
                         network.sendObjectToPeer(Integer.toString(i),new ConnectionRequest(NetworkBase.getIPAddress(),myName));
