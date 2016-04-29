@@ -1,12 +1,12 @@
-package main.java.UI;
+package UI;
 
-import main.java.integration.AbstractGameUI;
+import integration.AbstractGameUI;
 
 import javax.swing.*;
 import java.awt.*;
 
 import static java.lang.Integer.parseInt;
-import static main.java.UI.Constants.*;
+import static UI.Constants.*;
 
 /**
  * Created by arnavkansal on 09/04/16.

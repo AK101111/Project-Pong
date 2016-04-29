@@ -14,7 +14,7 @@ import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.LayerUI;
 
-import static UI.constants.*;
+import static UI.Constants.*;
 
 
 // some of source taken from docs.oracle.com/javase/

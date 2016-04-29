@@ -3,6 +3,7 @@ package UI;
 import java.awt.*;
 import java.util.Random;
 
+import static UI.Constants.*;
 import static java.lang.Math.abs;
 
 /**

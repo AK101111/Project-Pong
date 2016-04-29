@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import static UI.Paddle.playerType.AI;
 import static UI.Paddle.playerType.HUMAN;
 import static UI.Paddle.playerType.OTHER;
-import static UI.constants.*;
+import static UI.Constants.*;
 
 /**
  * Created by arnavkansal on 09/04/16.

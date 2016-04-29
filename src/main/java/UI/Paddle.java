@@ -8,7 +8,8 @@ import java.util.Random;
 import static UI.Paddle.paddleType.HORIZONTAL;
 import static UI.Paddle.playerType.AI;
 import static UI.Paddle.playerType.OTHER;
-import static UI.constants.*;
+import static UI.Constants.*;
+import static java.awt.event.KeyEvent.*;
 
 /**
  * Created by arnavkansal on 09/04/16.
