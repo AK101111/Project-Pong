@@ -15,18 +15,8 @@ public class PingPong extends JFrame{
     private pongBoard Board;
     public int difficulty;
 
-    public PingPong(String difficulty){
-        switch (difficulty) {
-            case "Easy":
-                this.difficulty = 0;
-                break;
-            case "Hard":
-                this.difficulty = 1;
-                break;
-            case "Insane":
-                this.difficulty = 2;
-                break;
-        }
+    public PingPong(int difficulty){
+        this.difficulty = difficulty;
         renderDisplay();
     }
 
@@ -43,7 +33,7 @@ public class PingPong extends JFrame{
         // center window on screen
         setLocationRelativeTo(null);
         // testcomp and testactive are to be set
-        Board = new src.pongBoard(this,testactive,testcomp);//,testother);
+        Board = new pongBoard(this,testactive,testcomp);//,testother);
         Board.setOnInternalPaddleMoveListener(new AbstractGameUI.PaddleMoveListener() {
             @Override
             public void handlePaddleMove(int id, int delX, int delY) {
@@ -75,7 +65,7 @@ public class PingPong extends JFrame{
         EventQueue.invokeLater(new Runnable(){
             @Override
             public void run(){
-                PingPong app = new PingPong(args[0]);
+                PingPong app = new PingPong(Integer.parseInt(args[0]));
                 app.setVisible(true);
             }
         });

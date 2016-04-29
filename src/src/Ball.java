@@ -170,6 +170,13 @@ public class Ball {
         heightBound = SCREEN_HEIGHT - 21;
     }
 
+    public float getXspeed(){
+        return xspeed;
+    }
+    public float getYspeed(){
+        return yspeed;
+    }
+
     public int getxpos() {
         return xpos;
     }

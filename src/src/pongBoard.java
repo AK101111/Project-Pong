@@ -82,6 +82,8 @@ public class pongBoard extends JPanel implements ActionListener, KeyListener, Ab
     public void setBoard(PingPong app) {
         // set Ball
         ball = new Ball(app);
+        ball.getXspeed();
+        ball.getYspeed();
         // set AI players
 //        for(int index: computerPlayers){
 //            Players[index] = new Paddle(app, xinit[index], yinit[index], Paddle.paddleType.values()[index%2], AI,index);

@@ -291,16 +291,18 @@ public class introScreen {
         return ipList;
     }
 
-    public static String getSelectedButtonText(ButtonGroup buttonGroup) {
+    public static int getSelectedButtonPosition(ButtonGroup buttonGroup) {
+        int i = 0;
         for (Enumeration<AbstractButton> buttons = buttonGroup.getElements(); buttons.hasMoreElements();) {
             AbstractButton button = buttons.nextElement();
 
             if (button.isSelected()) {
-                return button.getText();
+                return i;
             }
+            i ++;
         }
 
-        return null;
+        return i;
     }
 }
 class AnimatedJPanel extends JPanel implements ActionListener{
