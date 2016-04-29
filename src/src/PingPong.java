@@ -14,9 +14,11 @@ import static src.constants.*;
 public class PingPong extends JFrame{
     private pongBoard Board;
     public int difficulty;
+    Ball.BallVelocity ballVelocity;
 
-    public PingPong(int difficulty){
+    public PingPong(int difficulty, Ball.BallVelocity velocity){
         this.difficulty = difficulty;
+        this.ballVelocity = velocity;
         renderDisplay();
     }
 
@@ -33,7 +35,7 @@ public class PingPong extends JFrame{
         // center window on screen
         setLocationRelativeTo(null);
         // testcomp and testactive are to be set
-        Board = new pongBoard(this,testactive,testcomp);//,testother);
+        Board = new pongBoard(this,testactive,testcomp,ballVelocity);//,testother);
         Board.setOnInternalPaddleMoveListener(new AbstractGameUI.PaddleMoveListener() {
             @Override
             public void handlePaddleMove(int id, int delX, int delY) {
@@ -61,11 +63,14 @@ public class PingPong extends JFrame{
         Board.startpongBoard(this);
         add(Board);
     }
-    public static void main(String args[]){
+
+
+
+    public static void startGame(int difficulty, Ball.BallVelocity velocity){
         EventQueue.invokeLater(new Runnable(){
             @Override
             public void run(){
-                PingPong app = new PingPong(Integer.parseInt(args[0]));
+                PingPong app = new PingPong(difficulty, velocity);
                 app.setVisible(true);
             }
         });

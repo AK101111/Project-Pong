@@ -29,6 +29,10 @@ public class introScreen {
     static NetworkBase network;
     static ButtonGroup entreeGroup;
 
+    static Ball.BallVelocity ballVelocity;
+
+
+
     public static class ConnectionRequest implements Serializable {
         public String senderIP;
         public int senderName;
@@ -79,22 +83,56 @@ public class introScreen {
                 MessageObject messageObject = (MessageObject) obj;
                 if(messageObject.messageType.equals("connection") && messageObject.message.equals("connectedToAll")){
                     setConnectionReadyLabel(messageObject.senderIP);
-                    if(isAllConnectionReady())
-                        setActionButton(true,"Play",startGameListener);
+                    if(isAllConnectionReady()) {
+                        if(myName == 0)
+                            setActionButton(true, "Play", startGameListener);
+                        else
+                            statusLabel.setText("Waiting for game to commence...");
+                    }
                 }
+            }else if(obj instanceof Ball.BallVelocity){
+                ballVelocity = (Ball.BallVelocity) obj;
+                startGame();
             }
             //TODO
         }
     };
 
+
+
     static MouseAdapter startGameListener = new MouseAdapter() {
         @Override
         public void mouseClicked(MouseEvent e) {
             super.mouseClicked(e);
-            String[] args = {Integer.toString(getSelectedButtonPosition(entreeGroup))};
-            PingPong.main(args);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    if(myName == 0) {
+                        sendBallVelocity();
+                        for (int i = 1; i != 4; i++) {
+                            statusLabel.setText(i + "");
+                        }
+                        startGame();
+                    }
+                }
+            });
         }
     };
+
+    private static void startGame(){
+        PingPong.startGame(getSelectedButtonPosition(entreeGroup),ballVelocity);
+    }
+
+    private static void sendBallVelocity(){
+        Random random = new Random();
+        ballVelocity.xspeed = XSPEED[random.nextInt(100)%3];
+        ballVelocity.yspeed = YSPEED[random.nextInt(100)%3];
+        while (ballVelocity.yspeed == 0 && ballVelocity.xspeed ==0){
+            ballVelocity.xspeed = XSPEED[random.nextInt(2)];
+            ballVelocity.yspeed = YSPEED[random.nextInt(2)];
+        }
+//        network.sendObjectToPeer(); TODO send ball velocity to all peers
+    }
 
 
 
@@ -287,7 +325,7 @@ public class introScreen {
                     for (Integer i : failedList) {
                         sb.append(i + ",");
                     }
-                    sb.append(".Please remove.");
+                    sb.append("\nPlease remove.");
                     indicatorLabel.setText(sb.toString());
                     reEnableButton(connectButton);
                 } else {
