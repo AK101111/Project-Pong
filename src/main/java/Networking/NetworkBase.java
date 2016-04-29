@@ -1,6 +1,7 @@
 package Networking;
 
 import Utils.Utils;
+import org.json.JSONObject;
 
 import java.io.*;
 import java.net.InetAddress;
@@ -23,13 +24,13 @@ public class NetworkBase {
     private ConnectionServer server;
     private Map<String,Socket> peerSockets;
 
-    public NetworkBase(int port, ReceiveObjectListener receiveObjectListener) {
-        server = new ConnectionServer(port,receiveObjectListener);
+    public NetworkBase(int port, ReceiveListener receiveListener) {
+        server = new ConnectionServer(port,receiveListener);
         (new Thread(server)).start();
-        peerSockets = new HashMap<>();
+        peerSockets = new HashMap<String, Socket>();
     }
 
-    public void addPeer(String name, String ip, int port, long timeoutMillis, PeerConnectionListener connectionListener) {
+    public void addPeer(final String name, final String ip, final int port, final long timeoutMillis, final PeerConnectionListener connectionListener) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -79,13 +80,13 @@ public class NetworkBase {
             this.limit = limit;
             this.listener = listener;
             this.numPeers = 0;
-            this.failedToConnectPeers = new ArrayList<>();
+            this.failedToConnectPeers = new ArrayList<Integer>();
         }
     }
     public void addMultiplePeers (Map<Integer,String> peerList, long timeoutEachMillis, MultiplePeerConnectionListener handler) {
-        PeerConnectionStore connectionStore = new PeerConnectionStore(peerList.size(), handler);
+        final PeerConnectionStore connectionStore = new PeerConnectionStore(peerList.size(), handler);
 //        myName = 0;
-        for (Integer i : peerList.keySet()) {
+        for (final Integer i : peerList.keySet()) {
             if (!peerList.get(i).isEmpty()) {
                 addPeer(Integer.toString(i), peerList.get(i), 8080, timeoutEachMillis, new PeerConnectionListener() {
                     @Override
@@ -150,25 +151,28 @@ public class NetworkBase {
         return peerSockets.containsValue(ip);
     }
 
-    public void sendObjectToPeer (String peerName, Object toSendObj) {
+    public void sendToPeer (String peerName, String msg) {
         Socket peerSocket = peerSockets.get(peerName);
         try {
             OutputStream out = peerSocket.getOutputStream();
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(out);
-            objectOutputStream.writeObject(toSendObj);
-//            InputStream in = peerSocket.getInputStream();
-//            out.write(msg.getBytes());
-//            String responseFromServer = Utils.getStringFromInputStream(in);
-//            System.out.println("Response from server:\n"+responseFromServer);
+            out.write((msg+"\n").getBytes());
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void sendToAllPeers (Object toSendObj) {
+    public void sendJSON (String peerName, JSONObject jsonObject) {
+        sendToPeer(peerName,jsonObject.toString());
+    }
+
+    public void sendToAllPeers (String msg) {
         for (String peer : peerSockets.keySet()) {
-            sendObjectToPeer(peer,toSendObj);
+            sendToPeer(peer,msg);
         }
+    }
+
+    public void sendJSONToAll (JSONObject jsonObject) {
+        sendToAllPeers(jsonObject.toString());
     }
 
     public static String getIPAddress() {
@@ -181,34 +185,34 @@ public class NetworkBase {
         }
     }
 
-    public static class TimeStamp implements Serializable {
-        public long time;
-        TimeStamp () {
-            time = System.currentTimeMillis();
-        }
-    }
-    public static void main(String[] args) {
-        //testing code
-        NetworkBase networkBase = new NetworkBase(8080, new ReceiveObjectListener() {
-            @Override
-            public void onReceive(Object obj) {
-                long currentTime = System.currentTimeMillis();
-                TimeStamp sendTime = (TimeStamp) obj;
-                System.out.println("Network-delay : " + (currentTime - sendTime.time));
-            }
-        });
-        System.out.println("Server started @ IP:" + getIPAddress());
-        networkBase.addPeer("kedia", "10.192.37.237", 8080, 10000, new PeerConnectionListener() {
-            @Override
-            public void onConnectionSuccess() {
-                System.out.println("Connected to kedia");
-                networkBase.sendObjectToPeer("kedia",new TimeStamp());
-            }
-
-            @Override
-            public void onConnectionFailure() {
-                System.out.println("Failed to connect to kedia");
-            }
-        });
-    }
+//    public static class TimeStamp implements Serializable {
+//        public long time;
+//        TimeStamp () {
+//            time = System.currentTimeMillis();
+//        }
+//    }
+//    public static void main(String[] args) {
+//        //testing code
+//        NetworkBase networkBase = new NetworkBase(8080, new ReceiveObjectListener() {
+//            @Override
+//            public void onReceive(Object obj) {
+//                long currentTime = System.currentTimeMillis();
+//                TimeStamp sendTime = (TimeStamp) obj;
+//                System.out.println("Network-delay : " + (currentTime - sendTime.time));
+//            }
+//        });
+//        System.out.println("Server started @ IP:" + getIPAddress());
+//        networkBase.addPeer("kedia", "10.192.37.237", 8080, 10000, new PeerConnectionListener() {
+//            @Override
+//            public void onConnectionSuccess() {
+//                System.out.println("Connected to kedia");
+//                networkBase.sendObjectToPeer("kedia",new TimeStamp());
+//            }
+//
+//            @Override
+//            public void onConnectionFailure() {
+//                System.out.println("Failed to connect to kedia");
+//            }
+//        });
+//    }
 }

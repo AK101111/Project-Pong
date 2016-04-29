@@ -2,11 +2,12 @@ package UI;
 
 import Networking.NetworkBase;
 import Networking.PeerConnectionListener;
-import Networking.ReceiveObjectListener;
+import Networking.ReceiveListener;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.io.Serializable;
 import java.util.*;
 import java.util.List;
 import javax.swing.*;
@@ -29,72 +30,120 @@ public class IntroScreen {
     static int myName;
     static NetworkBase network;
 
-    public static class ConnectionRequest implements Serializable {
-        public String senderIP;
-        public int senderName;
-        public ConnectionRequest (String ip, int name) {
-            senderIP = ip;
-            senderName = name;
-        }
-        public String toString() {
-            return String.format("ConnectionRequest[senderName:%d,senderIP:%s]",senderName,senderIP);
-        }
-    }
-    public static class PeerList implements Serializable {
-        public Map<Integer,String> peerIpAndNames;
-        public PeerList(Map<Integer,String> peerIpAndNames, String myIp, int myName) {
-            peerIpAndNames.put(myName,myIp);
-            this.peerIpAndNames = peerIpAndNames;
-        }
-        public String toString() {
-            return String.format("PeeList[map:%s]",peerIpAndNames);
-        }
-    }
+//    public static class ConnectionRequest implements Serializable {
+//        public String senderIP;
+//        public int senderName;
+//        public ConnectionRequest (String ip, int name) {
+//            senderIP = ip;
+//            senderName = name;
+//        }
+//        public String toString() {
+//            return String.format("ConnectionRequest[senderName:%d,senderIP:%s]",senderName,senderIP);
+//        }
+//    }
+//    public static class PeerList implements Serializable {
+//        public Map<Integer,String> peerIpAndNames;
+//        public PeerList(Map<Integer,String> peerIpAndNames, String myIp, int myName) {
+//            peerIpAndNames.put(myName,myIp);
+//            this.peerIpAndNames = peerIpAndNames;
+//        }
+//        public String toString() {
+//            return String.format("PeeList[map:%s]",peerIpAndNames);
+//        }
+//    }
 
-    static ReceiveObjectListener receiveObjectListener = new ReceiveObjectListener() {
+//    static ReceiveObjectListener receiveObjectListener = new ReceiveObjectListener() {
+//        @Override
+//        public void onReceive(Object obj) {
+//            System.out.println("Received object " + obj);
+//            if (obj instanceof ConnectionRequest) {
+//                System.out.println("Got connection request object");
+//                ConnectionRequest connectionRequest = (ConnectionRequest) obj;
+//                if (!network.isPeer(connectionRequest.senderIP)) {
+//                    network.addPeer(Integer.toString(connectionRequest.senderName), connectionRequest.senderIP, 8080, 100, new PeerConnectionListener() {
+//                        @Override
+//                        public void onConnectionSuccess() {
+//                            //connected
+//                            hideTextField(getUnfilledConnectionLabel(),"Connected to : " + connectionRequest.senderIP);
+//                        }
+//
+//                        @Override
+//                        public void onConnectionFailure() {
+//                            //Failed to connect
+//                        }
+//                    });
+//                }
+//            } else if (obj instanceof PeerList) {
+//                System.out.println("Got PeerList object");
+//                PeerList peerList = (PeerList) obj;
+//                for (Map.Entry<Integer,String> entry : peerList.peerIpAndNames.entrySet()) {
+//                    if (network.isPeer(entry.getValue()) || NetworkBase.getIPAddress().equals(entry.getValue()))
+//                        peerList.peerIpAndNames.remove(entry.getKey());
+//                    network.addMultiplePeers(peerList.peerIpAndNames, 10, new NetworkBase.MultiplePeerConnectionListener() {
+//                        @Override
+//                        public void onAllConnectionsRes(boolean allSuccess, List<Integer> failedPeerList) {
+//                            if (allSuccess) {
+//                                statusLabel.setText("Connected to all.");
+//                                //connected to all
+//                            }
+//                        }
+//                    });
+//                }
+//            }
+//            //TODO
+//        }
+//    };
+
+    static ReceiveListener receiveListener = new ReceiveListener() {
         @Override
-        public void onReceive(Object obj) {
-            System.out.println("Received object " + obj);
-            if (obj instanceof ConnectionRequest) {
-                System.out.println("Got connection request object");
-                ConnectionRequest connectionRequest = (ConnectionRequest) obj;
-                if (!network.isPeer(connectionRequest.senderIP)) {
-                    network.addPeer(Integer.toString(connectionRequest.senderName), connectionRequest.senderIP, 8080, 100, new PeerConnectionListener() {
-                        @Override
-                        public void onConnectionSuccess() {
-                            //connected
-                            hideTextField(getUnfilledConnectionLabel(),"Connected to : " + connectionRequest.senderIP);
-                        }
-
-                        @Override
-                        public void onConnectionFailure() {
-                            //Failed to connect
-                        }
-                    });
-                }
-            } else if (obj instanceof PeerList) {
-                System.out.println("Got PeerList object");
-                PeerList peerList = (PeerList) obj;
-                for (Map.Entry<Integer,String> entry : peerList.peerIpAndNames.entrySet()) {
-                    if (network.isPeer(entry.getValue()) || NetworkBase.getIPAddress().equals(entry.getValue()))
-                        peerList.peerIpAndNames.remove(entry.getKey());
-                    network.addMultiplePeers(peerList.peerIpAndNames, 10, new NetworkBase.MultiplePeerConnectionListener() {
-                        @Override
-                        public void onAllConnectionsRes(boolean allSuccess, List<Integer> failedPeerList) {
-                            if (allSuccess) {
-                                statusLabel.setText("Connected to all.");
-                                //connected to all
+        public void onReceive(String str) {
+            System.out.println("[Rx]" + str);
+            try {
+                JSONObject jsonObject = new JSONObject(str);
+                String type = jsonObject.getString("type");
+                if (type.equals("connectionRequest")) {
+                    final String senderIP = jsonObject.getString("senderIP");
+                    int senderName = jsonObject.getInt("senderName");
+                    int receiverName = jsonObject.getInt("receiverName");
+                    myName = receiverName;
+                    if (!network.isPeer(senderIP)) {
+                        network.addPeer(Integer.toString(senderName), senderIP, 8080, 100, new PeerConnectionListener() {
+                            @Override
+                            public void onConnectionSuccess() {
+                                //connected
+                                hideTextField(getUnfilledConnectionLabel(),"Connected to : " + senderIP);
                             }
-                        }
-                    });
+    //
+                            @Override
+                            public void onConnectionFailure() {
+                                //Failed to connect
+                            }
+                        });
+                    }
+                } else if (type.equals("peerList")) {
+                    Map<Integer,String> peerList = (Map) jsonObject.get("peers");
+                    for (Map.Entry<Integer,String> entry : peerList.entrySet()) {
+                        if (network.isPeer(entry.getValue()) || NetworkBase.getIPAddress().equals(entry.getValue()))
+                            peerList.remove(entry.getKey());
+                        network.addMultiplePeers(peerList, 10, new NetworkBase.MultiplePeerConnectionListener() {
+                            @Override
+                            public void onAllConnectionsRes(boolean allSuccess, List<Integer> failedPeerList) {
+                                if (allSuccess) {
+                                    statusLabel.setText("Connected to all.");
+                                    //connected to all
+                                }
+                            }
+                        });
+                    }
                 }
+            } catch (JSONException ex) {
+                ex.printStackTrace();
             }
-            //TODO
         }
     };
 
     public static void main(String[] args) {
-        network = new NetworkBase(8080,receiveObjectListener);
+        network = new NetworkBase(8080,receiveListener);
 
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
@@ -138,7 +187,7 @@ public class IntroScreen {
 
         GridLayout connectButtonLayout = new GridLayout(2,0);
         connectButtonLayout.setVgap(10);
-        JButton connectButton = new JButton("Connect");
+        final JButton connectButton = new JButton("Connect");
         connectButton.setPreferredSize(new Dimension(50, 30));
         statusLabel = new JLabel();
         statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -239,14 +288,31 @@ public class IntroScreen {
             this.limit = limit;
             this.listener = listener;
             this.numPeers = 0;
-            this.failedToConnectPeers = new ArrayList<>();
+            this.failedToConnectPeers = new ArrayList<Integer>();
         }
     }
 
-    //0, 1, 2
-    private static void connectToPeerList (Map<Integer,String> peerList, JLabel indicatorLabel,JButton connectButton) {
+    private static JSONObject getConnectionRequestObject(String senderIP, int senderName, int receiverName) {
+        JSONObject obj = new JSONObject();
+        obj.put("type","connectionRequest");
+        obj.put("senderIP",senderIP);
+        obj.put("senderName",senderName);
+        obj.put("receiverName",receiverName);
+        return obj;
+    }
 
-        PeerConnectionStore connectionStore = new PeerConnectionStore(peerList.size(), new PeerConnectionStore.AllConnectionsResListener() {
+    private static JSONObject getPeerListRequestObject (Map<Integer,String> peersList, String senderIP, Integer senderName) {
+        JSONObject obj = new JSONObject();
+        peersList.put(senderName,senderIP);
+        obj.put("type","peerList");
+        obj.put("peers",peersList);
+        return obj;
+    }
+
+    //0, 1, 2
+    private static void connectToPeerList (final Map<Integer,String> peerList, final JLabel indicatorLabel, final JButton connectButton) {
+
+        final PeerConnectionStore connectionStore = new PeerConnectionStore(peerList.size(), new PeerConnectionStore.AllConnectionsResListener() {
             @Override
             public void onAllConnectionsRes(List<Integer> failedList) {
                 if (failedList.size() > 0) {
@@ -265,20 +331,22 @@ public class IntroScreen {
                     System.out.println("Move ahead");
 
                     myIPAddressText.setText(myIPAddressText.getText() +  " - Ready!");
-                    network.sendToAllPeers(new PeerList(peerList,NetworkBase.getIPAddress(),myName));
+//                    network.sendToAllPeers(new PeerList(peerList,NetworkBase.getIPAddress(),myName));
+                    network.sendJSONToAll(getPeerListRequestObject(peerList,NetworkBase.getIPAddress(),myName));
                 }
             }
         });
 
         myName = 0;
-        for (Integer i : peerList.keySet()) {
+        for (final Integer i : peerList.keySet()) {
             if (!peerList.get(i).isEmpty()) {
                 network.addPeer(Integer.toString(i), peerList.get(i), 8080, 1, new PeerConnectionListener() {
                     @Override
                     public void onConnectionSuccess() {
                         hideTextField(i-1, "Connected to : " + peerList.get(i));
 //                        connectedPeers.add(i);
-                        network.sendObjectToPeer(Integer.toString(i),new ConnectionRequest(NetworkBase.getIPAddress(),myName));
+//                        network.sendObjectToPeer(Integer.toString(i),new ConnectionRequest(NetworkBase.getIPAddress(),myName));
+                        network.sendJSON(Integer.toString(i),getConnectionRequestObject(NetworkBase.getIPAddress(),myName,i));
                         connectionStore.setConnected(i);
                     }
 
@@ -350,7 +418,7 @@ public class IntroScreen {
     }
 
     public static Map<Integer, String> getListedIpAddresses(){
-        Map<Integer,String> ipList = new HashMap<>();
+        Map<Integer,String> ipList = new HashMap<Integer, String>();
         if (!ipTextField1.getText().isEmpty())
             ipList.put(1,ipTextField1.getText());
         if (!ipTextField2.getText().isEmpty())

@@ -12,6 +12,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 dependencies {
+    compile 'org.json:json:20160212'
 }
 
 mainClassName = 'UI.IntroScreen'

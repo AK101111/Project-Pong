@@ -1,11 +1,6 @@
 package Networking;
 
-import Utils.Utils;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -17,11 +12,11 @@ public class ConnectionServer implements Runnable {
     private ServerSocket serverSocket = null;
     private boolean isStopped = false;
 
-    private ReceiveObjectListener receiveObjectListener = null;
+    private ReceiveListener receiveListener = null;
 
-    public ConnectionServer(int port, ReceiveObjectListener receiveObjectListener) {
+    public ConnectionServer(int port, ReceiveListener receiveListener) {
         this.port = port;
-        this.receiveObjectListener = receiveObjectListener;
+        this.receiveListener = receiveListener;
     }
 
     public ConnectionServer(int port) {
@@ -57,20 +52,10 @@ public class ConnectionServer implements Runnable {
 
     private void processClientRequest(Socket clientSocket) throws IOException{
         InputStream in = clientSocket.getInputStream();
-//        OutputStream out = clientSocket.getOutputStream();
-//        String dataFromInStream = Utils.getStringFromInputStream(in);
-//        System.out.println("Data read from in stream:\n"+dataFromInStream);
-//        out.write("ACK".getBytes());
-
-        ObjectInputStream objectInputStream = new ObjectInputStream(in);
-        Object receivedObject = null;
-        try {
-            receivedObject = objectInputStream.readObject();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        if (receiveObjectListener != null) {
-            receiveObjectListener.onReceive(receivedObject);
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
+        String receiveString = bufferedReader.readLine();
+        if (receiveListener != null) {
+            receiveListener.onReceive(receiveString);
         }
     }
 
