@@ -32,6 +32,8 @@ public class IntroScreen {
     static ButtonGroup entreeGroup;
     static Map<String,Boolean> isPeerReady = new HashMap<>();
 
+//    static ArrayList<String> connectedIPs = new ArrayList<>();
+
     static Ball.BallVelocity ballVelocity;
 
     static ReceiveListener receiveListener = new ReceiveListener() {
@@ -51,7 +53,9 @@ public class IntroScreen {
                             @Override
                             public void onConnectionSuccess() {
                                 //connected
-                                hideTextField(getUnfilledConnectionLabel(),"Connected to : " + senderIP);
+//                                hideTextField(getUnfilledConnectionLabel(),"Connected to : " + senderIP);
+//                                connectedIPs.add(senderIP);
+                                displayConnectedToPeer(getUnfilledConnectionLabel(),senderIP,senderName,false);
                             }
     //
                             @Override
@@ -89,7 +93,14 @@ public class IntroScreen {
 
                 }
                 else if(type.equals("connectedToAll")){
-                    setConnectionReadyLabel(jsonObject.getString("senderIP"));
+                    String senderIP = jsonObject.getString("senderIP");
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            while (!network.isPeer(senderIP))
+                                setConnectionReadyLabel(jsonObject.getString("senderIP"));
+                        }
+                    }).start();
                     isPeerReady.replace(jsonObject.getString("senderIP"),true);
                     if(isAllConnectionReady()) {
                         if(myName == 0) {
@@ -404,7 +415,8 @@ public class IntroScreen {
                     @Override
                     public void onConnectionSuccess() {
                         int name = i + 1;
-                        hideTextField(i-1, "Connected to " + name + " (" + peerList.get(i) + ")");
+//                        hideTextField(i-1, "Connected to " + name + " (" + peerList.get(i) + ")");
+                        displayConnectedToPeer(i-1,peerList.get(i),name,false);
 //                        connectedPeers.add(i);
 //                        network.sendObjectToPeer(Integer.toString(i),new ConnectionRequest(NetworkBase.getIPAddress(),myName));
                         network.sendJSON(Integer.toString(i),getConnectionRequestObject(NetworkBase.getIPAddress(),myName,i));
@@ -421,26 +433,41 @@ public class IntroScreen {
         }
     }
 
-
-    private static void hideTextField(int textFieldId,String statusText){
-        switch (textFieldId){
+    private static JLabel getLabel (int id) {
+        switch (id) {
             case 0:
-//                ipLabel1.setText("Connected to "+ ipTextField1.getText());
-                ipLabel1.setText(statusText);
-                ipTextField1.setVisible(false);
-                break;
+                return ipLabel1;
             case 1:
-//                ipLabel2.setText("Connected to "+ ipTextField2.getText());
-                ipLabel2.setText(statusText);
-                ipTextField2.setVisible(false);
-                break;
+                return ipLabel2;
             case 2:
-//                ipLabel3.setText("Connected to "+ ipTextField3.getText());
-                ipLabel3.setText(statusText);
-                ipTextField3.setVisible(false);
-                break;
-
+                return ipLabel3;
         }
+        return null;
+    }
+
+    private static JTextField getTextField (int id) {
+        switch (id) {
+            case 0:
+                return ipTextField1;
+            case 1:
+                return ipTextField2;
+            case 2:
+                return ipTextField3;
+        }
+        return null;
+    }
+
+//    private static void hideTextField(int textFieldId,String statusText){
+    private static void displayConnectedToPeer(int textFieldId, String ip, int name,boolean toShowReady){
+        JLabel label = getLabel(textFieldId);
+        JTextField textField = getTextField(textFieldId);
+        if (!toShowReady) {
+            if (label.getText().contains("Connected to"))
+                return;
+        }
+        String statusText = String.format("Connected to %d (%s)%s",name,ip,toShowReady?" - Ready!":"");
+        label.setText(statusText);
+        textField.setVisible(false);
     }
     private static void showTextField(int textFieldId){
         switch (textFieldId){
