@@ -57,7 +57,7 @@ public class PongBoard extends JPanel implements ActionListener, KeyListener, Ab
         //this.otherPlayers = otherPlayers;
         //this.computerPlayers = computerPlayers;
         try {
-            img = ImageIO.read(new File(IMAGES_PATH+"2"+".JPG"));
+            img = ImageIO.read(new File(IMAGES_PATH+"2"+".jpg"));
         } catch (IOException e) {
             e.printStackTrace();
         }
