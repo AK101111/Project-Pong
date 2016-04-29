@@ -378,6 +378,9 @@ public class IntroScreen {
                     indicatorLabel.setText(sb.toString());
                     reEnableButton(connectButton);
                 } else {
+                    for(int key : peerList.keySet()){
+                        isPeerReady.put(peerList.get(key),false);
+                    }
                     //connected to all
                     indicatorLabel.setText("Connected to all.");
                     System.out.println("Move ahead");
