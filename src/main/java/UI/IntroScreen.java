@@ -78,34 +78,51 @@ public class IntroScreen {
                                 statusLabel.setText("Connected to all.");
                                 disableButton(actionButton);
                                 //connected to all
+                                network.sendJSONToAll(getConnectedToAllJson());
                             }
                         }
                     });
 
                 }
+                else if(type.equals("connectedToAll")){
+                    setConnectionReadyLabel(jsonObject.getString("senderIP"));
+                    if(isAllConnectionReady()) {
+                        if(myName == 0)
+                            setActionButton(true, "Play", startGameListener);
+                        else
+                            statusLabel.setText("Waiting for game to commence...");
+                    }
+                }else if(type.equals("ballVelocity") && myName != 0){
+                    ballVelocity = new Ball.BallVelocity();
+                    ballVelocity.xspeed = Float.parseFloat(jsonObject.getString("xspeed"));
+                    ballVelocity.yspeed = Float.parseFloat(jsonObject.getString("yspeed"));
+                    startGame();
+                }
             } catch (JSONException ex) {
                 ex.printStackTrace();
             }
-//            else if(obj instanceof MessageObject){
-//                MessageObject messageObject = (MessageObject) obj;
-//                if(messageObject.messageType.equals("connection") && messageObject.message.equals("connectedToAll")){
-//                    setConnectionReadyLabel(messageObject.senderIP);
-//                    if(isAllConnectionReady()) {
-//                        if(myName == 0)
-//                            setActionButton(true, "Play", startGameListener);
-//                        else
-//                            statusLabel.setText("Waiting for game to commence...");
-//                    }
-//                }
-//            }else if(obj instanceof Ball.BallVelocity){
-//                ballVelocity = (Ball.BallVelocity) obj;
-//                startGame();
-//            }
+//
             //TODO
         }
     };
 
 
+
+    static JSONObject getConnectedToAllJson(){
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("type","connectedToAll");
+        jsonObject.put("senderIP",NetworkBase.getIPAddress());
+        jsonObject.put("senderName",myName);
+        return jsonObject;
+    }
+
+    static JSONObject getBallVelocityJson(){
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("type","ballVelocity");
+        jsonObject.put("xspeed",ballVelocity.xspeed);
+        jsonObject.put("yspeed",ballVelocity.yspeed);
+        return jsonObject;
+    }
 
     static MouseAdapter startGameListener = new MouseAdapter() {
         @Override
@@ -138,7 +155,7 @@ public class IntroScreen {
             ballVelocity.xspeed = XSPEED[random.nextInt(2)];
             ballVelocity.yspeed = YSPEED[random.nextInt(2)];
         }
-//        network.sendObjectToPeer(); TODO send ball velocity to all peers
+        network.sendJSONToAll(getBallVelocityJson());
     }
 
 
