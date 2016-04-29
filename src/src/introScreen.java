@@ -25,8 +25,10 @@ import static src.constants.*;
 public class introScreen {
     static JTextField ipTextField1,ipTextField2,ipTextField3;
     static JLabel ipLabel1,ipLabel2,ipLabel3,statusLabel;
+    static JLabel myIPAddressText;
     static MouseAdapter onConnectListener;
 
+    static Map<Integer,String> peersList;
     static int myName;
     static NetworkBase network;
 
@@ -36,6 +38,12 @@ public class introScreen {
         public ConnectionRequest (String ip, int name) {
             senderIP = ip;
             senderName = name;
+        }
+    }
+    public static class PeerList implements Serializable {
+        public Map<Integer,String> peerIpAndNames;
+        public PeerList(Map<Integer,String> peerIpAndNames) {
+            this.peerIpAndNames = peerIpAndNames;
         }
     }
 
@@ -56,6 +64,21 @@ public class introScreen {
                         @Override
                         public void onConnectionFailure() {
                             //Failed to connect
+                        }
+                    });
+                }
+            } else if (obj instanceof PeerList) {
+                PeerList peerList = (PeerList) obj;
+                for (Map.Entry<Integer,String> entry : peerList.peerIpAndNames.entrySet()) {
+                    if (network.isPeer(entry.getValue()) || NetworkBase.getIPAddress().equals(entry.getValue()))
+                        peerList.peerIpAndNames.remove(entry.getKey());
+                    network.addMultiplePeers(peerList.peerIpAndNames, 10, new NetworkBase.MultiplePeerConnectionListener() {
+                        @Override
+                        public void onAllConnectionsRes(boolean allSuccess, List<Integer> failedPeerList) {
+                            if (allSuccess) {
+                                statusLabel.setText("Connected to all.");
+                                //connected to all
+                            }
                         }
                     });
                 }
@@ -118,7 +141,7 @@ public class introScreen {
         //orderButton.setBounds(WINDOW_XSIZE/2,WINDOW_YSIZE/2,50,50);
 
 
-        JLabel myIPAddressText = new JLabel("Your IP Address : ");
+        myIPAddressText = new JLabel("Your IP Address : ");
         myIPAddressText.setHorizontalAlignment(SwingConstants.CENTER);
         myIPAddressText.setText(myIPAddressText.getText() + NetworkBase.getIPAddress());
         onConnectListener = new MouseAdapter() {
@@ -133,8 +156,8 @@ public class introScreen {
                 statusLabel.setText("Connecting...");
 
 
-                Map<Integer,String> filledIps = getListedIpAddresses();
-                System.out.println(filledIps.toString());
+                peersList = getListedIpAddresses();
+                System.out.println(peersList.toString());
 
 
 
@@ -146,7 +169,7 @@ public class introScreen {
 //                    statusLabel.setText("");
 //                }
                 disableButton(connectButton);
-                connectToPeerList(filledIps,statusLabel,connectButton);
+                connectToPeerList(peersList,statusLabel,connectButton);
             }
         };
         connectButton.addMouseListener(onConnectListener);
@@ -221,6 +244,7 @@ public class introScreen {
             @Override
             public void onAllConnectionsRes(List<Integer> failedList) {
                 if (failedList.size() > 0) {
+                    //Failed TODO check for errors
                     StringBuilder sb = new StringBuilder();
                     sb.append("Failed to connect to ");
                     for (Integer i : failedList) {
@@ -230,8 +254,12 @@ public class introScreen {
                     indicatorLabel.setText(sb.toString());
                     reEnableButton(connectButton);
                 } else {
+                    //connected to all
                     indicatorLabel.setText("Connected to all.");
                     System.out.println("Move ahead");
+
+                    myIPAddressText.setText(myIPAddressText.getText() +  " - Ready!");
+                    network.sendToAllPeers(new PeerList(peerList));
                 }
             }
         });
