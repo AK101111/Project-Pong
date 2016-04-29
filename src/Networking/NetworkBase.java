@@ -11,6 +11,7 @@ import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.*;
 
 //import static java.lang.System.out;
 
@@ -48,6 +49,50 @@ public class NetworkBase {
                 }
             }
         }).start();
+    }
+
+    private class GetSocketIndefinitely implements Callable<Socket> {
+        Socket socket = null;
+        String ip;
+        int port;
+
+        GetSocketIndefinitely(String ip, int port) {
+            this.ip = ip;
+            this.port = port;
+        }
+
+        @Override
+        public Socket call() {
+            while (socket != null) {
+                try {
+                    socket = new Socket(ip, port);
+                } catch (Exception e) {
+                    //e.printStackTrace();
+                }
+            }
+            return socket;
+        }
+    }
+
+    public void addPeerImp (String name, String ip, int port, long timeoutMillis, PeerConnectionListener connectionListener) {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Future<Socket> future = executor.submit(new GetSocketIndefinitely(ip,port));
+        Socket socket = null;
+        try {
+            socket = future.get(timeoutMillis, TimeUnit.MILLISECONDS);
+        } catch (Exception e) {
+            //e.printStackTrace();
+        }
+        if (socket != null) {
+            peerSockets.put(name,socket);
+            connectionListener.onConnectionSuccess();
+        } else {
+            connectionListener.onConnectionFailure();
+        }
+    }
+
+    public boolean isPeer (String ip) {
+        return peerSockets.containsValue(ip);
     }
 
     public void sendObjectToPeer (String peerName, Object toSendObj) {
