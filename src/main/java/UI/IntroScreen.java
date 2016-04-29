@@ -170,7 +170,7 @@ public class IntroScreen {
     private static boolean isAllConnectionReady(){
         JLabel[] labels = {ipLabel1,ipLabel2,ipLabel3,myIPAddressText};
         for(JLabel label : labels){
-            if(!label.getText().contains(" - Ready!")){
+            if(!label.getText().isEmpty() && !label.getText().contains(" - Ready!")){
                 return false;
             }
         }
@@ -377,6 +377,8 @@ public class IntroScreen {
                     myIPAddressText.setText(myIPAddressText.getText() +  " - Ready!");
 //                    network.sendToAllPeers(new PeerList(peerList,NetworkBase.getIPAddress(),myName));
                     network.sendJSONToAll(getPeerListRequestObject(peerList,NetworkBase.getIPAddress(),myName));
+                    network.sendJSONToAll(getConnectedToAllJson());
+
                 }
             }
         });
