@@ -183,13 +183,13 @@ public class NetworkBase {
     }
 
     private static boolean isPreferredNetworkInterface (String name) {
-        if (name.matches("^en|eth|wlan"))
+        if (name.matches("^en|eth|wlan.*"))
             return true;
         else
             return false;
     }
     private static boolean isLocalIP (String ip) {
-        return ip.matches("^127.");
+        return ip.matches("^127.*");
     }
 
     private static String getNonLocalIP () {
