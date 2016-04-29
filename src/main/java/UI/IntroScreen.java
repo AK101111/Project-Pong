@@ -119,8 +119,8 @@ public class IntroScreen {
                     }
                 }else if(type.equals("ballVelocity") && myName != 0){
                     ballVelocity = new Ball.BallVelocity();
-                    ballVelocity.xspeed = Float.parseFloat(jsonObject.getString("xspeed"));
-                    ballVelocity.yspeed = Float.parseFloat(jsonObject.getString("yspeed"));
+                    ballVelocity.xspeed = (float) jsonObject.getDouble("xspeed");
+                    ballVelocity.yspeed = (float)jsonObject.getDouble("yspeed");
                     startGame();
                 }
             } catch (JSONException ex) {
