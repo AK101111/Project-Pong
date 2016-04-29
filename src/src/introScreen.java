@@ -6,6 +6,7 @@ import Networking.ReceiveObjectListener;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.*;
 import java.util.List;
@@ -18,6 +19,7 @@ import javax.swing.plaf.TextUI;
 
 import static src.constants.*;
 
+
 // some of source taken from docs.oracle.com/javase/
 // gradient idea copied
 public class introScreen {
@@ -25,16 +27,46 @@ public class introScreen {
     static JLabel ipLabel1,ipLabel2,ipLabel3,statusLabel;
     static MouseAdapter onConnectListener;
 
+    static int myName;
+    static NetworkBase network;
+
+    public static class ConnectionRequest implements Serializable {
+        public String senderIP;
+        public int senderName;
+        public ConnectionRequest (String ip, int name) {
+            senderIP = ip;
+            senderName = name;
+        }
+    }
+
     static ReceiveObjectListener receiveObjectListener = new ReceiveObjectListener() {
         @Override
         public void onReceive(Object obj) {
             System.out.println("Received object " + obj);
+            if (obj instanceof ConnectionRequest) {
+                ConnectionRequest connectionRequest = (ConnectionRequest) obj;
+                if (!network.isPeer(connectionRequest.senderIP)) {
+                    network.addPeer(Integer.toString(connectionRequest.senderName), connectionRequest.senderIP, 8080, 100, new PeerConnectionListener() {
+                        @Override
+                        public void onConnectionSuccess() {
+                            //connected
+                            hideTextField(getUnfilledConnectionLabel(),"Connected to : " + connectionRequest.senderIP);
+                        }
+
+                        @Override
+                        public void onConnectionFailure() {
+                            //Failed to connect
+                        }
+                    });
+                }
+            }
             //TODO
         }
     };
-    static NetworkBase network = new NetworkBase(8080,receiveObjectListener);
 
     public static void main(String[] args) {
+        network = new NetworkBase(8080,receiveObjectListener);
+
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 createUI();
@@ -198,19 +230,22 @@ public class introScreen {
                     indicatorLabel.setText(sb.toString());
                     reEnableButton(connectButton);
                 } else {
+                    indicatorLabel.setText("Connected to all.");
                     System.out.println("Move ahead");
                 }
             }
         });
 
+        myName = 0;
         for (Integer i : peerList.keySet()) {
             if (!peerList.get(i).isEmpty()) {
-                network.addPeer("Peer#" + i, peerList.get(i), 8080, 1, new PeerConnectionListener() {
+                network.addPeer(Integer.toString(i), peerList.get(i), 8080, 1, new PeerConnectionListener() {
                     @Override
                     public void onConnectionSuccess() {
                         hideTextField(i, "Connected to : " + peerList.get(i));
 //                        connectedPeers.add(i);
                         connectionStore.setConnected(i);
+                        network.sendObjectToPeer(Integer.toString(i),new ConnectionRequest(peerList.get(i),myName));
                     }
 
                     @Override
@@ -283,12 +318,23 @@ public class introScreen {
     public static Map<Integer, String> getListedIpAddresses(){
         Map<Integer,String> ipList = new HashMap<>();
         if (!ipTextField1.getText().isEmpty())
-            ipList.put(0,ipTextField1.getText());
+            ipList.put(1,ipTextField1.getText());
         if (!ipTextField2.getText().isEmpty())
-            ipList.put(1,ipTextField2.getText());
+            ipList.put(2,ipTextField2.getText());
         if (!ipTextField3.getText().isEmpty())
-            ipList.put(2,ipTextField3.getText());
+            ipList.put(3,ipTextField3.getText());
         return ipList;
+    }
+
+    private static int getUnfilledConnectionLabel () {
+        if (ipTextField1.getText().isEmpty())
+            return 0;
+        else if (ipTextField2.getText().isEmpty())
+            return 1;
+        else if (ipTextField3.getText().isEmpty())
+            return 2;
+        else
+            return -1;
     }
 
     public static String getSelectedButtonText(ButtonGroup buttonGroup) {
