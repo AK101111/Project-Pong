@@ -1,4 +1,4 @@
-package src;
+package UI;
 
 import Networking.NetworkBase;
 import Networking.PeerConnectionListener;
@@ -7,22 +7,19 @@ import Networking.ReceiveObjectListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.Serializable;
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.List;
-import java.util.stream.Stream;
 import javax.swing.*;
 import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.LayerUI;
-import javax.swing.plaf.TextUI;
 
-import static src.constants.*;
+import static UI.constants.*;
 
 
 // some of source taken from docs.oracle.com/javase/
 // gradient idea copied
-public class introScreen {
+public class IntroScreen {
     static JTextField ipTextField1,ipTextField2,ipTextField3;
     static JLabel ipLabel1,ipLabel2,ipLabel3,statusLabel;
     static JLabel myIPAddressText;

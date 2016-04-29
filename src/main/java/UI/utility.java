@@ -1,4 +1,4 @@
-package src;
+package UI;
 
 /**
  * Created by arnavkansal on 10/04/16.

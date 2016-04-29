@@ -1,4 +1,4 @@
-package src;
+package UI;
 
 import integration.AbstractGameUI;
 
@@ -6,10 +6,10 @@ import java.awt.*;
 import java.util.Random;
 
 import static java.awt.event.KeyEvent.*;
-import static src.Paddle.paddleType.HORIZONTAL;
-import static src.Paddle.playerType.AI;
-import static src.Paddle.playerType.OTHER;
-import static src.constants.*;
+import static UI.Paddle.paddleType.HORIZONTAL;
+import static UI.Paddle.playerType.AI;
+import static UI.Paddle.playerType.OTHER;
+import static UI.constants.*;
 
 /**
  * Created by arnavkansal on 09/04/16.

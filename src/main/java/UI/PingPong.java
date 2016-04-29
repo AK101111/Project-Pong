@@ -1,4 +1,4 @@
-package src;
+package UI;
 
 import integration.AbstractGameUI;
 
@@ -6,7 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 
 import static java.lang.Integer.parseInt;
-import static src.constants.*;
+import static UI.constants.*;
 
 /**
  * Created by arnavkansal on 09/04/16.

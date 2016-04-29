@@ -1,9 +1,9 @@
-package src;
+package UI;
 
 import java.awt.*;
 
-import static src.constants.scoreheight;
-import static src.constants.scorewidth;
+import static UI.constants.scoreheight;
+import static UI.constants.scorewidth;
 
 /**
  * Created by arnavkansal on 21/04/16.

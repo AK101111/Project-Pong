@@ -1,4 +1,4 @@
-package src;
+package UI;
 
 import integration.AbstractGameUI;
 
@@ -14,12 +14,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import static src.Paddle.paddleType.HORIZONTAL;
-import static src.Paddle.paddleType.VERTICAL;
-import static src.Paddle.playerType.AI;
-import static src.Paddle.playerType.HUMAN;
-import static src.Paddle.playerType.OTHER;
-import static src.constants.*;
+import static UI.Paddle.playerType.AI;
+import static UI.Paddle.playerType.HUMAN;
+import static UI.Paddle.playerType.OTHER;
+import static UI.constants.*;
 
 /**
  * Created by arnavkansal on 09/04/16.
