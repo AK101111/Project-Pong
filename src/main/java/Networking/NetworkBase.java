@@ -172,7 +172,7 @@ public class NetworkBase {
         try {
             InetAddress localAdd = InetAddress.getLocalHost();
             String ip =  localAdd.getHostAddress();
-            if (!ip.equals("127.0.0.1"))
+            if (!isLocalIP(ip))
                 return ip;
             else
                 return getNonLocalIP();
@@ -188,6 +188,9 @@ public class NetworkBase {
         else
             return false;
     }
+    private static boolean isLocalIP (String ip) {
+        return ip.matches("^127.");
+    }
 
     private static String getNonLocalIP () {
         String preferredIP = null;
@@ -202,7 +205,7 @@ public class NetworkBase {
                     InetAddress address = addresses.nextElement();
                     if (address instanceof Inet4Address) {
                         String thisIP = address.getHostAddress();
-                        if (!thisIP.equals("127.0.0.1")) {
+                        if (!isLocalIP(thisIP)) {
                             someIP = thisIP;
                             if (isPreferredNetworkInterface(name)) {
                                 preferredIP = thisIP;
