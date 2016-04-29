@@ -3,6 +3,8 @@ package UI;
 import Networking.NetworkBase;
 import Networking.PeerConnectionListener;
 import Networking.ReceiveListener;
+import integration.AbstractGameUI;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -31,6 +33,7 @@ public class IntroScreen {
     static NetworkBase network;
     static ButtonGroup entreeGroup;
     static Map<String,Boolean> isPeerReady = new HashMap<>();
+    static PingPong pingPong = new PingPong();
 
 //    static ArrayList<String> connectedIPs = new ArrayList<>();
 
@@ -122,6 +125,8 @@ public class IntroScreen {
                     ballVelocity.xspeed = (float) jsonObject.getDouble("xspeed");
                     ballVelocity.yspeed = (float)jsonObject.getDouble("yspeed");
                     startGame();
+                }else if(type.equals("paddleMove")){
+                    pingPong.movePaddle(jsonObject.getInt("id"),jsonObject.getInt("delX"),jsonObject.getInt("delY"));
                 }
             } catch (JSONException ex) {
                 ex.printStackTrace();
@@ -166,8 +171,24 @@ public class IntroScreen {
         }
     };
 
+    static integration.AbstractGameUI.PaddleMoveListener paddleMoveListener = new AbstractGameUI.PaddleMoveListener() {
+        @Override
+        public void handlePaddleMove(int id, int delX, int delY) {
+            network.sendJSONToAll(getPaddleMoveJson(id,delX,delY));
+        }
+    };
+
+    private static JSONObject getPaddleMoveJson(int id, int delX, int delY){
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("type","paddleMove");
+        jsonObject.put("id",id);
+        jsonObject.put("delX",delX);
+        jsonObject.put("delY",delY);
+        return jsonObject;
+    }
+
     private static void startGame(){
-        PingPong.startGame(getSelectedButtonPosition(entreeGroup),ballVelocity);
+        pingPong = pingPong.startGame(getSelectedButtonPosition(entreeGroup),ballVelocity,myName,paddleMoveListener);
     }
 
     private static void sendBallVelocity(){

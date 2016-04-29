@@ -15,11 +15,16 @@ public class PingPong extends JFrame{
     private PongBoard Board;
     public int difficulty;
     Ball.BallVelocity ballVelocity;
+    int myName;
+    AbstractGameUI.PaddleMoveListener paddleMoveListener;
 
     public PingPong(int difficulty, Ball.BallVelocity velocity){
         this.difficulty = difficulty;
         this.ballVelocity = velocity;
         renderDisplay();
+    }
+    public PingPong(){
+
     }
 
     public PongBoard getBoard(){
@@ -36,43 +41,33 @@ public class PingPong extends JFrame{
         setLocationRelativeTo(null);
         // testcomp and testactive are to be set
         Board = new PongBoard(this,testactive,testcomp,ballVelocity);//,testother);
-        Board.setOnInternalPaddleMoveListener(new AbstractGameUI.PaddleMoveListener() {
-            @Override
-            public void handlePaddleMove(int id, int delX, int delY) {
-               // System.out.println(String.format("id =%d, delx =%d, dely = %d",id,delX,delY));
-//                if (id == 0) {
-//                    Board.movePaddle(2, -delX, delY);
-////                    Board.movePaddle(2,-delX,-delY);
-//                }
-//                if (id == 1) {
-//                    Board.movePaddle(1,-delX,-delY);
-//                }
-            }
-        });
-//        for(int i=0;i<1000;++i){
-//            Board.movePaddle(0,1,0);
-//        }
-        Board.setPaddleAsKeyboardControlled(0,false);
-        Board.setPaddleAsKeyboardControlled(1,false);
-        Board.setPaddleAsKeyboardControlled(2,true);
-        Board.setPaddleAsKeyboardControlled(3,false);
+        Board.setOnInternalPaddleMoveListener(paddleMoveListener
+        );
 
-//        Board.setPaddleAsAiControlled(1);
-//        Board.setPaddleAsAiControlled(2);
-//        Board.setPaddleAsAiControlled(3);
+        for(int i = 0; i < 4; i++){
+            Board.setPaddleAsKeyboardControlled(i,(i==myName));
+        }
+
         Board.startpongBoard(this);
         add(Board);
     }
 
+    public void movePaddle(int id, int delX, int delY){
+        Board.movePaddle(id,delX,delY);
+    }
 
 
-    public static void startGame(int difficulty, Ball.BallVelocity velocity){
+
+    public static PingPong startGame(int difficulty, Ball.BallVelocity velocity, int myName, AbstractGameUI.PaddleMoveListener paddleMoveListener){
+        PingPong app = new PingPong(difficulty, velocity);
         EventQueue.invokeLater(new Runnable(){
             @Override
             public void run(){
-                PingPong app = new PingPong(difficulty, velocity);
+                app.myName = myName;
+                app.paddleMoveListener = paddleMoveListener;
                 app.setVisible(true);
             }
         });
+        return app;
     }
 }
