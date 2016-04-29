@@ -242,10 +242,10 @@ public class introScreen {
                 network.addPeer(Integer.toString(i), peerList.get(i), 8080, 1, new PeerConnectionListener() {
                     @Override
                     public void onConnectionSuccess() {
-                        hideTextField(i, "Connected to : " + peerList.get(i));
+                        hideTextField(i-1, "Connected to : " + peerList.get(i));
 //                        connectedPeers.add(i);
                         connectionStore.setConnected(i);
-                        network.sendObjectToPeer(Integer.toString(i),new ConnectionRequest(peerList.get(i),myName));
+                        network.sendObjectToPeer(Integer.toString(i),new ConnectionRequest(NetworkBase.getIPAddress(),myName));
                     }
 
                     @Override
