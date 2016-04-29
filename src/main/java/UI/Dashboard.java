@@ -2,8 +2,8 @@ package UI;
 
 import java.awt.*;
 
-import static UI.constants.scoreheight;
-import static UI.constants.scorewidth;
+import static UI.Constants.scoreheight;
+import static UI.Constants.scorewidth;
 
 /**
  * Created by arnavkansal on 21/04/16.

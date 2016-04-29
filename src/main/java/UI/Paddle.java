@@ -5,11 +5,11 @@ import integration.AbstractGameUI;
 import java.awt.*;
 import java.util.Random;
 
-import static java.awt.event.KeyEvent.*;
 import static UI.Paddle.paddleType.HORIZONTAL;
 import static UI.Paddle.playerType.AI;
 import static UI.Paddle.playerType.OTHER;
-import static UI.constants.*;
+import static UI.Constants.*;
+import static java.awt.event.KeyEvent.*;
 
 /**
  * Created by arnavkansal on 09/04/16.
@@ -285,12 +285,12 @@ public class Paddle {
         this.setOutside = false;
     }
 
-    public utility.pair getxCollisionBounds(int pos){
-        return utility.pair.make_pair(xpos,xpos+WD);
+    public Utility.pair getxCollisionBounds(int pos){
+        return Utility.pair.make_pair(xpos,xpos+WD);
     }
 
-    public utility.pair getyCollisionBounds(int pos){
-        return utility.pair.make_pair(ypos,ypos+WD);
+    public Utility.pair getyCollisionBounds(int pos){
+        return Utility.pair.make_pair(ypos,ypos+WD);
     }
 
     public paddleType type(){

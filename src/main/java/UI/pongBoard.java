@@ -17,12 +17,12 @@ import java.util.ArrayList;
 import static UI.Paddle.playerType.AI;
 import static UI.Paddle.playerType.HUMAN;
 import static UI.Paddle.playerType.OTHER;
-import static UI.constants.*;
+import static UI.Constants.*;
 
 /**
  * Created by arnavkansal on 09/04/16.
  */
-public class pongBoard extends JPanel implements ActionListener, KeyListener, AbstractGameUI {
+public class PongBoard extends JPanel implements ActionListener, KeyListener, AbstractGameUI {
 
     private PingPong runningApp;
     private Ball ball;
@@ -39,6 +39,8 @@ public class pongBoard extends JPanel implements ActionListener, KeyListener, Ab
     private BufferedImage img;
     private PaddleMoveListener paddleMoveListener;
 
+    private Ball.BallVelocity ballVelocity;
+
     public Paddle[] getPlayers(){
         return this.Players;
     }
@@ -47,7 +49,7 @@ public class pongBoard extends JPanel implements ActionListener, KeyListener, Ab
         return this.ball;
     }
 
-    public pongBoard(PingPong app, int activePlayer, int[] computerPlayers){//, int[] otherPlayers)
+    public PongBoard(PingPong app, int activePlayer, int[] computerPlayers, Ball.BallVelocity velocity){//, int[] otherPlayers)
         this.runningApp = app;
         Players = new Paddle[MAXPLAYERS];
         //this.activePlayer = activePlayer;
@@ -59,6 +61,7 @@ public class pongBoard extends JPanel implements ActionListener, KeyListener, Ab
         } catch (IOException e) {
             e.printStackTrace();
         }
+        this.ballVelocity = velocity;
         this.computerPlayers = new ArrayList<>();
         this.otherPlayers = new ArrayList<>();
         this.keyboardPlayers = new ArrayList<>();
@@ -79,9 +82,7 @@ public class pongBoard extends JPanel implements ActionListener, KeyListener, Ab
 
     public void setBoard(PingPong app) {
         // set Ball
-        ball = new Ball(app);
-        ball.getXspeed();
-        ball.getYspeed();
+        ball = new Ball(app,ballVelocity);
         // set AI players
 //        for(int index: computerPlayers){
 //            Players[index] = new Paddle(app, xinit[index], yinit[index], Paddle.paddleType.values()[index%2], AI,index);

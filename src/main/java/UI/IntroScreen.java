@@ -15,7 +15,7 @@ import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.LayerUI;
 
-import static UI.constants.*;
+import static UI.Constants.*;
 
 
 // some of source taken from docs.oracle.com/javase/
@@ -25,11 +25,13 @@ public class IntroScreen {
     static JLabel ipLabel1,ipLabel2,ipLabel3,statusLabel;
     static JLabel myIPAddressText;
     static MouseAdapter onConnectListener;
-    static JButton connectButton;
-
     static Map<Integer,String> peersList;
+    static JButton actionButton;
     static int myName;
     static NetworkBase network;
+    static ButtonGroup entreeGroup;
+
+    static Ball.BallVelocity ballVelocity;
 
     static ReceiveListener receiveListener = new ReceiveListener() {
         @Override
@@ -74,7 +76,7 @@ public class IntroScreen {
                         public void onAllConnectionsRes(boolean allSuccess, List<Integer> failedPeerList) {
                             if (allSuccess) {
                                 statusLabel.setText("Connected to all.");
-                                disableButton(connectButton);
+                                disableButton(actionButton);
                                 //connected to all
                             }
                         }
@@ -84,8 +86,89 @@ public class IntroScreen {
             } catch (JSONException ex) {
                 ex.printStackTrace();
             }
+//            else if(obj instanceof MessageObject){
+//                MessageObject messageObject = (MessageObject) obj;
+//                if(messageObject.messageType.equals("connection") && messageObject.message.equals("connectedToAll")){
+//                    setConnectionReadyLabel(messageObject.senderIP);
+//                    if(isAllConnectionReady()) {
+//                        if(myName == 0)
+//                            setActionButton(true, "Play", startGameListener);
+//                        else
+//                            statusLabel.setText("Waiting for game to commence...");
+//                    }
+//                }
+//            }else if(obj instanceof Ball.BallVelocity){
+//                ballVelocity = (Ball.BallVelocity) obj;
+//                startGame();
+//            }
+            //TODO
         }
     };
+
+
+
+    static MouseAdapter startGameListener = new MouseAdapter() {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            super.mouseClicked(e);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    if(myName == 0) {
+                        sendBallVelocity();
+                        for (int i = 1; i != 4; i++) {
+                            statusLabel.setText(i + "");
+                        }
+                        startGame();
+                    }
+                }
+            });
+        }
+    };
+
+    private static void startGame(){
+        PingPong.startGame(getSelectedButtonPosition(entreeGroup),ballVelocity);
+    }
+
+    private static void sendBallVelocity(){
+        Random random = new Random();
+        ballVelocity.xspeed = XSPEED[random.nextInt(100)%3];
+        ballVelocity.yspeed = YSPEED[random.nextInt(100)%3];
+        while (ballVelocity.yspeed == 0 && ballVelocity.xspeed ==0){
+            ballVelocity.xspeed = XSPEED[random.nextInt(2)];
+            ballVelocity.yspeed = YSPEED[random.nextInt(2)];
+        }
+//        network.sendObjectToPeer(); TODO send ball velocity to all peers
+    }
+
+
+
+    private static void setActionButton(boolean enabled, String label, MouseAdapter mouseAdapter){
+        actionButton = new JButton(label);
+        actionButton.setPreferredSize(new Dimension(50, 30));
+        actionButton.addMouseListener(mouseAdapter);
+        actionButton.setEnabled(enabled);
+    }
+
+    private static boolean isAllConnectionReady(){
+        JLabel[] labels = {ipLabel1,ipLabel2,ipLabel3,myIPAddressText};
+        for(JLabel label : labels){
+            if(!label.getText().contains(" - Ready!")){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static void setConnectionReadyLabel(String ip){
+        JLabel[] labels = {ipLabel1,ipLabel2,ipLabel3};
+        for(JLabel label : labels){
+            if(label.getText().contains(ip)){
+                label.setText(label.getText() + " - Ready!");
+                break;
+            }
+        }
+    }
 
     public static void main(String[] args) {
         network = new NetworkBase(8080,receiveListener);
@@ -119,7 +202,7 @@ public class IntroScreen {
         southPanel.setBorder(new EmptyBorder(20, 50, 0, 50));
         JPanel centerPanel = new JPanel();
         centerPanel.setBorder(new EmptyBorder(20, 0, 0, 0));
-        ButtonGroup entreeGroup = new ButtonGroup();
+        entreeGroup = new ButtonGroup();
         JRadioButton radioButton;
         northPanel.add(radioButton = new JRadioButton("Easy"));
         entreeGroup.add(radioButton);
@@ -132,8 +215,6 @@ public class IntroScreen {
 
         GridLayout connectButtonLayout = new GridLayout(2,0);
         connectButtonLayout.setVgap(10);
-        connectButton = new JButton("Connect");
-        connectButton.setPreferredSize(new Dimension(50, 30));
         statusLabel = new JLabel();
         statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
         System.out.println(String.format("ht %d, wd%d",mainPanel.getHeight(),mainPanel.getWidth()));
@@ -168,11 +249,12 @@ public class IntroScreen {
 //                    showTextField(0);
 //                    statusLabel.setText("");
 //                }
-                disableButton(connectButton);
-                connectToPeerList(peersList,statusLabel,connectButton);
+                disableButton(actionButton);
+                connectToPeerList(peersList,statusLabel, actionButton);
             }
         };
-        connectButton.addMouseListener(onConnectListener);
+
+        setActionButton(true,"Connect",onConnectListener);
 
         JPanel textFieldPanel = new JPanel();
         GridLayout textFieldLayout = new GridLayout(3,0);
@@ -196,7 +278,7 @@ public class IntroScreen {
 
 
         southPanel.add(statusLabel,BorderLayout.NORTH);
-        southPanel.add(connectButton,BorderLayout.SOUTH);
+        southPanel.add(actionButton,BorderLayout.SOUTH);
         southPanel.setLayout(connectButtonLayout);
         mainPanel.add(northPanel,BorderLayout.NORTH);
         mainPanel.add(centerPanel,BorderLayout.CENTER);
@@ -267,7 +349,7 @@ public class IntroScreen {
                     for (Integer i : failedList) {
                         sb.append(i + ",");
                     }
-                    sb.append(".Please remove.");
+                    sb.append("\nPlease remove.");
                     indicatorLabel.setText(sb.toString());
                     reEnableButton(connectButton);
                 } else {
@@ -288,7 +370,8 @@ public class IntroScreen {
                 network.addPeer(Integer.toString(i), peerList.get(i), 8080, 1, new PeerConnectionListener() {
                     @Override
                     public void onConnectionSuccess() {
-                        hideTextField(i-1, "Connected to : " + peerList.get(i));
+                        int name = i + 1;
+                        hideTextField(i-1, "Connected to " + name + " (" + peerList.get(i) + ")");
 //                        connectedPeers.add(i);
 //                        network.sendObjectToPeer(Integer.toString(i),new ConnectionRequest(NetworkBase.getIPAddress(),myName));
                         network.sendJSON(Integer.toString(i),getConnectionRequestObject(NetworkBase.getIPAddress(),myName,i));
