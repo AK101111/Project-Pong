@@ -140,7 +140,7 @@ public class NetworkBase {
         }
     }
 
-    public boolean isPeer (int name) {
+    public boolean isPeer (String name) {
         return peerSockets.containsKey(name);
     }
 

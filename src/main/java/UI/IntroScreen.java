@@ -48,7 +48,7 @@ public class IntroScreen {
                     int senderName = jsonObject.getInt("senderName");
                     int receiverName = jsonObject.getInt("receiverName");
                     myName = receiverName;
-                    if (!network.isPeer(senderName)) {
+                    if (!network.isPeer(Integer.toString(senderName))) {
                         network.addPeer(Integer.toString(senderName), senderIP, 8080, 100, new PeerConnectionListener() {
                             @Override
                             public void onConnectionSuccess() {
@@ -72,7 +72,7 @@ public class IntroScreen {
                         String key = keys.next();
                         int name = Integer.valueOf(key);
                         String ip = peers.getString(key);
-                        if (!network.isPeer(name) && !NetworkBase.getIPAddress().equals(ip)) {
+                        if (!network.isPeer(Integer.toString(name)) && !NetworkBase.getIPAddress().equals(ip)) {
                             peersMap.put(name, ip);
                             isPeerReady.put("ip",false);
                         }
@@ -98,7 +98,7 @@ public class IntroScreen {
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            while (!network.isPeer(senderName)) {}
+                            while (!network.isPeer(Integer.toString(senderName))) {}
                             setConnectionReadyLabel(senderIP);
                         }
                     }).start();
