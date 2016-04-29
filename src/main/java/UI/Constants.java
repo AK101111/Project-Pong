@@ -19,7 +19,7 @@ public final class Constants {
     public static final int[] yinit = new int[]{0, 182, 373, 182};
     public static final int[] scoreheight = new int[]{30,200,370,200};
     public static final int[] scorewidth = new int[]{200,370,200,30};
-    public static final String IMAGES_PATH = "images/";
+    public static final String IMAGES_PATH = "src/main/resources/images/";
     public static final int WINDOW_XSIZE = 400;
     public static final int WINDOW_YSIZE = 500;
     public static final int PHOTO_DELAY = 50;
