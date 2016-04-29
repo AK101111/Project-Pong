@@ -76,6 +76,7 @@ public class IntroScreen {
                         public void onAllConnectionsRes(boolean allSuccess, List<Integer> failedPeerList) {
                             if (allSuccess) {
                                 statusLabel.setText("Connected to all.");
+                                myIPAddressText.setText(myIPAddressText.getText() +  " - Ready!");
                                 disableButton(actionButton);
                                 //connected to all
                                 network.sendJSONToAll(getConnectedToAllJson());

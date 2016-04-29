@@ -4,15 +4,8 @@ import Utils.Utils;
 import org.json.JSONObject;
 
 import java.io.*;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.AbstractList;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.List;
+import java.net.*;
+import java.util.*;
 import java.util.concurrent.*;
 
 //import static java.lang.System.out;
@@ -178,12 +171,55 @@ public class NetworkBase {
     public static String getIPAddress() {
         try {
             InetAddress localAdd = InetAddress.getLocalHost();
-            return localAdd.getHostAddress();
+            String ip =  localAdd.getHostAddress();
+            if (!ip.equals("127.0.0.1"))
+                return ip;
+            else
+                return getNonLocalIP();
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
+
+    private static boolean isPreferredNetworkInterface (String name) {
+        if (name.matches("^en|eth|wlan"))
+            return true;
+        else
+            return false;
+    }
+
+    private static String getNonLocalIP () {
+        String preferredIP = null;
+        String someIP = null;
+        try {
+            Enumeration<NetworkInterface> e = NetworkInterface.getNetworkInterfaces();
+            while (e.hasMoreElements()) {
+                NetworkInterface networkInterface = (NetworkInterface) e.nextElement();
+                String name = networkInterface.getName();
+                Enumeration<InetAddress> addresses = networkInterface.getInetAddresses();
+                while (addresses.hasMoreElements()) {
+                    InetAddress address = addresses.nextElement();
+                    if (address instanceof Inet4Address) {
+                        String thisIP = address.getHostAddress();
+                        if (!thisIP.equals("127.0.0.1")) {
+                            someIP = thisIP;
+                            if (isPreferredNetworkInterface(name)) {
+                                preferredIP = thisIP;
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (preferredIP != null)
+            return preferredIP;
+        else
+            return someIP;
+    }
+
 
 //    public static class TimeStamp implements Serializable {
 //        public long time;
