@@ -1,14 +1,10 @@
 package src;
 
-import sun.jvm.hotspot.memory.PlaceholderEntry;
-
-import javax.tools.Tool;
 import java.awt.*;
 import java.util.Random;
 
 import static java.lang.Math.abs;
-import static src.Paddle.paddleType.HORIZONTAL;
-import static src.constants.*;
+import static src.Constants.*;
 
 /**
  * Created by arnavkansal on 09/04/16.

@@ -3,7 +3,7 @@ package src;
 /**
  * Created by arnavkansal on 10/04/16.
  */
-public class utility {
+public class Utility {
     public static class pair{
         public int left;
         public int right;

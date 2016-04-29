@@ -6,13 +6,13 @@ import javax.swing.*;
 import java.awt.*;
 
 import static java.lang.Integer.parseInt;
-import static src.constants.*;
+import static src.Constants.*;
 
 /**
  * Created by arnavkansal on 09/04/16.
  */
 public class PingPong extends JFrame{
-    private pongBoard Board;
+    private PongBoard Board;
     public int difficulty;
     Ball.BallVelocity ballVelocity;
 
@@ -22,7 +22,7 @@ public class PingPong extends JFrame{
         renderDisplay();
     }
 
-    public pongBoard getBoard(){
+    public PongBoard getBoard(){
         return this.Board;
     }
 
@@ -35,7 +35,7 @@ public class PingPong extends JFrame{
         // center window on screen
         setLocationRelativeTo(null);
         // testcomp and testactive are to be set
-        Board = new pongBoard(this,testactive,testcomp,ballVelocity);//,testother);
+        Board = new PongBoard(this,testactive,testcomp,ballVelocity);//,testother);
         Board.setOnInternalPaddleMoveListener(new AbstractGameUI.PaddleMoveListener() {
             @Override
             public void handlePaddleMove(int id, int delX, int delY) {

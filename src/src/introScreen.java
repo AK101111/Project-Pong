@@ -14,12 +14,12 @@ import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.LayerUI;
 
-import static src.constants.*;
+import static src.Constants.*;
 
 
 // some of source taken from docs.oracle.com/javase/
 // gradient idea copied
-public class introScreen {
+public class IntroScreen {
     static JTextField ipTextField1,ipTextField2,ipTextField3;
     static JLabel ipLabel1,ipLabel2,ipLabel3,statusLabel;
     static JLabel myIPAddressText;
