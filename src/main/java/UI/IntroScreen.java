@@ -141,6 +141,11 @@ public class IntroScreen {
                         sendBallVelocity();
                         for (int i = 1; i != 4; i++) {
                             statusLabel.setText(i + "");
+                            try{
+                                Thread.sleep(1000);
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
                         }
                         startGame();
                     }
