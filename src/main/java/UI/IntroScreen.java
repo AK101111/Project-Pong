@@ -30,7 +30,7 @@ public class IntroScreen {
     static int myName;
     static NetworkBase network;
     static ButtonGroup entreeGroup;
-    static Map<String,Boolean> isPeerReady;
+    static Map<String,Boolean> isPeerReady = new HashMap<>();
 
     static Ball.BallVelocity ballVelocity;
 
@@ -173,7 +173,7 @@ public class IntroScreen {
     }
 
     private static boolean isAllConnectionReady(){
-        if(isPeerReady == null)
+        if(isPeerReady == null || isPeerReady.isEmpty())
             return false;
         else{
             for(String key : isPeerReady.keySet()){
