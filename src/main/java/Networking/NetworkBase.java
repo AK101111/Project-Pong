@@ -140,8 +140,8 @@ public class NetworkBase {
         }
     }
 
-    public boolean isPeer (String ip) {
-        return peerSockets.containsValue(ip);
+    public boolean isPeer (int name) {
+        return peerSockets.containsKey(name);
     }
 
     public void sendToPeer (String peerName, String msg) {
