@@ -34,7 +34,7 @@ public class IntroScreen {
 
 //    static ArrayList<String> connectedIPs = new ArrayList<>();
 
-    static Ball.BallVelocity ballVelocity;
+    static Ball.BallVelocity ballVelocity = new Ball.BallVelocity();
 
     static ReceiveListener receiveListener = new ReceiveListener() {
         @Override
