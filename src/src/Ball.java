@@ -1,14 +1,10 @@
 package src;
 
-import sun.jvm.hotspot.memory.PlaceholderEntry;
-
-import javax.tools.Tool;
 import java.awt.*;
 import java.util.Random;
 
 import static java.lang.Math.abs;
-import static src.Paddle.paddleType.HORIZONTAL;
-import static src.constants.*;
+import static src.Constants.*;
 
 /**
  * Created by arnavkansal on 09/04/16.
@@ -16,26 +12,25 @@ import static src.constants.*;
 public class Ball {
     private int xpos;
     private int ypos;
-    private float xspeed;
-    private float yspeed;
     private int radius=RADIUS;
     private int widthBound = SCREEN_WIDTH;
     private int heightBound;
     private PingPong runningapp;
     private int lasthit;
     private Random rn;
+    BallVelocity ballVelocity;
 
-    public Ball(PingPong app){
+    public static class BallVelocity{
+        public float xspeed;
+        public float yspeed;
+    }
+    
+    public Ball(PingPong app, BallVelocity velocity){
         this.runningapp = app;
         xpos = XCENTER;
         ypos = YCENTER;
         rn = new Random();
-        xspeed = XSPEED[rn.nextInt(100)%3];
-        yspeed = YSPEED[rn.nextInt(100)%3];
-        while (yspeed == 0 && xspeed ==0){
-            xspeed = XSPEED[rn.nextInt(2)];
-            yspeed = YSPEED[rn.nextInt(2)];
-        }
+        ballVelocity = velocity;
         // put ball in center
         getWorkingScreenSize();
         lasthit = -1;
@@ -45,26 +40,26 @@ public class Ball {
         Paddle[] Players = runningapp.getBoard().getPlayers();
         switch (paddleHit()) {
             case 0:
-                yspeed = -yspeed;
-                //if(Players[0].getxchange()+xspeed>=-1 && Players[0].getxchange()+xspeed<=1) xspeed += Players[0].getxchange();
+                ballVelocity.yspeed = -ballVelocity.yspeed;
+                //if(Players[0].getxchange()+ballVelocity.xspeed>=-1 && Players[0].getxchange()+ballVelocity.xspeed<=1) ballVelocity.xspeed += Players[0].getxchange();
                 // Player0 update
                 lasthit = 0;
                 break;
             case 1:
-                xspeed = -xspeed;
-                //if(Players[1].getychange()+yspeed>=-1 && Players[1].getychange()+yspeed<=1) yspeed += Players[1].getychange();
+                ballVelocity.xspeed = -ballVelocity.xspeed;
+                //if(Players[1].getychange()+ballVelocity.yspeed>=-1 && Players[1].getychange()+ballVelocity.yspeed<=1) ballVelocity.yspeed += Players[1].getychange();
                 // Player1 update
                 lasthit = 1;
                 break;
             case 2:
-                yspeed = -yspeed;
-                //if(Players[2].getxchange()+xspeed>=-1 && Players[2].getxchange()+xspeed<=1) xspeed += Players[2].getxchange();
+                ballVelocity.yspeed = -ballVelocity.yspeed;
+                //if(Players[2].getxchange()+ballVelocity.xspeed>=-1 && Players[2].getxchange()+ballVelocity.xspeed<=1) ballVelocity.xspeed += Players[2].getxchange();
                 // Player2 update
                 lasthit = 2;
                 break;
             case 3:
-                xspeed = -xspeed;
-                //if(Players[3].getychange()+yspeed>=-1 && Players[3].getychange()+yspeed<=1) yspeed += Players[3].getychange();
+                ballVelocity.xspeed = -ballVelocity.xspeed;
+                //if(Players[3].getychange()+ballVelocity.yspeed>=-1 && Players[3].getychange()+ballVelocity.yspeed<=1) ballVelocity.yspeed += Players[3].getychange();
                 // Player3 update
                 lasthit = 3;
                 break;
@@ -73,30 +68,30 @@ public class Ball {
         }
         switch (wallHit()) {
             case 0:
-                yspeed = -yspeed;
+                ballVelocity.yspeed = -ballVelocity.yspeed;
                 // Player0 update
                 runningapp.getBoard().getDashboard().updateScore(0,-1);
                 break;
             case 1:
-                xspeed = -xspeed;
+                ballVelocity.xspeed = -ballVelocity.xspeed;
                 // Player1 update
                 runningapp.getBoard().getDashboard().updateScore(1,-1);
                 break;
             case 2:
-                yspeed = -yspeed;
+                ballVelocity.yspeed = -ballVelocity.yspeed;
                 // Player2 update
                 runningapp.getBoard().getDashboard().updateScore(2,-1);
                 break;
             case 3:
-                xspeed = -xspeed;
+                ballVelocity.xspeed = -ballVelocity.xspeed;
                 // Player3 update
                 runningapp.getBoard().getDashboard().updateScore(3,-1);
                 break;
             default:
                 break;
         }
-        xpos += xspeed;
-        ypos += yspeed;
+        xpos += ballVelocity.xspeed;
+        ypos += ballVelocity.yspeed;
     }
 
     public void updateSpeed(){
@@ -170,12 +165,6 @@ public class Ball {
         heightBound = SCREEN_HEIGHT - 21;
     }
 
-    public float getXspeed(){
-        return xspeed;
-    }
-    public float getYspeed(){
-        return yspeed;
-    }
 
     public int getxpos() {
         return xpos;

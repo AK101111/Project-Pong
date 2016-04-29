@@ -9,7 +9,7 @@ import static java.awt.event.KeyEvent.*;
 import static src.Paddle.paddleType.HORIZONTAL;
 import static src.Paddle.playerType.AI;
 import static src.Paddle.playerType.OTHER;
-import static src.constants.*;
+import static src.Constants.*;
 
 /**
  * Created by arnavkansal on 09/04/16.
@@ -285,12 +285,12 @@ public class Paddle {
         this.setOutside = false;
     }
 
-    public utility.pair getxCollisionBounds(int pos){
-        return utility.pair.make_pair(xpos,xpos+WD);
+    public Utility.pair getxCollisionBounds(int pos){
+        return Utility.pair.make_pair(xpos,xpos+WD);
     }
 
-    public utility.pair getyCollisionBounds(int pos){
-        return utility.pair.make_pair(ypos,ypos+WD);
+    public Utility.pair getyCollisionBounds(int pos){
+        return Utility.pair.make_pair(ypos,ypos+WD);
     }
 
     public paddleType type(){
