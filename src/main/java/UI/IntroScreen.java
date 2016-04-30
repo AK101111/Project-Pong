@@ -264,7 +264,8 @@ public class IntroScreen {
         JLayer<JPanel> jlayer = new JLayer<JPanel>(panel);
 
         mainFrame.add (jlayer);
-        mainFrame.pack();
+//        mainFrame.pack();
+        mainFrame.setSize(SCREEN_WIDTH,SCREEN_HEIGHT);
         mainFrame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
         mainFrame.setLocationRelativeTo (null);
         mainFrame.setVisible (true);
