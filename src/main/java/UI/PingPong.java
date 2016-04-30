@@ -1,10 +1,14 @@
 package UI;
 
+import Networking.NetworkBase;
 import integration.AbstractGameUI;
+import integration.GameState;
+import org.json.JSONObject;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.Map;
+import java.util.TimerTask;
 
 import static java.lang.Integer.parseInt;
 import static UI.Constants.*;
@@ -82,7 +86,29 @@ public class PingPong extends JFrame{
             board.movePaddle(id,delX,delY);
     }
 
+    private JSONObject getGameStateObject (GameState state) {
+        return new JSONObject().put("type","sync").put("state",state.toJSON());
+    }
 
+    public void syncState (JSONObject stateJSON) {
+        GameState gameState = GameState.fromJSON(stateJSON);
+        if (board != null) {
+            board.setGameState(gameState);
+        }
+    }
+
+    public void startTimer(NetworkBase network){
+        new java.util.Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                System.out.println("Trigger sync");
+                if (board != null && myName == 0) {
+                    GameState gameState = board.getGameState();
+                    network.sendJSONToAll(getGameStateObject(gameState));
+                }
+            }
+        },500,500);
+    }
 
     public static PingPong startGame(int difficulty, Ball.BallVelocity velocity, int myName, AbstractGameUI.PaddleMoveListener paddleMoveListener, Map<Integer,String> peersList){
         PingPong app = new PingPong(difficulty, velocity);
@@ -94,6 +120,7 @@ public class PingPong extends JFrame{
                 app.peersList = peersList;
                 app.renderDisplay();
                 app.setVisible(true);
+
             }
         });
         return app;
