@@ -107,7 +107,7 @@ public class PingPong extends JFrame{
                     network.sendJSONToAll(getGameStateObject(gameState));
                 }
             }
-        },500,500);
+        },200,200);
     }
 
     public static PingPong startGame(int difficulty, Ball.BallVelocity velocity, int myName, AbstractGameUI.PaddleMoveListener paddleMoveListener, Map<Integer,String> peersList){

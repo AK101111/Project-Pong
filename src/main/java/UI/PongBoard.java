@@ -184,12 +184,13 @@ public class PongBoard extends JPanel implements ActionListener, KeyListener, Ab
     @Override
     public GameState getGameState() {
         gameState.setBallPosition(ball.getPos());
-        gameState.setBallVelocity(ball.ballVelocity);
-        Map<Integer,MyVector> paddlePositions = new HashMap<>();
-        for(int i=0;i<players.length;++i){
-            paddlePositions.put(i,new MyVector(players[i].getxpos(),players[i].getypos()));
-        }
-        gameState.setPaddlePositions(paddlePositions);
+//        gameState.setBallVelocity(ball.ballVelocity);
+//        Map<Integer,MyVector> paddlePositions = new HashMap<>();
+//        for(int i=0;i<players.length;++i){
+//            paddlePositions.put(i,new MyVector(players[i].getxpos(),players[i].getypos()));
+//        }
+//        gameState.setPaddlePositions(paddlePositions);
+        gameState.setPaddlePositions(null);
         return gameState;
     }
 
@@ -198,11 +199,11 @@ public class PongBoard extends JPanel implements ActionListener, KeyListener, Ab
         this.gameState = gameState;
         this.ball.setPos(gameState.getBallPosition());
         this.ball.setVel(gameState.getBallVelocity());
-        Map<Integer,MyVector> paddlePositions = gameState.getPaddlePositions();
-        for(int i=0;i<players.length;++i){
-            players[i].setxpos(paddlePositions.get(i).getX());
-            players[i].setypos(paddlePositions.get(i).getY());
-        }
+//        Map<Integer,MyVector> paddlePositions = gameState.getPaddlePositions();
+//        for(int i=0;i<players.length;++i){
+//            players[i].setxpos(paddlePositions.get(i).getX());
+//            players[i].setypos(paddlePositions.get(i).getY());
+//        }
     }
 
 

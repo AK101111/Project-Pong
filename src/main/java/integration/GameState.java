@@ -57,7 +57,7 @@ public class GameState {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("ballPos",ballPosition.toJSON());
         jsonObject.put("ballVel",ballVelocity.toJSON());
-        jsonObject.put("paddlePos",paddlePositions);
+//        jsonObject.put("paddlePos",paddlePositions);
         return jsonObject;
     }
 
@@ -68,13 +68,13 @@ public class GameState {
             MyVector ballPosition = MyVector.fromJSON(jsonObject.getJSONObject("ballPos"));
             Ball.BallVelocity ballVelocity = Ball.BallVelocity.fromJSON(jsonObject.getJSONObject("ballVel"));
             JSONObject paddlePositionsJSON = jsonObject.getJSONObject("paddlePos");
-            Map<Integer,MyVector> paddlePositions = new HashMap<>();
-            for (String key : paddlePositionsJSON.keySet()) {
-                int paddleId = Integer.parseInt(key);
-                MyVector pos = MyVector.fromJSON(paddlePositionsJSON.getJSONObject(key));
-                paddlePositions.put(paddleId,pos);
-            }
-            state = new GameState(ballPosition,ballVelocity,paddlePositions);
+//            Map<Integer,MyVector> paddlePositions = new HashMap<>();
+//            for (String key : paddlePositionsJSON.keySet()) {
+//                int paddleId = Integer.parseInt(key);
+//                MyVector pos = MyVector.fromJSON(paddlePositionsJSON.getJSONObject(key));
+//                paddlePositions.put(paddleId,pos);
+//            }
+            state = new GameState(ballPosition,ballVelocity,null);
         } catch (JSONException ex) {
             ex.printStackTrace();
         }
