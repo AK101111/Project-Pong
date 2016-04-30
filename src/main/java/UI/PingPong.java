@@ -21,7 +21,7 @@ public class PingPong extends JFrame{
     public PingPong(int difficulty, Ball.BallVelocity velocity){
         this.difficulty = difficulty;
         this.ballVelocity = velocity;
-        renderDisplay();
+//        renderDisplay();
     }
     public PingPong(){
 
@@ -41,8 +41,7 @@ public class PingPong extends JFrame{
         setLocationRelativeTo(null);
         // testcomp and testactive are to be set
         Board = new PongBoard(this,testactive,testcomp,ballVelocity);//,testother);
-        Board.setOnInternalPaddleMoveListener(paddleMoveListener
-        );
+        Board.setOnInternalPaddleMoveListener(paddleMoveListener);
 
         for(int i = 0; i < 4; i++){
             Board.setPaddleAsKeyboardControlled(i,(i==myName));
@@ -65,6 +64,7 @@ public class PingPong extends JFrame{
             public void run(){
                 app.myName = myName;
                 app.paddleMoveListener = paddleMoveListener;
+                app.renderDisplay();
                 app.setVisible(true);
             }
         });
