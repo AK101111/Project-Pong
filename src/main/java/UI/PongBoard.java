@@ -171,16 +171,20 @@ public class PongBoard extends JPanel implements ActionListener, KeyListener, Ab
 
     @Override
     public void setGameState(GameState gameState) {
-        this.gameState = gameState;
-        this.ball.setXpos(gameState.getBallPosition().x);
-        this.ball.setYpos(gameState.getBallPosition().y);
-        this.ball.setXvel(gameState.getBallVelocity().x);
-        this.ball.setYvel(gameState.getBallVelocity().y);
-          Map<Integer,MyVector> paddlePositions = gameState.getPaddlePositions();
+        try {
+            this.gameState = gameState;
+            this.ball.setXpos(gameState.getBallPosition().x);
+            this.ball.setYpos(gameState.getBallPosition().y);
+            this.ball.setXvel(gameState.getBallVelocity().x);
+            this.ball.setYvel(gameState.getBallVelocity().y);
+//           Map<Integer,MyVector> paddlePositions = gameState.getPaddlePositions();
 //        for(int i=0;i<players.length;++i){
 //            players[i].setxpos(paddlePositions.get(i).getX());
 //            players[i].setypos(paddlePositions.get(i).getY());
 //        }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
