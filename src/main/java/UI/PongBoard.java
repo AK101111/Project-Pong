@@ -160,12 +160,7 @@ public class PongBoard extends JPanel implements ActionListener, KeyListener, Ab
     public GameState getGameState() {
         gameState.setBallPosition(new FloatPair(ball.getXpos(),ball.getYpos()));
         gameState.setBallVelocity(new FloatPair(ball.getXspeed(),ball.getYspeed()));
-//        Map<Integer,MyVector> paddlePositions = new HashMap<>();
-//        for(int i=0;i<players.length;++i){
-//            paddlePositions.put(i,new MyVector(players[i].getxpos(),players[i].getypos()));
-//        }
-//        gameState.setPaddlePositions(paddlePositions);
-        gameState.setPaddlePositions(null);
+        //TODO
         return gameState;
     }
 
@@ -177,11 +172,7 @@ public class PongBoard extends JPanel implements ActionListener, KeyListener, Ab
             this.ball.setYpos(gameState.getBallPosition().y);
             this.ball.setXvel(gameState.getBallVelocity().x);
             this.ball.setYvel(gameState.getBallVelocity().y);
-//           Map<Integer,MyVector> paddlePositions = gameState.getPaddlePositions();
-//        for(int i=0;i<players.length;++i){
-//            players[i].setxpos(paddlePositions.get(i).getX());
-//            players[i].setypos(paddlePositions.get(i).getY());
-//        }
+            //TODO
         } catch (Exception e) {
             e.printStackTrace();
         }

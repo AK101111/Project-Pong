@@ -18,7 +18,7 @@ import java.util.Map;
 public class GameState {
     private FloatPair ballPosition;
     private FloatPair ballVelocity;
-    private Map<Integer,MyVector> paddlePositions;
+    private Map<Integer,Integer> scores;
 
     public FloatPair getBallPosition(){
         return this.ballPosition;
@@ -28,8 +28,12 @@ public class GameState {
         return this.ballVelocity;
     }
 
-    public Map<Integer,MyVector> getPaddlePositions(){
-        return this.paddlePositions;
+    public Map<Integer,Integer> getScores() {
+        return scores;
+    }
+
+    public void setScores (Map<Integer,Integer> scores) {
+        this.scores = scores;
     }
 
     public void setBallPosition(FloatPair ballPosition){
@@ -40,25 +44,21 @@ public class GameState {
         this.ballVelocity = ballVelocity;
     }
 
-    public void setPaddlePositions(Map<Integer,MyVector> paddlePositions){
-        this.paddlePositions = paddlePositions;
-    }
-
     public GameState(){
 
     }
 
-    public GameState (FloatPair ballPosition, FloatPair ballVelocity, Map<Integer,MyVector> paddlePositions) {
+    public GameState (FloatPair ballPosition, FloatPair ballVelocity, Map<Integer,Integer> scores) {
         this.ballPosition = ballPosition;
         this.ballVelocity = ballVelocity;
-        this.paddlePositions = paddlePositions;
+        this.scores = scores;
     }
 
     public JSONObject toJSON () {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("ballPos",ballPosition.toJSON());
         jsonObject.put("ballVel",ballVelocity.toJSON());
-//        jsonObject.put("paddlePos",paddlePositions);
+        jsonObject.put("scores",scores);
         return jsonObject;
     }
 
@@ -68,14 +68,14 @@ public class GameState {
 //            System.out.println("gamestate json:\n" + jsonObject.toString(4));
             FloatPair ballPosition = FloatPair.fromJSON(jsonObject.getJSONObject("ballPos"));
             FloatPair ballVelocity = FloatPair.fromJSON(jsonObject.getJSONObject("ballVel"));
-//            JSONObject paddlePositionsJSON = jsonObject.getJSONObject("paddlePos");
-//            Map<Integer,MyVector> paddlePositions = new HashMap<>();
-//            for (String key : paddlePositionsJSON.keySet()) {
-//                int paddleId = Integer.parseInt(key);
-//                MyVector pos = MyVector.fromJSON(paddlePositionsJSON.getJSONObject(key));
-//                paddlePositions.put(paddleId,pos);
-//            }
-            state = new GameState(ballPosition,ballVelocity,null);
+            JSONObject scoresJSON = jsonObject.getJSONObject("scores");
+            Map<Integer,Integer> scores = new HashMap<>();
+            for (String key : scoresJSON.keySet()) {
+                int id = Integer.valueOf(key);
+                int score = scoresJSON.getInt(key);
+                scores.put(id,score);
+            }
+            state = new GameState(ballPosition,ballVelocity,scores);
         } catch (JSONException ex) {
             ex.printStackTrace();
         }
