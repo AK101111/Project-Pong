@@ -139,8 +139,8 @@ public class IntroScreen {
                     ballVelocity.xspeed = (float) jsonObject.getDouble("xspeed");
                     ballVelocity.yspeed = (float)jsonObject.getDouble("yspeed");
                     startGame();
-                }else if(type.equals("paddleMove")){
-                    pingPong.movePaddle(jsonObject.getInt("id"),jsonObject.getInt("delX"),jsonObject.getInt("delY"));
+                }else if(type.equals("absolutePaddleMove")){
+                    pingPong.movePaddleAbsolute(jsonObject.getInt("id"),jsonObject.getInt("x"),jsonObject.getInt("y"));
                 }
             } catch (JSONException ex) {
                 ex.printStackTrace();
@@ -185,19 +185,35 @@ public class IntroScreen {
         }
     };
 
-    static integration.AbstractGameUI.PaddleMoveListener paddleMoveListener = new AbstractGameUI.PaddleMoveListener() {
+//    static integration.AbstractGameUI.PaddleMoveListener paddleMoveListener = new AbstractGameUI.PaddleMoveListener() {
+//        @Override
+//        public void handlePaddleMove(int id, int delX, int delY) {
+//            network.sendJSONToAll(getPaddleMoveJson(id,delX,delY));
+//        }
+//    };
+
+    static integration.AbstractGameUI.AbsoluteMoveListener paddleMoveListener = new AbstractGameUI.AbsoluteMoveListener() {
         @Override
-        public void handlePaddleMove(int id, int delX, int delY) {
-            network.sendJSONToAll(getPaddleMoveJson(id,delX,delY));
+        public void handlePaddlePosition(int id, int x, int y) {
+            network.sendJSONToAll(getAbsolutePaddleMoveJson(id,x,y));
         }
     };
 
-    private static JSONObject getPaddleMoveJson(int id, int delX, int delY){
+//    private static JSONObject getPaddleMoveJson(int id, int delX, int delY){
+//        JSONObject jsonObject = new JSONObject();
+//        jsonObject.put("type","paddleMove");
+//        jsonObject.put("id",id);
+//        jsonObject.put("delX",delX);
+//        jsonObject.put("delY",delY);
+//        return jsonObject;
+//    }
+
+    private static JSONObject getAbsolutePaddleMoveJson(int id, int x, int y){
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("type","paddleMove");
+        jsonObject.put("type","absolutePaddleMove");
         jsonObject.put("id",id);
-        jsonObject.put("delX",delX);
-        jsonObject.put("delY",delY);
+        jsonObject.put("x",x);
+        jsonObject.put("y",y);
         return jsonObject;
     }
 

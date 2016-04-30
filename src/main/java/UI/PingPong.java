@@ -17,7 +17,7 @@ public class PingPong extends JFrame{
     public int difficulty;
     Ball.BallVelocity ballVelocity;
     int myName;
-    AbstractGameUI.PaddleMoveListener paddleMoveListener;
+    AbstractGameUI.AbsoluteMoveListener paddleMoveListener;
     Map<Integer,String> peersList;
     boolean[] isPaddleTypeSet = {false,false,false,false};
 
@@ -44,7 +44,13 @@ public class PingPong extends JFrame{
         setLocationRelativeTo(null);
         // testcomp and testactive are to be set
         Board = new PongBoard(this,testactive,testcomp,ballVelocity);//,testother);
-        Board.setOnInternalPaddleMoveListener(paddleMoveListener);
+        Board.setOnInternalPaddleMoveListener(new AbstractGameUI.PaddleMoveListener() {
+            @Override
+            public void handlePaddleMove(int id, int delX, int delY) {
+                // do nothing
+            }
+        });
+        Board.setOnInternalAbsoluteMoveListener(paddleMoveListener);
 
         setPaddleTypes();
 
@@ -81,7 +87,7 @@ public class PingPong extends JFrame{
     }
 
 
-    public static PingPong startGame(int difficulty, Ball.BallVelocity velocity, int myName, AbstractGameUI.PaddleMoveListener paddleMoveListener, Map<Integer,String> peersList){
+    public static PingPong startGame(int difficulty, Ball.BallVelocity velocity, int myName, AbstractGameUI.AbsoluteMoveListener paddleMoveListener, Map<Integer,String> peersList){
         PingPong app = new PingPong(difficulty, velocity);
         EventQueue.invokeLater(new Runnable(){
             @Override
