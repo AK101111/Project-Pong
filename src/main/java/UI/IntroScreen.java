@@ -81,7 +81,7 @@ public class IntroScreen {
                         String key = keys.next();
                         int name = Integer.valueOf(key);
                         String ip = peers.getString(key);
-                        if (!network.isPeer(Integer.toString(name)) && !NetworkBase.getIPAddress().equals(ip) && !toBeConnectedIPs.contains(name)) {
+                        if (!network.isPeer(Integer.toString(name)) && !NetworkBase.getIPAddress().equals(ip)) {
                             peersMap.put(name, ip);
                             isPeerReady.put("ip",false);
                         }
@@ -99,9 +99,11 @@ public class IntroScreen {
                                 //connected to all
                                 network.sendJSONToAll(getConnectedToAllJson());
                                 for (Integer peerName : connectedPeerList) {
-                                    int labelId =  getUnfilledConnectionLabel();
-                                    System.out.println("[print to label][peerList] labelId=" + labelId + ", senderIP=" + peersMap.get(peerName) + ", senderName="+peerName);
-                                    displayConnectedToPeer(labelId,peersMap.get(peerName),peerName,false);
+                                    if (toBeConnectedIPs.contains(peerName)) {
+                                        int labelId = getUnfilledConnectionLabel();
+                                        System.out.println("[print to label][peerList] labelId=" + labelId + ", senderIP=" + peersMap.get(peerName) + ", senderName=" + peerName);
+                                        displayConnectedToPeer(labelId, peersMap.get(peerName), peerName, false);
+                                    }
                                 }
                             }
                         }
