@@ -91,7 +91,7 @@ public class Paddle {
     }
 
     public boolean setypos(int deltaypos){
-        if(this.ypos + deltaypos + WD < SCREEN_HEIGHT && this.ypos+deltaypos>0){
+        if(this.ypos + deltaypos + WD < 378 && this.ypos+deltaypos>0){
             this.ypos += deltaypos;
             this.setOutside = true;
             return true;
