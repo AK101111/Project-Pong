@@ -82,6 +82,9 @@ public class NetworkBase {
     public void addMultiplePeers (Map<Integer,String> peerList, long timeoutEachMillis, MultiplePeerConnectionListener handler) {
         final PeerConnectionStore connectionStore = new PeerConnectionStore(peerList.size(), handler);
 //        myName = 0;
+        if (peerList.size() == 0) {
+            handler.onAllConnectionsRes(true,new ArrayList<>(),new ArrayList<>());
+        }
         for (final Integer i : peerList.keySet()) {
             if (!peerList.get(i).isEmpty()) {
                 addPeer(Integer.toString(i), peerList.get(i), 8080, timeoutEachMillis, new PeerConnectionListener() {
