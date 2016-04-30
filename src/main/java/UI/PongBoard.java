@@ -43,6 +43,7 @@ public class PongBoard extends JPanel implements ActionListener, KeyListener, Ab
     private BufferedImage img;
     private PaddleMoveListener paddleMoveListener;
     private GameState gameState;
+    private OnDeadListener onDeadListener;
 
     private Ball.BallVelocity ballVelocity;
 
@@ -158,9 +159,19 @@ public class PongBoard extends JPanel implements ActionListener, KeyListener, Ab
     }
 
     @Override
+    public void setDeadPaddle(int id) {
+        players[id].setdead(true);
+    }
+
+    @Override
     public void setOnInternalPaddleMoveListener(PaddleMoveListener paddleMoveListener) {
         this.paddleMoveListener = paddleMoveListener;
         // line
+    }
+
+    @Override
+    public void setOnDeadListener(OnDeadListener onDeadListener) {
+        this.onDeadListener = onDeadListener;
     }
 
     @Override

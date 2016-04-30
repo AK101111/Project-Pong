@@ -28,9 +28,16 @@ public interface AbstractGameUI {
     boolean movePaddle (int id, int delX, int delY);
 //    boolean movePaddleAbsolute (int id, int x, int y);
 
+    void setDeadPaddle(int id);
+
     interface PaddleMoveListener {
         void handlePaddleMove (int id, int delX, int delY);
     }
+
+    interface OnDeadListener{
+        void onPlayerDead(int id);
+    }
+
 //    interface AbsoluteMoveListener {
 //        void handlePaddlePosition (int id, int x, int y);
 //    }
@@ -41,6 +48,8 @@ public interface AbstractGameUI {
      */
     void setOnInternalPaddleMoveListener(PaddleMoveListener paddleMoveListener);
 //    void setOnInternalAbsolutePaddleMoveListener (AbsoluteMoveListener paddleMoveListener);
+
+    void setOnDeadListener(OnDeadListener onDeadListener);
 
     //These methods need to be called before the game actually starts
     //Ensures that the paddle is controlled by pressing keys on the keyboard.
