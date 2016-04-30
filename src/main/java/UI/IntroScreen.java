@@ -85,7 +85,10 @@ public class IntroScreen {
                             peersMap.put(name, ip);
                             isPeerReady.put("ip",false);
                         }
-
+                        if (peersList == null) {
+                            peersList = new HashMap<>();
+                        }
+                        peersList.put(name,ip);
                     }
                     System.out.println("[PeerList] originalPeers="+peers+", peersMap="+peersMap);
                     network.addMultiplePeers(peersMap, 10, new NetworkBase.MultiplePeerConnectionListener() {

@@ -1,0 +1,14 @@
+TODO:
+1. Run parallel sync task every 200/500 ms.
+2. decide on AI players.
+
+TO TEST:
+1. Mutual connection of 3 machines.
+
+FOR KANSAL :
+1. Fix movePaddle for vertical paddles. (done)
+2. Fix vertical paddle out of screen error. [TODO]
+3. Fix easy and hard level AI. [DOING]
+4. Fix - Paddle becoming invisible randomly [TODO]
+5. (Med priority) - Bottom paddle not displaying in ubuntu. [TODO]
+6. Never start ball vertically and horizontally.
