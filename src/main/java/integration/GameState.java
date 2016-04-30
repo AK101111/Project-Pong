@@ -67,7 +67,7 @@ public class GameState {
 //            System.out.println("gamestate json:\n" + jsonObject.toString(4));
             MyVector ballPosition = MyVector.fromJSON(jsonObject.getJSONObject("ballPos"));
             Ball.BallVelocity ballVelocity = Ball.BallVelocity.fromJSON(jsonObject.getJSONObject("ballVel"));
-            JSONObject paddlePositionsJSON = jsonObject.getJSONObject("paddlePos");
+//            JSONObject paddlePositionsJSON = jsonObject.getJSONObject("paddlePos");
 //            Map<Integer,MyVector> paddlePositions = new HashMap<>();
 //            for (String key : paddlePositionsJSON.keySet()) {
 //                int paddleId = Integer.parseInt(key);

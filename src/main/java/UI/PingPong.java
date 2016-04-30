@@ -101,13 +101,13 @@ public class PingPong extends JFrame{
         new java.util.Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                System.out.println("Trigger sync");
+//                System.out.println("Trigger sync");
                 if (board != null && myName == 0) {
                     GameState gameState = board.getGameState();
                     network.sendJSONToAll(getGameStateObject(gameState));
                 }
             }
-        },200,200);
+        },100,50);
     }
 
     public static PingPong startGame(int difficulty, Ball.BallVelocity velocity, int myName, AbstractGameUI.PaddleMoveListener paddleMoveListener, Map<Integer,String> peersList){
