@@ -25,6 +25,7 @@ public class Paddle {
     private boolean setOutside;
     private boolean dead;// = false;
     private AbstractGameUI.PaddleMoveListener paddleMoveListener;
+    private AbstractGameUI.AbsoluteMoveListener absoluteMoveListner;
     private int probdec;
     private boolean doupdate;
 
@@ -36,6 +37,8 @@ public class Paddle {
     public int getychange() {
         return ychange;
     }
+
+
 
     public enum paddleType { HORIZONTAL, VERTICAL}; // todo use {HORIZONTAL=0,VERTICAL=1}
     public enum playerType { AI,HUMAN,OTHER};
@@ -78,7 +81,9 @@ public class Paddle {
         return ypos;
     }
 
-    public boolean setxpos(int deltaxpos){
+    public boolean setxpos(int deltaxpos, boolean delta){
+        if(delta)
+            deltaxpos = deltaxpos - this.xpos;
         if(this.xpos +deltaxpos + WD < SCREEN_WIDTH && this.xpos +deltaxpos >0){
             this.xpos += deltaxpos;
             this.setOutside = true;
@@ -87,7 +92,9 @@ public class Paddle {
         return false;
     }
 
-    public boolean setypos(int deltaypos){
+    public boolean setypos(int deltaypos, boolean delta){
+        if(delta)
+            deltaypos = deltaypos - this.ypos;
         if(this.ypos + deltaypos + WD < 378 && this.ypos+deltaypos>0){
             this.ypos += deltaypos;
             this.setOutside = true;
@@ -98,6 +105,7 @@ public class Paddle {
 
     public void updateLocation() {
         this.paddleMoveListener = runningapp.getBoard().getPaddleMoveListener();
+        this.absoluteMoveListner = runningapp.getBoard().getAbsoluteMoveListener();
         if(this.ptype == AI) {
             findposAI();
         }else if(this.ptype == OTHER){
@@ -110,6 +118,7 @@ public class Paddle {
         if (this.setOutside == false) {
             if ((xchange != 0) || (ychange != 0)) {
                 this.paddleMoveListener.handlePaddleMove(tage, xchange, ychange);
+                this.absoluteMoveListner.handlePaddlePosition(tage,xchange,ychange);
             }
         }
         if (this.doupdate) {

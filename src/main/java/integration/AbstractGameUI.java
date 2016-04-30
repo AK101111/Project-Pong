@@ -40,7 +40,7 @@ public interface AbstractGameUI {
      * @param paddleMoveListener Call the {@code handlePaddleMove} with appropriate values when paddles are moved internally.
      */
     void setOnInternalPaddleMoveListener(PaddleMoveListener paddleMoveListener);
-    void setOnInternalAbsolutePaddleMoveListener (AbsoluteMoveListener paddleMoveListener);
+    void setOnInternalAbsoluteMoveListener (AbsoluteMoveListener absoluteMoveListener);
 
     //These methods need to be called before the game actually starts
     //Ensures that the paddle is controlled by pressing keys on the keyboard.

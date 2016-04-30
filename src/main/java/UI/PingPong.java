@@ -76,6 +76,9 @@ public class PingPong extends JFrame{
         Board.movePaddle(id,delX,delY);
     }
 
+    public void movePaddleAbsolute(int id, int x, int y){
+        Board.movePaddleAbsolute(id,x,y);
+    }
 
 
     public static PingPong startGame(int difficulty, Ball.BallVelocity velocity, int myName, AbstractGameUI.PaddleMoveListener paddleMoveListener, Map<Integer,String> peersList){

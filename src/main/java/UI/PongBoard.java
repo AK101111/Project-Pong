@@ -38,6 +38,7 @@ public class PongBoard extends JPanel implements ActionListener, KeyListener, Ab
     private int speed;//=INIT_SPEED;
     private BufferedImage img;
     private PaddleMoveListener paddleMoveListener;
+    private AbsoluteMoveListener absoluteMoveListener;
 
     private Ball.BallVelocity ballVelocity;
 
@@ -138,13 +139,24 @@ public class PongBoard extends JPanel implements ActionListener, KeyListener, Ab
 
     @Override
     public boolean movePaddle(int id, int delX, int delY) {
-        return (Players[id].setxpos(delX) & Players[id].setypos(delY));
+        return (Players[id].setxpos(delX,false) & Players[id].setypos(delY,false));
+    }
+
+    @Override
+    public boolean movePaddleAbsolute(int id, int x, int y) {
+        return (Players[id].setxpos(x,true) & Players[id].setypos(y,true));
+        //return false;
     }
 
     @Override
     public void setOnInternalPaddleMoveListener(PaddleMoveListener paddleMoveListener) {
         this.paddleMoveListener = paddleMoveListener;
         // line
+    }
+
+    @Override
+    public void setOnInternalAbsoluteMoveListener(AbsoluteMoveListener absoluteMoveListener) {
+        this.absoluteMoveListener = absoluteMoveListener;
     }
 
     @Override
@@ -167,5 +179,9 @@ public class PongBoard extends JPanel implements ActionListener, KeyListener, Ab
 
     public PaddleMoveListener getPaddleMoveListener(){
         return this.paddleMoveListener;
+    }
+
+    public AbsoluteMoveListener getAbsoluteMoveListener(){
+        return this.absoluteMoveListener;
     }
 }
