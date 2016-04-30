@@ -207,7 +207,7 @@ public class IntroScreen {
         Random random = new Random();
         ballVelocity.xspeed = XSPEED[random.nextInt(100)%3];
         ballVelocity.yspeed = YSPEED[random.nextInt(100)%3];
-        while (ballVelocity.yspeed == 0 && ballVelocity.xspeed ==0){
+        while (ballVelocity.yspeed == 0 || ballVelocity.xspeed ==0){
             ballVelocity.xspeed = XSPEED[random.nextInt(2)];
             ballVelocity.yspeed = YSPEED[random.nextInt(2)];
         }
@@ -455,9 +455,8 @@ public class IntroScreen {
                 network.addPeer(Integer.toString(i), peerList.get(i), 8080, 1, new PeerConnectionListener() {
                     @Override
                     public void onConnectionSuccess() {
-                        int name = i + 1;
 //                        hideTextField(i-1, "Connected to " + name + " (" + peerList.get(i) + ")");
-                        displayConnectedToPeer(i-1,peerList.get(i),name,false);
+                        displayConnectedToPeer(i-1,peerList.get(i),i,false);
 //                        connectedPeers.add(i);
 //                        network.sendObjectToPeer(Integer.toString(i),new ConnectionRequest(NetworkBase.getIPAddress(),myName));
                         network.sendJSON(Integer.toString(i),getConnectionRequestObject(NetworkBase.getIPAddress(),myName,i));
