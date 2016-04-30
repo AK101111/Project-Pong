@@ -18,14 +18,20 @@ public class Dashboard {
     private int Scores[];
     private PingPong runningapp;
     private Paddle[] Players;
+    private OnDeadListener onDeadListener;
 
-    public Dashboard(int n_players, PingPong runningapp){
+    public Dashboard(int n_players, PingPong runningapp,OnDeadListener onDead){
         this.runningapp = runningapp;
         this.nplayers = n_players;
         this.Scores = new int[n_players];
         for(int i=0;i<n_players;++i) Scores[i]=3;
         Players = new Paddle[4];
+        this.onDeadListener = onDead;
 //        Players = runningapp.getBoard().getPlayers();
+    }
+
+    public static interface OnDeadListener{
+         void onPlayerDead(int id);
     }
 
     public void updateScore(int player, int change) {
@@ -36,6 +42,7 @@ public class Dashboard {
                 Scores[player]=0;
                 System.out.println("player : "+player+":" + Players[player].getdead());
                 Players[player].setdead(true);
+                onDeadListener.onPlayerDead(player);
             }
             if (!(Scores[player] == 0 && change == -1))
                 Scores[player] += change;

@@ -143,6 +143,8 @@ public class IntroScreen {
                     pingPong.movePaddle(jsonObject.getInt("id"),jsonObject.getInt("delX"),jsonObject.getInt("delY"));
                 }else if(type.equals("sync")) {
                     pingPong.syncState(jsonObject.getJSONObject("state"));
+                }else if(type.equals("playerDead")){
+                    //TODO add interface listener here
                 }
             } catch (JSONException ex) {
                 ex.printStackTrace();
@@ -207,6 +209,7 @@ public class IntroScreen {
         pingPong = pingPong.startGame(getSelectedButtonPosition(entreeGroup),ballVelocity,myName,paddleMoveListener,peersList);
         mainFrame.setVisible(false);
         pingPong.startTimer(network);
+        pingPong.setNetwork(network);
     }
 
     private static void sendBallVelocity(){

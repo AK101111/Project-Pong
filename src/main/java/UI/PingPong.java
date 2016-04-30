@@ -25,6 +25,8 @@ public class PingPong extends JFrame{
     Map<Integer,String> peersList;
     boolean[] isPaddleTypeSet = {false,false,false,false};
 
+    NetworkBase network;
+
     public PingPong(int difficulty, Ball.BallVelocity velocity){
         this.difficulty = difficulty;
         this.ballVelocity = velocity;
@@ -97,6 +99,8 @@ public class PingPong extends JFrame{
         }
     }
 
+
+
     public void startTimer(NetworkBase network){
         new java.util.Timer().schedule(new TimerTask() {
             @Override
@@ -108,6 +112,10 @@ public class PingPong extends JFrame{
                 }
             }
         },100,50);
+    }
+
+    public void setNetwork(NetworkBase networkBase){
+        network = networkBase;
     }
 
     public static PingPong startGame(int difficulty, Ball.BallVelocity velocity, int myName, AbstractGameUI.PaddleMoveListener paddleMoveListener, Map<Integer,String> peersList){

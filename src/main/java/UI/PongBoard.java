@@ -3,6 +3,7 @@ package UI;
 import Utils.MyVector;
 import integration.AbstractGameUI;
 import integration.GameState;
+import org.json.JSONObject;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -79,7 +80,20 @@ public class PongBoard extends JPanel implements ActionListener, KeyListener, Ab
         addKeyListener(this);
         setFocusable(true);
         setBoard(app);
-        this.dashboard = new Dashboard(4,app);
+        this.dashboard = new Dashboard(4,app,getOnDeadListener());
+    }
+
+    private JSONObject getDeadJson(){
+        return new JSONObject().put("type","playerDead").put("name",runningApp.myName);
+    }
+
+    private Dashboard.OnDeadListener getOnDeadListener(){
+        return new Dashboard.OnDeadListener(){
+            @Override
+            public void onPlayerDead(int id){
+                runningApp.network.sendJSONToAll(getDeadJson());
+            }
+        };
     }
 
     public Dashboard getDashboard() {
