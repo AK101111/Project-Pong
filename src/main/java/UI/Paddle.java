@@ -65,19 +65,23 @@ public class Paddle {
     public boolean getDead(){return (this.score==0);}
 
     public boolean setxpos(int deltaxpos){
-        if((this.xpos +deltaxpos + width <= runningapp.getWidth()) && (this.xpos +deltaxpos >=0)){
-            this.xpos += deltaxpos;
-            this.setOutside = true;
-            return true;
+        if(this.doupdate) {
+            if ((this.xpos + deltaxpos + width <= runningapp.getWidth()) && (this.xpos + deltaxpos >= 0)) {
+                this.xpos += deltaxpos;
+                this.setOutside = true;
+                return true;
+            }
         }
         return false;
     }
 
     public boolean setypos(int deltaypos){
-        if((this.ypos + deltaypos + width <= runningapp.getWorkingSize()) && (this.ypos+deltaypos>=0)){
-            this.ypos += deltaypos;
-            this.setOutside = true;
-            return true;
+        if(this.doupdate){
+            if((this.ypos + deltaypos + width <= runningapp.getWorkingSize()) && (this.ypos+deltaypos>=0)){
+                this.ypos += deltaypos;
+                this.setOutside = true;
+                return true;
+            }
         }
         return false;
     }

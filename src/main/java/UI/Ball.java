@@ -94,22 +94,22 @@ public class Ball {
         xpos += xvel;
         ypos += yvel;
         double angletemp = 2*Math.PI*Math.random();
-        if(xpos<0 && xvel<=0){
-            xvel = (float)Math.abs(Math.cos(angletemp)*SPEED_MAGNITUDE);
-            yvel = (float)Math.abs(Math.sin(angletemp)*SPEED_MAGNITUDE);
-        }
-        if(xpos>runningapp.getWidth() && xvel>=0){
-            xvel = -(float)Math.abs(Math.cos(angletemp)*SPEED_MAGNITUDE);
-            yvel = (float)Math.abs(Math.sin(angletemp)*SPEED_MAGNITUDE);
-        }
-        if(ypos<0 && yvel<=0){
-            xvel = (float)Math.abs(Math.cos(angletemp)*SPEED_MAGNITUDE);
-            yvel = (float)Math.abs(Math.sin(angletemp)*SPEED_MAGNITUDE);
-        }
-        if(ypos>runningapp.getWorkingSize() && yvel>=0){
-            xvel = (float)Math.abs(Math.cos(angletemp)*SPEED_MAGNITUDE);
-            yvel = -(float)Math.abs(Math.sin(angletemp)*SPEED_MAGNITUDE);
-        }
+//        if(xpos<0 && xvel<=0){
+//            xvel = (float)Math.abs(Math.cos(angletemp)*SPEED_MAGNITUDE);
+//            yvel = (float)Math.abs(Math.sin(angletemp)*SPEED_MAGNITUDE);
+//        }
+//        if(xpos>runningapp.getWidth() && xvel>=0){
+//            xvel = -(float)Math.abs(Math.cos(angletemp)*SPEED_MAGNITUDE);
+//            yvel = (float)Math.abs(Math.sin(angletemp)*SPEED_MAGNITUDE);
+//        }
+//        if(ypos<0 && yvel<=0){
+//            xvel = (float)Math.abs(Math.cos(angletemp)*SPEED_MAGNITUDE);
+//            yvel = (float)Math.abs(Math.sin(angletemp)*SPEED_MAGNITUDE);
+//        }
+//        if(ypos>runningapp.getWorkingSize() && yvel>=0){
+//            xvel = (float)Math.abs(Math.cos(angletemp)*SPEED_MAGNITUDE);
+//            yvel = -(float)Math.abs(Math.sin(angletemp)*SPEED_MAGNITUDE);
+//        }
     }
 
     public int paddleHit(){
