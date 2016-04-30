@@ -138,7 +138,7 @@ public class PongBoard extends JPanel implements ActionListener, KeyListener, Ab
 
     @Override
     public boolean movePaddle(int id, int delX, int delY) {
-        return (Players[id].setxpos(delX) && Players[id].setypos(delY));
+        return (Players[id].setxpos(delX) & Players[id].setypos(delY));
     }
 
     @Override

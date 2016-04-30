@@ -4,6 +4,7 @@ import integration.AbstractGameUI;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Map;
 
 import static java.lang.Integer.parseInt;
 import static UI.Constants.*;
@@ -17,6 +18,8 @@ public class PingPong extends JFrame{
     Ball.BallVelocity ballVelocity;
     int myName;
     AbstractGameUI.PaddleMoveListener paddleMoveListener;
+    Map<Integer,String> peersList;
+    boolean[] isPaddleTypeSet = {false,false,false,false};
 
     public PingPong(int difficulty, Ball.BallVelocity velocity){
         this.difficulty = difficulty;
@@ -43,12 +46,30 @@ public class PingPong extends JFrame{
         Board = new PongBoard(this,testactive,testcomp,ballVelocity);//,testother);
         Board.setOnInternalPaddleMoveListener(paddleMoveListener);
 
-        for(int i = 0; i < 4; i++){
-            Board.setPaddleAsKeyboardControlled(i,(i==myName));
-        }
+        setPaddleTypes();
 
         Board.startpongBoard(this);
         add(Board);
+    }
+
+    private void setPaddleTypes(){
+        //setting my paddle type
+        Board.setPaddleAsKeyboardControlled(myName,true);
+        isPaddleTypeSet[myName] =true;
+
+        //setting all other available player's paddle type
+        for(int key : peersList.keySet()){
+            if(key!=myName) {
+                Board.setPaddleAsKeyboardControlled(key, false);
+                isPaddleTypeSet[key] = true;
+            }
+        }
+
+        //setting remaining paddle's type to AI
+        for(int i = 0; i < 4; i++){
+            if(!isPaddleTypeSet[i])
+                Board.setPaddleAsAiControlled(i);
+        }
     }
 
     public void movePaddle(int id, int delX, int delY){
@@ -57,13 +78,14 @@ public class PingPong extends JFrame{
 
 
 
-    public static PingPong startGame(int difficulty, Ball.BallVelocity velocity, int myName, AbstractGameUI.PaddleMoveListener paddleMoveListener){
+    public static PingPong startGame(int difficulty, Ball.BallVelocity velocity, int myName, AbstractGameUI.PaddleMoveListener paddleMoveListener, Map<Integer,String> peersList){
         PingPong app = new PingPong(difficulty, velocity);
         EventQueue.invokeLater(new Runnable(){
             @Override
             public void run(){
                 app.myName = myName;
                 app.paddleMoveListener = paddleMoveListener;
+                app.peersList = peersList;
                 app.renderDisplay();
                 app.setVisible(true);
             }

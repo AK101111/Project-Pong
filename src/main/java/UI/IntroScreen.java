@@ -23,6 +23,7 @@ import static UI.Constants.*;
 // some of source taken from docs.oracle.com/javase/
 // gradient idea copied
 public class IntroScreen {
+    static JFrame mainFrame;
     static JTextField ipTextField1,ipTextField2,ipTextField3;
     static JLabel ipLabel1,ipLabel2,ipLabel3,statusLabel;
     static JLabel myIPAddressText;
@@ -35,7 +36,7 @@ public class IntroScreen {
     static Map<String,Boolean> isPeerReady = new HashMap<>();
     static PingPong pingPong = new PingPong();
 
-//    static ArrayList<String> connectedIPs = new ArrayList<>();
+    static ArrayList<Integer> toBeConnectedIPs = new ArrayList<>();
 
     static Ball.BallVelocity ballVelocity = new Ball.BallVelocity();
 
@@ -52,6 +53,7 @@ public class IntroScreen {
                     int receiverName = jsonObject.getInt("receiverName");
                     myName = receiverName;
                     if (!network.isPeer(Integer.toString(senderName))) {
+                        toBeConnectedIPs.add(senderName);
                         System.out.println("[connectionRequest start] got connection request. senderIP=" + senderIP + ", senderName=" + senderName);
                         network.addPeer(Integer.toString(senderName), senderIP, 8080, 100, new PeerConnectionListener() {
                             @Override
@@ -59,10 +61,10 @@ public class IntroScreen {
                                 //connected
 //                                hideTextField(getUnfilledConnectionLabel(),"Connected to : " + senderIP);
 //                                connectedIPs.add(senderIP);
-                                displayConnectedToPeer(getUnfilledConnectionLabel(),senderIP,senderName,false);
+                                int labelId = getUnfilledConnectionLabel();
+                                System.out.println("[print to label][connectionRequest] labelId=" + labelId + ", senderIP=" + senderIP + ", senderName="+senderName);
+                                displayConnectedToPeer(labelId,senderIP,senderName,false);
                                 System.out.println("[connectionRequest end] connected to (senderIP=" + senderIP + ", senderName=" + senderName + "). New peerNames :" + network.connectedPeersNames());
-
-
                             }
     //
                             @Override
@@ -83,18 +85,30 @@ public class IntroScreen {
                             peersMap.put(name, ip);
                             isPeerReady.put("ip",false);
                         }
-
+                        if (peersList == null) {
+                            peersList = new HashMap<>();
+                        }
+                        peersList.put(name,ip);
                     }
+                    System.out.println("[PeerList] originalPeers="+peers+", peersMap="+peersMap);
                     network.addMultiplePeers(peersMap, 10, new NetworkBase.MultiplePeerConnectionListener() {
                         @Override
-                        public void onAllConnectionsRes(boolean allSuccess, List<Integer> failedPeerList) {
-                            System.out.println("PeerList Connection result : allSuccess="+allSuccess + ", failedPeerList="+failedPeerList);
+                        public void onAllConnectionsRes(boolean allSuccess, List<Integer> failedPeerList, List<Integer> connectedPeerList) {
+                            System.out.println("PeerList Connection result : allSuccess="+allSuccess + ", failedPeerList="+failedPeerList + ", connectedPeerList="+connectedPeerList);
+                            System.out.println("toBeConnectedIPs="+toBeConnectedIPs);
                             if (allSuccess) {
                                 statusLabel.setText("Connected to all.");
                                 myIPAddressText.setText(myIPAddressText.getText() +  " - Ready!");
                                 disableButton(actionButton);
                                 //connected to all
                                 network.sendJSONToAll(getConnectedToAllJson());
+                                for (Integer peerName : connectedPeerList) {
+                                    if (!toBeConnectedIPs.contains(peerName)) {
+                                        int labelId = getUnfilledConnectionLabel();
+                                        System.out.println("[print to label][peerList] labelId=" + labelId + ", senderIP=" + peersMap.get(peerName) + ", senderName=" + peerName);
+                                        displayConnectedToPeer(labelId, peersMap.get(peerName), peerName, false);
+                                    }
+                                }
                             }
                         }
                     });
@@ -188,14 +202,15 @@ public class IntroScreen {
     }
 
     private static void startGame(){
-        pingPong = pingPong.startGame(getSelectedButtonPosition(entreeGroup),ballVelocity,myName,paddleMoveListener);
+        pingPong = pingPong.startGame(getSelectedButtonPosition(entreeGroup),ballVelocity,myName,paddleMoveListener,peersList);
+        mainFrame.setVisible(false);
     }
 
     private static void sendBallVelocity(){
         Random random = new Random();
         ballVelocity.xspeed = XSPEED[random.nextInt(100)%3];
         ballVelocity.yspeed = YSPEED[random.nextInt(100)%3];
-        while (ballVelocity.yspeed == 0 && ballVelocity.xspeed ==0){
+        while (ballVelocity.yspeed == 0 || ballVelocity.xspeed ==0){
             ballVelocity.xspeed = XSPEED[random.nextInt(2)];
             ballVelocity.yspeed = YSPEED[random.nextInt(2)];
         }
@@ -246,17 +261,18 @@ public class IntroScreen {
     }
 
     public static void createUI() {
-        JFrame f = new JFrame ("Ping Pong");
+        mainFrame = new JFrame ("Ping Pong");
 
 //        LayerUI<JPanel> layerUI = new SpotlightLayerUI();
         JPanel panel = createPanel();
         JLayer<JPanel> jlayer = new JLayer<JPanel>(panel);
 
-        f.add (jlayer);
-        f.pack();
-        f.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
-        f.setLocationRelativeTo (null);
-        f.setVisible (true);
+        mainFrame.add (jlayer);
+//        mainFrame.pack();
+        mainFrame.setSize(SCREEN_WIDTH,SCREEN_HEIGHT);
+        mainFrame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
+        mainFrame.setLocationRelativeTo (null);
+        mainFrame.setVisible (true);
     }
 
     private static JPanel createPanel() {
@@ -264,7 +280,7 @@ public class IntroScreen {
         mainPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
         JPanel northPanel = new JPanel();
         JPanel southPanel = new JPanel();
-        southPanel.setBorder(new EmptyBorder(20, 50, 0, 50));
+        southPanel.setBorder(new EmptyBorder(20, 80, 0, 80));
         JPanel centerPanel = new JPanel();
         centerPanel.setBorder(new EmptyBorder(20, 0, 0, 0));
         entreeGroup = new ButtonGroup();
@@ -442,9 +458,8 @@ public class IntroScreen {
                 network.addPeer(Integer.toString(i), peerList.get(i), 8080, 1, new PeerConnectionListener() {
                     @Override
                     public void onConnectionSuccess() {
-                        int name = i + 1;
 //                        hideTextField(i-1, "Connected to " + name + " (" + peerList.get(i) + ")");
-                        displayConnectedToPeer(i-1,peerList.get(i),name,false);
+                        displayConnectedToPeer(i-1,peerList.get(i),i,false);
 //                        connectedPeers.add(i);
 //                        network.sendObjectToPeer(Integer.toString(i),new ConnectionRequest(NetworkBase.getIPAddress(),myName));
                         network.sendJSON(Integer.toString(i),getConnectionRequestObject(NetworkBase.getIPAddress(),myName,i));
@@ -493,9 +508,13 @@ public class IntroScreen {
             if (label.getText().contains("Connected to"))
                 return;
         }
-        String statusText = String.format("Connected to %d (%s)%s",name,ip,toShowReady?" - Ready!":"");
+        int nameToShow = name + 1;
+        String statusText = String.format("Connected to %s (%s)%s", " Player " + nameToShow,ip,toShowReady?" - Ready!":"");
         label.setText(statusText);
         textField.setVisible(false);
+        if (textField.getText().isEmpty()) {
+            textField.setText(ip);
+        }
     }
     private static void showTextField(int textFieldId){
         switch (textFieldId){

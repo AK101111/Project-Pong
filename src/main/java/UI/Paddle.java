@@ -88,7 +88,7 @@ public class Paddle {
     }
 
     public boolean setypos(int deltaypos){
-        if(this.ypos + deltaypos + WD < SCREEN_HEIGHT && this.ypos+deltaypos>0){
+        if(this.ypos + deltaypos + WD < 378 && this.ypos+deltaypos>0){
             this.ypos += deltaypos;
             this.setOutside = true;
             return true;
@@ -239,9 +239,9 @@ public class Paddle {
     public void keypress(int keyCode) {
         if (type == paddleType.VERTICAL) {
             if (keyCode == VK_UP)
-                ychange = 1;
-            if (keyCode == VK_DOWN)
                 ychange = -1;
+            if (keyCode == VK_DOWN)
+                ychange = 1;
             //
         } else {
             if (keyCode == VK_LEFT)
