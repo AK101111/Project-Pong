@@ -26,21 +26,21 @@ public interface AbstractGameUI {
      * @return True if the motion is possible and successful, false if not (due blockage by wall etc.)
      */
     boolean movePaddle (int id, int delX, int delY);
-    boolean movePaddleAbsolute (int id, int x, int y);
+//    boolean movePaddleAbsolute (int id, int x, int y);
 
     interface PaddleMoveListener {
         void handlePaddleMove (int id, int delX, int delY);
     }
-    interface AbsoluteMoveListener {
-        void handlePaddlePosition (int id, int x, int y);
-    }
+//    interface AbsoluteMoveListener {
+//        void handlePaddlePosition (int id, int x, int y);
+//    }
     /**
      * Sets a listener on movement of the paddles in this UI instance (by the user on the particular machine).
      * Through this listener this motion will be conveyed to other machines in the network.
      * @param paddleMoveListener Call the {@code handlePaddleMove} with appropriate values when paddles are moved internally.
      */
     void setOnInternalPaddleMoveListener(PaddleMoveListener paddleMoveListener);
-    void setOnInternalAbsolutePaddleMoveListener (AbsoluteMoveListener paddleMoveListener);
+//    void setOnInternalAbsolutePaddleMoveListener (AbsoluteMoveListener paddleMoveListener);
 
     //These methods need to be called before the game actually starts
     //Ensures that the paddle is controlled by pressing keys on the keyboard.
