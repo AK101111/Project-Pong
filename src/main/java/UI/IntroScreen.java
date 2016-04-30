@@ -265,7 +265,8 @@ public class IntroScreen {
         JLayer<JPanel> jlayer = new JLayer<JPanel>(panel);
 
         mainFrame.add (jlayer);
-        mainFrame.pack();
+//        mainFrame.pack();
+        mainFrame.setSize(SCREEN_WIDTH,SCREEN_HEIGHT);
         mainFrame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
         mainFrame.setLocationRelativeTo (null);
         mainFrame.setVisible (true);
@@ -505,7 +506,8 @@ public class IntroScreen {
             if (label.getText().contains("Connected to"))
                 return;
         }
-        String statusText = String.format("Connected to %d (%s)%s",name,ip,toShowReady?" - Ready!":"");
+        int nameToShow = name + 1;
+        String statusText = String.format("Connected to %s (%s)%s", " Player " + nameToShow,ip,toShowReady?" - Ready!":"");
         label.setText(statusText);
         textField.setVisible(false);
         if (textField.getText().isEmpty()) {
