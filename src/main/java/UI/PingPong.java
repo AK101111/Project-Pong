@@ -58,6 +58,10 @@ public class PingPong extends JFrame{
         add(board);
     }
 
+    public void setDeadPaddle(int id){
+        board.setDeadPaddle(id);
+    }
+
     private void setPaddleTypes(){
         //setting my paddle type
         board.setPaddleAsKeyboardControlled(myName,true);

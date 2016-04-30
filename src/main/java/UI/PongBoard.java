@@ -85,13 +85,14 @@ public class PongBoard extends JPanel implements ActionListener, KeyListener, Ab
     }
 
     private JSONObject getDeadJson(){
-        return new JSONObject().put("type","playerDead").put("name",runningApp.myName);
+        return new JSONObject().put("type","playerDead").put("id",runningApp.myName);
     }
 
     private Dashboard.OnDeadListener getOnDeadListener(){
         return new Dashboard.OnDeadListener(){
             @Override
             public void onPlayerDead(int id){
+                System.out.println("sent dead : " + id);
                 runningApp.network.sendJSONToAll(getDeadJson());
             }
         };
