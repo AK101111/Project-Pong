@@ -35,7 +35,7 @@ public class IntroScreen {
     static Map<String,Boolean> isPeerReady = new HashMap<>();
     static PingPong pingPong = new PingPong();
 
-//    static ArrayList<String> connectedIPs = new ArrayList<>();
+    static ArrayList<Integer> toBeConnectedIPs = new ArrayList<>();
 
     static Ball.BallVelocity ballVelocity = new Ball.BallVelocity();
 
@@ -52,6 +52,7 @@ public class IntroScreen {
                     int receiverName = jsonObject.getInt("receiverName");
                     myName = receiverName;
                     if (!network.isPeer(Integer.toString(senderName))) {
+                        toBeConnectedIPs.add(senderName);
                         System.out.println("[connectionRequest start] got connection request. senderIP=" + senderIP + ", senderName=" + senderName);
                         network.addPeer(Integer.toString(senderName), senderIP, 8080, 100, new PeerConnectionListener() {
                             @Override
@@ -59,10 +60,10 @@ public class IntroScreen {
                                 //connected
 //                                hideTextField(getUnfilledConnectionLabel(),"Connected to : " + senderIP);
 //                                connectedIPs.add(senderIP);
-                                displayConnectedToPeer(getUnfilledConnectionLabel(),senderIP,senderName,false);
+                                int labelId = getUnfilledConnectionLabel();
+                                System.out.println("[print to label][connectionRequest] labelId=" + labelId + ", senderIP=" + senderIP + ", senderName="+senderName);
+                                displayConnectedToPeer(labelId,senderIP,senderName,false);
                                 System.out.println("[connectionRequest end] connected to (senderIP=" + senderIP + ", senderName=" + senderName + "). New peerNames :" + network.connectedPeersNames());
-
-
                             }
     //
                             @Override
@@ -79,15 +80,16 @@ public class IntroScreen {
                         String key = keys.next();
                         int name = Integer.valueOf(key);
                         String ip = peers.getString(key);
-                        if (!network.isPeer(Integer.toString(name)) && !NetworkBase.getIPAddress().equals(ip)) {
+                        if (!network.isPeer(Integer.toString(name)) && !NetworkBase.getIPAddress().equals(ip) && !toBeConnectedIPs.contains(name)) {
                             peersMap.put(name, ip);
                             isPeerReady.put("ip",false);
                         }
 
                     }
+                    System.out.println("[PeerList] originalPeers="+peers+", peersMap="+peersMap);
                     network.addMultiplePeers(peersMap, 10, new NetworkBase.MultiplePeerConnectionListener() {
                         @Override
-                        public void onAllConnectionsRes(boolean allSuccess, List<Integer> failedPeerList) {
+                        public void onAllConnectionsRes(boolean allSuccess, List<Integer> failedPeerList, List<Integer> connectedPeerList) {
                             System.out.println("PeerList Connection result : allSuccess="+allSuccess + ", failedPeerList="+failedPeerList);
                             if (allSuccess) {
                                 statusLabel.setText("Connected to all.");
@@ -95,6 +97,11 @@ public class IntroScreen {
                                 disableButton(actionButton);
                                 //connected to all
                                 network.sendJSONToAll(getConnectedToAllJson());
+                                for (Integer peerName : connectedPeerList) {
+                                    int labelId =  getUnfilledConnectionLabel();
+                                    System.out.println("[print to label][peerList] labelId=" + labelId + ", senderIP=" + peersMap.get(peerName) + ", senderName="+peerName);
+                                    displayConnectedToPeer(labelId,peersMap.get(peerName),peerName,false);
+                                }
                             }
                         }
                     });
@@ -496,6 +503,9 @@ public class IntroScreen {
         String statusText = String.format("Connected to %d (%s)%s",name,ip,toShowReady?" - Ready!":"");
         label.setText(statusText);
         textField.setVisible(false);
+        if (textField.getText().isEmpty()) {
+            textField.setText(ip);
+        }
     }
     private static void showTextField(int textFieldId){
         switch (textFieldId){

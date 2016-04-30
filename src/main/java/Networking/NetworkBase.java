@@ -47,22 +47,24 @@ public class NetworkBase {
     }
 
     public interface MultiplePeerConnectionListener {
-        void onAllConnectionsRes (boolean allSuccess, List<Integer> failedPeerList);
+        void onAllConnectionsRes (boolean allSuccess, List<Integer> failedPeerList, List<Integer> connectedPeerList);
     }
     private static class PeerConnectionStore {
         MultiplePeerConnectionListener listener;
         int numPeers;
         int limit;
         List<Integer> failedToConnectPeers;
+        List<Integer> connectedPeerList;
         void incrementNumPeers() {
             numPeers++;
             if (numPeers == limit) {
                 boolean success = failedToConnectPeers.isEmpty();
-                listener.onAllConnectionsRes(success,failedToConnectPeers);
+                listener.onAllConnectionsRes(success,failedToConnectPeers,connectedPeerList);
             }
         }
 
         public void setConnected (Integer i) {
+            connectedPeerList.add(i);
             incrementNumPeers();
         }
         public void setNotConnected (Integer i) {
@@ -74,6 +76,7 @@ public class NetworkBase {
             this.listener = listener;
             this.numPeers = 0;
             this.failedToConnectPeers = new ArrayList<Integer>();
+            this.connectedPeerList = new ArrayList<Integer>();
         }
     }
     public void addMultiplePeers (Map<Integer,String> peerList, long timeoutEachMillis, MultiplePeerConnectionListener handler) {
