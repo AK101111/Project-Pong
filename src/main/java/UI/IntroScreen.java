@@ -199,7 +199,7 @@ public class IntroScreen {
     }
 
     private static void startGame(){
-        pingPong = pingPong.startGame(getSelectedButtonPosition(entreeGroup),ballVelocity,myName,paddleMoveListener);
+        pingPong = pingPong.startGame(getSelectedButtonPosition(entreeGroup),ballVelocity,myName,paddleMoveListener,peersList);
         mainFrame.setVisible(false);
     }
 
