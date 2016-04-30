@@ -276,7 +276,7 @@ public class IntroScreen {
         mainPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
         JPanel northPanel = new JPanel();
         JPanel southPanel = new JPanel();
-        southPanel.setBorder(new EmptyBorder(20, 50, 0, 50));
+        southPanel.setBorder(new EmptyBorder(20, 80, 0, 80));
         JPanel centerPanel = new JPanel();
         centerPanel.setBorder(new EmptyBorder(20, 0, 0, 0));
         entreeGroup = new ButtonGroup();
