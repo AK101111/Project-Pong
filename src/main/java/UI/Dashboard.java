@@ -30,6 +30,10 @@ public class Dashboard {
 //        Players = runningapp.getBoard().getPlayers();
     }
 
+    public void setScoreDead(int tag) {
+        Scores[tag]=0;
+    }
+
     public static interface OnDeadListener{
          void onPlayerDead(int id);
     }
@@ -40,7 +44,7 @@ public class Dashboard {
         if(player!=-1) {
             if(Scores[player] == 1 && change == -1){
                 Scores[player]=0;
-                System.out.println("player : "+player+":" + Players[player].getdead());
+                System.out.println("player : "+player+":" + Players[player].getdead() +"score: "+Scores[player]);
                 Players[player].setdead(true);
                 onDeadListener.onPlayerDead(player);
             }

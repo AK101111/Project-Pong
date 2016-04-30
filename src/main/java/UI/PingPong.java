@@ -115,7 +115,7 @@ public class PingPong extends JFrame{
                     network.sendJSONToAll(getGameStateObject(gameState));
                 }
             }
-        },100,50);
+        },50,50);
     }
 
     public void setNetwork(NetworkBase networkBase){

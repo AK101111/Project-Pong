@@ -66,6 +66,7 @@ public class Paddle {
 
     public void setdead(boolean dead){
         this.dead = dead;
+        this.runningapp.getBoard().getDashboard().setScoreDead(this.tage);
     }
 
     public boolean getdead(){return this.dead;}

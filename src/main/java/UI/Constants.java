@@ -9,7 +9,7 @@ public final class Constants {
     public static final int LEN = 5, WD = 50;
     public static final int INDICATOR = 5;
     public static final int MAXPLAYERS = 4;
-    public static final int[] INIT_SPEED = new int[]{10,7,5};
+    public static final int[] INIT_SPEED = new int[]{10,7,3};
     public static final int RADIUS = 5;
     public static final int XCENTER = 200;//SCREEN_WIDTH / 2 - RADIUS;
     public static final int YCENTER = 182;

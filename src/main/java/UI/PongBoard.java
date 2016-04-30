@@ -176,6 +176,7 @@ public class PongBoard extends JPanel implements ActionListener, KeyListener, Ab
     @Override
     public void setDeadPaddle(int id) {
         players[id].setdead(true);
+
     }
 
     @Override
