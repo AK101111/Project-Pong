@@ -271,9 +271,9 @@ public class Paddle {
     public void keypress(int keyCode) {
         if (type == paddleType.VERTICAL) {
             if (keyCode == VK_UP)
-                ychange = 1;
-            if (keyCode == VK_DOWN)
                 ychange = -1;
+            if (keyCode == VK_DOWN)
+                ychange = 1;
             //
         } else {
             if (keyCode == VK_LEFT)
