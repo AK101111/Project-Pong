@@ -49,7 +49,7 @@ public interface AbstractGameUI {
     void setOnInternalPaddleMoveListener(PaddleMoveListener paddleMoveListener);
 //    void setOnInternalAbsolutePaddleMoveListener (AbsoluteMoveListener paddleMoveListener);
 
-    void setOnDeadListener(OnDeadListener onDeadListener);
+    //void setOnDeadListener(OnDeadListener onDeadListener);
 
     //These methods need to be called before the game actually starts
     //Ensures that the paddle is controlled by pressing keys on the keyboard.

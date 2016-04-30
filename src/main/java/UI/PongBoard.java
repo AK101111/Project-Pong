@@ -184,10 +184,10 @@ public class PongBoard extends JPanel implements ActionListener, KeyListener, Ab
         // line
     }
 
-    @Override
-    public void setOnDeadListener(OnDeadListener onDeadListener) {
-        this.onDeadListener = onDeadListener;
-    }
+//    @Override
+//    public void setOnDeadListener(OnDeadListener onDeadListener) {
+//        this.onDeadListener = onDeadListener;
+//    }
 
     @Override
     public void setPaddleAsKeyboardControlled(int paddleId, boolean owner) {
