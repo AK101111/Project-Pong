@@ -1,6 +1,8 @@
 package UI;
 
+import Utils.MyVector;
 import integration.AbstractGameUI;
+import integration.GameState;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -13,6 +15,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import static UI.Paddle.playerType.AI;
 import static UI.Paddle.playerType.HUMAN;
@@ -38,6 +42,7 @@ public class PongBoard extends JPanel implements ActionListener, KeyListener, Ab
     private int speed;//=INIT_SPEED;
     private BufferedImage img;
     private PaddleMoveListener paddleMoveListener;
+    private GameState gameState;
 
     private Ball.BallVelocity ballVelocity;
 
@@ -65,6 +70,7 @@ public class PongBoard extends JPanel implements ActionListener, KeyListener, Ab
         this.computerPlayers = new ArrayList<>();
         this.otherPlayers = new ArrayList<>();
         this.keyboardPlayers = new ArrayList<>();
+        this.gameState = new GameState();
     }
 
     public void startpongBoard(PingPong app){
@@ -83,6 +89,9 @@ public class PongBoard extends JPanel implements ActionListener, KeyListener, Ab
     public void setBoard(PingPong app) {
         // set Ball
         ball = new Ball(app,ballVelocity);
+        gameState.setBallPosition(new MyVector(ball.getxpos(),ball.getypos()));
+        gameState.setBallVelocity(ballVelocity);
+        //
         // set AI players
 //        for(int index: computerPlayers){
 //            Players[index] = new Paddle(app, xinit[index], yinit[index], Paddle.paddleType.values()[index%2], AI,index);
@@ -172,7 +181,34 @@ public class PongBoard extends JPanel implements ActionListener, KeyListener, Ab
         this.Players[paddleId] = new Paddle(this.runningApp, xinit[paddleId], yinit[paddleId], Paddle.paddleType.values()[paddleId%2], AI,paddleId);
     }
 
+    @Override
+    public GameState getGameState() {
+        gameState.setBallPosition(ball.getPos());
+        gameState.setBallVelocity(ball.ballVelocity);
+        Map<Integer,MyVector> paddlePositions = new HashMap<>();
+        for(int i=0;i<Players.length;++i){
+            paddlePositions.put(i,new MyVector(Players[i].getxpos(),Players[i].getypos()));
+        }
+        gameState.setPaddlePositions(paddlePositions);
+        return gameState;
+    }
+
+    @Override
+    public void setGameState(GameState gameState) {
+        this.gameState = gameState;
+        this.ball.setPos(gameState.getBallPosition());
+        this.ball.setVel(gameState.getBallVelocity());
+        Map<Integer,MyVector> paddlePositions = gameState.getPaddlePositions();
+        for(int i=0;i<Players.length;++i){
+            Players[i].setxpos(paddlePositions.get(i).getX());
+            Players[i].setypos(paddlePositions.get(i).getY());
+        }
+    }
+
+
     public PaddleMoveListener getPaddleMoveListener(){
         return this.paddleMoveListener;
     }
+
+
 }
