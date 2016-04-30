@@ -237,19 +237,19 @@ public class Paddle {
     public boolean paddleCollide(float ballxpos, float ballypos, int radius) {
         switch (id){
             case 0:
-                if(ballxpos+(2*radius)>=xpos && ballxpos<=xpos+width && ((int)ballypos==ypos-1 || (int)ballypos==ypos))
+                if(ballxpos+(2*radius)>=xpos && ballxpos<=xpos+width && ((int)ballypos==ypos-1 || (int)ballypos==ypos) && !(getDead()))
                     return true;
                 break;
             case 1:
-                if(ballypos+(2*radius)>=ypos && ballypos<=ypos+width && ((int)(ballxpos+(2*radius))==xpos-1 || (int)(ballxpos+(2*radius))==xpos))
+                if(ballypos+(2*radius)>=ypos && ballypos<=ypos+width && ((int)(ballxpos+(2*radius))==xpos-1 || (int)(ballxpos+(2*radius))==xpos) && !(getDead()))
                     return true;
                 break;
             case 2:
-                if(ballxpos+(2*radius)>=xpos && ballxpos<=xpos+width && ((int)(ballypos+(2*radius))==ypos-1 || (int)(ballypos+(2*radius))==ypos))
+                if(ballxpos+(2*radius)>=xpos && ballxpos<=xpos+width && ((int)(ballypos+(2*radius))==ypos-1 || (int)(ballypos+(2*radius))==ypos) && !(getDead()))
                     return true;
                 break;
             case 3:
-                if(ballypos+(2*radius)>=ypos && ballypos<=ypos+width && ((int)ballxpos==xpos+length || (int)ballxpos==xpos+length+1))
+                if(ballypos+(2*radius)>=ypos && ballypos<=ypos+width && ((int)ballxpos==xpos+length || (int)ballxpos==xpos+length+1) && !(getDead()))
                     return true;
                 break;
             default:
