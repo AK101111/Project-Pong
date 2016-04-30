@@ -20,8 +20,9 @@ public class Ball {
         this.runningapp = app;
         xpos = app.getWidth()/2;
         ypos = app.getWorkingSize()/2;
-        xvel = (float)Math.cos(2*Math.PI*Math.random())*SPEED_MAGNITUDE;
-        yvel = (float)Math.sin(2*Math.PI*Math.random())*SPEED_MAGNITUDE;
+        double angle = 2*Math.PI*Math.random();
+        xvel = (float)Math.cos(angle)*SPEED_MAGNITUDE;
+        yvel = (float)Math.sin(angle)*SPEED_MAGNITUDE;
     }
 
     public float getXpos(){
@@ -92,12 +93,29 @@ public class Ball {
         }
         xpos += xvel;
         ypos += yvel;
+        double angletemp = 2*Math.PI*Math.random();
+        if(xpos<0 && xvel<=0){
+            xvel = (float)Math.abs(Math.cos(angletemp)*SPEED_MAGNITUDE);
+            yvel = (float)Math.abs(Math.sin(angletemp)*SPEED_MAGNITUDE);
+        }
+        if(xpos>runningapp.getWidth() && xvel>=0){
+            xvel = -(float)Math.abs(Math.cos(angletemp)*SPEED_MAGNITUDE);
+            yvel = (float)Math.abs(Math.sin(angletemp)*SPEED_MAGNITUDE);
+        }
+        if(ypos<0 && yvel<=0){
+            xvel = (float)Math.abs(Math.cos(angletemp)*SPEED_MAGNITUDE);
+            yvel = (float)Math.abs(Math.sin(angletemp)*SPEED_MAGNITUDE);
+        }
+        if(ypos>runningapp.getWorkingSize() && yvel>=0){
+            xvel = (float)Math.abs(Math.cos(angletemp)*SPEED_MAGNITUDE);
+            yvel = -(float)Math.abs(Math.sin(angletemp)*SPEED_MAGNITUDE);
+        }
     }
 
     public int paddleHit(){
         Paddle[] Players = runningapp.getBoard().getPlayers();
         for(int i=0; i< Players.length; ++i) {
-            if (Players[i].paddleCollide(xpos,ypos,radius)) {
+            if (Players[i].paddleCollide(xpos,ypos,xvel,yvel,radius)) {
                 return i;
             }
         }

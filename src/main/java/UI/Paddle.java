@@ -234,22 +234,22 @@ public class Paddle {
         this.setOutside = false;
     }
 
-    public boolean paddleCollide(float ballxpos, float ballypos, int radius) {
+    public boolean paddleCollide(float ballxpos, float ballypos, float xvel, float yvel,int radius) {
         switch (id){
             case 0:
-                if(ballxpos+(2*radius)>=xpos && ballxpos<=xpos+width && ((int)ballypos==ypos-1 || (int)ballypos==ypos) && !(getDead()))
+                if(ballxpos+(2*radius)>=xpos && ballxpos<=xpos+width && ((int)ballypos==ypos-1 || (int)ballypos==ypos) && !(getDead()) && (yvel<0))
                     return true;
                 break;
             case 1:
-                if(ballypos+(2*radius)>=ypos && ballypos<=ypos+width && ((int)(ballxpos+(2*radius))==xpos-1 || (int)(ballxpos+(2*radius))==xpos) && !(getDead()))
+                if(ballypos+(2*radius)>=ypos && ballypos<=ypos+width && ((int)(ballxpos+(2*radius))==xpos-1 || (int)(ballxpos+(2*radius))==xpos) && !(getDead()) && (xvel>0))
                     return true;
                 break;
             case 2:
-                if(ballxpos+(2*radius)>=xpos && ballxpos<=xpos+width && ((int)(ballypos+(2*radius))==ypos-1 || (int)(ballypos+(2*radius))==ypos) && !(getDead()))
+                if(ballxpos+(2*radius)>=xpos && ballxpos<=xpos+width && ((int)(ballypos+(2*radius))==ypos-1 || (int)(ballypos+(2*radius))==ypos) && !(getDead()) && (yvel>0))
                     return true;
                 break;
             case 3:
-                if(ballypos+(2*radius)>=ypos && ballypos<=ypos+width && ((int)ballxpos==xpos+length || (int)ballxpos==xpos+length+1) && !(getDead()))
+                if(ballypos+(2*radius)>=ypos && ballypos<=ypos+width && ((int)ballxpos==xpos+length || (int)ballxpos==xpos+length+1) && !(getDead()) && (xvel<0))
                     return true;
                 break;
             default:
