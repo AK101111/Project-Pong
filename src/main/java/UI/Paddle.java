@@ -30,6 +30,14 @@ public class Paddle {
         if(this.score>0)
             score--;
     }
+    
+    public int getScore(){
+        return this.score;
+    }
+
+    public void setScore(Integer score) {
+        this.score = score;
+    }
 
     public enum paddleType { HORIZONTAL, VERTICAL}; // todo use {HORIZONTAL=0,VERTICAL=1}
     public enum playerType { AI,HUMAN,OTHER};

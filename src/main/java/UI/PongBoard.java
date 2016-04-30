@@ -15,6 +15,7 @@ import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 import static UI.Paddle.playerType.AI;
@@ -161,6 +162,11 @@ public class PongBoard extends JPanel implements ActionListener, KeyListener, Ab
         gameState.setBallPosition(new FloatPair(ball.getXpos(),ball.getYpos()));
         gameState.setBallVelocity(new FloatPair(ball.getXspeed(),ball.getYspeed()));
         //TODO
+        Map<Integer,Integer>temp = new HashMap<>();
+        for(int i=0;i<players.length;++i){
+            temp.put(i,players[i].getScore());
+        }
+        gameState.setScores(temp);
         return gameState;
     }
 
@@ -173,6 +179,11 @@ public class PongBoard extends JPanel implements ActionListener, KeyListener, Ab
             this.ball.setXvel(gameState.getBallVelocity().x);
             this.ball.setYvel(gameState.getBallVelocity().y);
             //TODO
+            Map<Integer,Integer> tempscores = gameState.getScores();
+            for(Integer key : tempscores.keySet()){
+                players[key].setScore(tempscores.get(key));
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
