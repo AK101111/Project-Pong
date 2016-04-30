@@ -118,7 +118,7 @@ public class Paddle {
         if (this.setOutside == false) {
             if ((xchange != 0) || (ychange != 0)) {
                 this.paddleMoveListener.handlePaddleMove(tage, xchange, ychange);
-                this.absoluteMoveListner.handlePaddlePosition(tage,xchange,ychange);
+                this.absoluteMoveListner.handlePaddlePosition(tage,xpos,ypos);
             }
         }
         if (this.doupdate) {
