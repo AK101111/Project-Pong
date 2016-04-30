@@ -25,7 +25,8 @@ public class Paddle {
     private boolean setOutside;
     private boolean dead;// = false;
     private AbstractGameUI.PaddleMoveListener paddleMoveListener;
-
+    private int probdec;
+    private boolean doupdate;
 
 
     public int getxchange() {
@@ -59,16 +60,12 @@ public class Paddle {
         direction = rn.nextInt(2);
         this.dead = false;
         this.tage = tage;
+        this.doupdate = true;
         //
     }
 
     public void setdead(boolean dead){
         this.dead = dead;
-        deadProc();
-    }
-
-    private void deadProc() {
-
     }
 
     public boolean getdead(){return this.dead;}
@@ -110,15 +107,17 @@ public class Paddle {
     }
 
     private void locUpdate() {
-        if(this.setOutside==false){
-            if((xchange!=0) || (ychange!=0)){
-                this.paddleMoveListener.handlePaddleMove(tage,xchange,ychange);
+        if (this.setOutside == false) {
+            if ((xchange != 0) || (ychange != 0)) {
+                this.paddleMoveListener.handlePaddleMove(tage, xchange, ychange);
             }
         }
-        if (this.type == HORIZONTAL) {
-            if (xpos + xchange + width < runningapp.getWidth() && xpos + xchange > 0) xpos += xchange;
-        } else {
-            if (ypos + ychange + length< runningapp.getHeight() && ypos + ychange > 0) ypos += ychange;
+        if (this.doupdate) {
+            if (this.type == HORIZONTAL) {
+                if (xpos + xchange + width < runningapp.getWidth() && xpos + xchange > 0) xpos += xchange;
+            } else {
+                if (ypos + ychange + length < runningapp.getHeight() && ypos + ychange > 0) ypos += ychange;
+            }
         }
     }
 
@@ -126,86 +125,53 @@ public class Paddle {
         this.setOutside = false;
         switch (runningapp.difficulty) {
             case 0:
-                if(this.type == HORIZONTAL){
-                    if(xpos  < (SCREEN_WIDTH*3)/4 && xpos+WD>=SCREEN_WIDTH/2){
-                        if(direction==1) {
-                            xchange=1;
-                        }
-                        else {
+                probdec = rn.nextInt(100);
+                if(probdec<70){
+                    this.doupdate = true;
+                    if(this.type == HORIZONTAL){
+                        if(runningapp.getBoard().getBall().getxpos() > xpos + WD/2){
+                            xchange = 1;
+                        } else if(runningapp.getBoard().getBall().getxpos()< xpos + WD/2){
                             xchange = -1;
+                        }else {
+                            xchange = 0;
                         }
-                    } else if(xpos +WD >=(SCREEN_WIDTH)/4  && xpos+WD<SCREEN_WIDTH/2){
-                        if(direction==1){
-                            xchange=1;
-                        }
-                        else{
-                            xchange = -1;
-                        }
-                    }else {
-                        if(xpos + WD >= (SCREEN_WIDTH*3)/4){
-                            xchange=-1;
+                    }else{
+                        if(runningapp.getBoard().getBall().getypos()> ypos + WD/2){
+                            ychange = 1;
+                        } else if(runningapp.getBoard().getBall().getypos()< ypos + WD/2){
+                            ychange = -1;
                         }else{
-                            xchange=1;
+                            ychange = 0;
                         }
-                        direction = 1-direction;
                     }
                 }else{
-                    if(ypos < (SCREEN_HEIGHT*3)/4 && ypos+WD>=SCREEN_HEIGHT/2){
-                        if(direction==1){
-                            ychange=1;
-                        }
-                        else{
-                            ychange = -1;
-                        }
-                    } else if(ypos + WD>=(SCREEN_HEIGHT)/4  && ypos+WD<SCREEN_HEIGHT/2){
-                        if(direction==1){
-                            ychange=1;
-                        }
-                        else{
-                            ychange = -1;
-                        }
-                    }else {
-                        if(ypos + WD >= (SCREEN_HEIGHT*3)/4){
-                            ychange=-1;
-                        }else{
-                            ychange=1;
-                        }direction = 1-direction;
-                    }
+                    this.doupdate = false;
                 }
                 break;
             case 1:
-                if(this.type == HORIZONTAL){
-                    if(xpos+2*WD>SCREEN_WIDTH){
-                        xchange=-1;
-                    }else if(xpos-WD<0) {
-                        xchange = 1;
-                    }else if(runningapp.getBoard().getBall().getxpos() > xpos + WD/2){
-                        if(rn.nextInt(50)==1){
+                probdec = rn.nextInt(100);
+                if(probdec<80){
+                    this.doupdate = true;
+                    if(this.type == HORIZONTAL){
+                        if(runningapp.getBoard().getBall().getxpos() > xpos + WD/2){
                             xchange = 1;
-                        }
-                    } else if(runningapp.getBoard().getBall().getxpos()< xpos + WD/2){
-                        if(rn.nextInt(50)==1){
+                        } else if(runningapp.getBoard().getBall().getxpos()< xpos + WD/2){
                             xchange = -1;
-                        }
-                    }else {
-                        xchange = 0;
-                    }
-                }else{
-                    if(ypos+2*WD>SCREEN_HEIGHT){
-                        ychange=-1;
-                    }else if(ypos-WD<0) {
-                        ychange = 1;
-                    }else if(runningapp.getBoard().getBall().getypos()> ypos + WD/2){
-                        if(rn.nextInt(50)==1){
-                            ychange = 1;
-                        }
-                    } else if(runningapp.getBoard().getBall().getypos()< ypos + WD/2){
-                        if(rn.nextInt(50)==1){
-                            ychange = -1;
+                        }else {
+                            xchange = 0;
                         }
                     }else{
-                        ychange = 0;
+                        if(runningapp.getBoard().getBall().getypos()> ypos + WD/2){
+                            ychange = 1;
+                        } else if(runningapp.getBoard().getBall().getypos()< ypos + WD/2){
+                            ychange = -1;
+                        }else{
+                            ychange = 0;
+                        }
                     }
+                }else{
+                    this.doupdate = false;
                 }
                 break;
             case 2:
@@ -226,6 +192,8 @@ public class Paddle {
                         ychange = 0;
                     }
                 }
+                break;
+            default:
                 break;
         }
     }
