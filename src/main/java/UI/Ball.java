@@ -43,16 +43,22 @@ public class Ball {
         public float xspeed;
         public float yspeed;
 
-        public BallVelocity(float x, float y){
-            this.yspeed = y;
-            this.xspeed = x;
+        public BallVelocity() {
+
         }
+
+//        public BallVelocity(float x, float y){
+//            this.yspeed = y;
+//            this.xspeed = x;
+//        }
         public static BallVelocity fromJSON (JSONObject asJson) {
             BallVelocity vector = null;
             try {
                 float x = (float)asJson.getDouble("x");
                 float y = (float)asJson.getDouble("y");
-                vector = new BallVelocity(x, y);
+                vector = new BallVelocity();
+                vector.xspeed = x;
+                vector.yspeed = y;
             } catch (JSONException ex) {
                 ex.printStackTrace();
             }
