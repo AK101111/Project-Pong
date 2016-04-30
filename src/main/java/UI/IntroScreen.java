@@ -144,6 +144,7 @@ public class IntroScreen {
                 }else if(type.equals("sync")) {
                     pingPong.syncState(jsonObject.getJSONObject("state"));
                 }else if(type.equals("playerDead")){
+                    System.out.println("received player dead : " + jsonObject.getInt("id"));
                     pingPong.setDeadPaddle(jsonObject.getInt("id"));
                 }
             } catch (JSONException ex) {

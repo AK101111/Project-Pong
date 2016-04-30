@@ -44,7 +44,7 @@ public class Paddle {
     private int xchange;
     private int ychange;
     private PingPong runningapp;
-    private int tage;
+    public int tage;
 
     public Paddle(PingPong app, int x, int y, paddleType type, playerType ptype,int tage){
         this.xpos = x;
@@ -65,6 +65,7 @@ public class Paddle {
     }
 
     public void setdead(boolean dead){
+//        System.out.println(String.format("dead : %s",tage));
         this.dead = dead;
         this.runningapp.getBoard().getDashboard().setScoreDead(this.tage);
     }

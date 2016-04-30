@@ -84,8 +84,8 @@ public class PongBoard extends JPanel implements ActionListener, KeyListener, Ab
         this.dashboard = new Dashboard(4,app,getOnDeadListener());
     }
 
-    private JSONObject getDeadJson(){
-        return new JSONObject().put("type","playerDead").put("id",runningApp.myName);
+    private JSONObject getDeadJson(int id){
+        return new JSONObject().put("type","playerDead").put("id",id);
     }
 
     private Dashboard.OnDeadListener getOnDeadListener(){
@@ -93,7 +93,7 @@ public class PongBoard extends JPanel implements ActionListener, KeyListener, Ab
             @Override
             public void onPlayerDead(int id){
                 System.out.println("sent dead : " + id);
-                runningApp.network.sendJSONToAll(getDeadJson());
+                runningApp.network.sendJSONToAll(getDeadJson(id));
             }
         };
     }
@@ -210,14 +210,18 @@ public class PongBoard extends JPanel implements ActionListener, KeyListener, Ab
 
     @Override
     public GameState getGameState() {
-        gameState.setBallPosition(ball.getPos());
+        try {
+            gameState.setBallPosition(ball.getPos());
 //        gameState.setBallVelocity(ball.ballVelocity);
 //        Map<Integer,MyVector> paddlePositions = new HashMap<>();
 //        for(int i=0;i<players.length;++i){
 //            paddlePositions.put(i,new MyVector(players[i].getxpos(),players[i].getypos()));
 //        }
 //        gameState.setPaddlePositions(paddlePositions);
-        gameState.setPaddlePositions(null);
+            gameState.setPaddlePositions(null);
+        }catch (Exception e){
+            //e.printStackTrace();
+        }
         return gameState;
     }
 

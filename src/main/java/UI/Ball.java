@@ -182,19 +182,20 @@ public class Ball {
     }
 
     public int wallHit(){
-        if(ypos < 0 ) {
+//        boolean isDead = ;
+        if(ypos <= radius ) {
             //System.out.println(String.format("case = %d, xpos = %d, ypos = %d,ball pos %d %d",0,xpos,ypos,this.runningapp.getBoard().getPlayers()[0].getxpos(),this.runningapp.getBoard().getPlayers()[0].getypos()));
             return 0;
         }
-        if(xpos + 2*radius >= SCREEN_WIDTH){
+        if(xpos + radius >= SCREEN_WIDTH){
             //System.out.println(String.format("case = %d, xpos = %d, ypos = %d,ball pos %d %d",1,xpos,ypos,this.runningapp.getBoard().getPlayers()[1].getxpos(),this.runningapp.getBoard().getPlayers()[1].getypos()));
             return 1;
         }
-        if(ypos + 2*radius >= heightBound) {
+        if(ypos + radius >= heightBound) {
             //System.out.println(String.format("case = %d, xpos = %d, ypos = %d,ball pos %d %d",2,xpos,ypos,this.runningapp.getBoard().getPlayers()[2].getxpos(),this.runningapp.getBoard().getPlayers()[2].getypos()));
             return 2;
         }
-        if(xpos < 0){
+        if(xpos <= radius){
             //System.out.println(String.format("case = %d, xpos = %d, ypos = %d,ball pos %d %d",3,xpos,ypos,this.runningapp.getBoard().getPlayers()[3].getxpos(),this.runningapp.getBoard().getPlayers()[3].getypos()));
             return 3;
         }
