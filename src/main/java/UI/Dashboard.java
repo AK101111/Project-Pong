@@ -1,5 +1,7 @@
 package UI;
 
+import com.oracle.tools.packager.Log;
+
 import java.awt.*;
 
 import static UI.Constants.scoreheight;
@@ -28,11 +30,13 @@ public class Dashboard {
     }
 
     public void updateScore(int player, int change) {
+        Log.debug("update score : player : "+player + " ,change : "+change);
         Players = runningapp.getBoard().getPlayers();
         if(player!=-1) {
             if(Scores[player] == 1 && change == -1){
                 Scores[player]=0;
-                //Players[player].setdead(true);
+                Log.debug("player : "+player+":" + Players[player].getdead());
+                Players[player].setdead(true);
             }
             if (!(Scores[player] == 0 && change == -1))
                 Scores[player] += change;
