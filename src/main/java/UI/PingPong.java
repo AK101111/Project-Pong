@@ -13,7 +13,7 @@ import static UI.Constants.*;
  * Created by arnavkansal on 09/04/16.
  */
 public class PingPong extends JFrame{
-    private PongBoard Board;
+    private PongBoard board;
     public int difficulty;
     Ball.BallVelocity ballVelocity;
     int myName;
@@ -31,7 +31,7 @@ public class PingPong extends JFrame{
     }
 
     public PongBoard getBoard(){
-        return this.Board;
+        return this.board;
     }
 
     private void renderDisplay(){
@@ -43,24 +43,24 @@ public class PingPong extends JFrame{
         // center window on screen
         setLocationRelativeTo(null);
         // testcomp and testactive are to be set
-        Board = new PongBoard(this,testactive,testcomp,ballVelocity);//,testother);
-        Board.setOnInternalPaddleMoveListener(paddleMoveListener);
+        board = new PongBoard(this,testactive,testcomp,ballVelocity);//,testother);
+        board.setOnInternalPaddleMoveListener(paddleMoveListener);
 
         setPaddleTypes();
 
-        Board.startpongBoard(this);
-        add(Board);
+        board.startpongBoard(this);
+        add(board);
     }
 
     private void setPaddleTypes(){
         //setting my paddle type
-        Board.setPaddleAsKeyboardControlled(myName,true);
+        board.setPaddleAsKeyboardControlled(myName,true);
         isPaddleTypeSet[myName] =true;
 
         //setting all other available player's paddle type
         for(int key : peersList.keySet()){
             if(key!=myName) {
-                Board.setPaddleAsKeyboardControlled(key, false);
+                board.setPaddleAsKeyboardControlled(key, false);
                 isPaddleTypeSet[key] = true;
             }
         }
@@ -69,17 +69,17 @@ public class PingPong extends JFrame{
         for(int i = 0; i < 4; i++){
             if(!isPaddleTypeSet[i]) {
                 if(myName == 0)
-                    Board.setPaddleAsAiControlled(i);
+                    board.setPaddleAsAiControlled(i);
                 else
-                    Board.setPaddleAsKeyboardControlled(i, false);
+                    board.setPaddleAsKeyboardControlled(i, false);
                 isPaddleTypeSet[i] = true;
             }
         }
     }
 
     public void movePaddle(int id, int delX, int delY){
-        if (Board != null)
-            Board.movePaddle(id,delX,delY);
+        if (board != null)
+            board.movePaddle(id,delX,delY);
     }
 
 

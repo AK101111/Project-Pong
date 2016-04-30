@@ -26,7 +26,7 @@ public class PongBoard extends JPanel implements ActionListener, KeyListener, Ab
 
     private PingPong runningApp;
     private Ball ball;
-    private Paddle[] Players;
+    private Paddle[] players;
     private int activePlayer;
     private Dashboard dashboard;
     //private int otherPlayers[];
@@ -42,7 +42,7 @@ public class PongBoard extends JPanel implements ActionListener, KeyListener, Ab
     private Ball.BallVelocity ballVelocity;
 
     public Paddle[] getPlayers(){
-        return this.Players;
+        return this.players;
     }
 
     public Ball getBall(){
@@ -51,7 +51,7 @@ public class PongBoard extends JPanel implements ActionListener, KeyListener, Ab
 
     public PongBoard(PingPong app, int activePlayer, int[] computerPlayers, Ball.BallVelocity velocity){//, int[] otherPlayers)
         this.runningApp = app;
-        Players = new Paddle[MAXPLAYERS];
+        players = new Paddle[MAXPLAYERS];
         //this.activePlayer = activePlayer;
         this.speed = INIT_SPEED[runningApp.difficulty];
         //this.otherPlayers = otherPlayers;
@@ -85,14 +85,14 @@ public class PongBoard extends JPanel implements ActionListener, KeyListener, Ab
         ball = new Ball(app,ballVelocity);
         // set AI players
 //        for(int index: computerPlayers){
-//            Players[index] = new Paddle(app, xinit[index], yinit[index], Paddle.paddleType.values()[index%2], AI,index);
+//            players[index] = new Paddle(app, xinit[index], yinit[index], Paddle.paddleType.values()[index%2], AI,index);
 //        }
         // set other network players
 //        for(int index: otherPlayers){
-//            Players[index] = new Paddle(app, xinit[index], yinit[index], Paddle.paddleType.values()[index%2], OTHER,index);
+//            players[index] = new Paddle(app, xinit[index], yinit[index], Paddle.paddleType.values()[index%2], OTHER,index);
 //        }
         // set game player
-        //Players[activePlayer] = new Paddle(app, xinit[activePlayer], yinit[activePlayer], Paddle.paddleType.values()[activePlayer%2], HUMAN,activePlayer);
+        //players[activePlayer] = new Paddle(app, xinit[activePlayer], yinit[activePlayer], Paddle.paddleType.values()[activePlayer%2], HUMAN,activePlayer);
     }
 
     @Override
@@ -100,7 +100,7 @@ public class PongBoard extends JPanel implements ActionListener, KeyListener, Ab
         super.paintComponent(g);
         g.drawImage(img, 0, 0, getWidth(), getHeight(), this);
         ball.draw(g);
-        for(Paddle player: Players) {
+        for(Paddle player: players) {
             if(!(player.getdead())){
                 player.draw(g);
             }
@@ -116,7 +116,7 @@ public class PongBoard extends JPanel implements ActionListener, KeyListener, Ab
 
     private void updateBoard() {
         ball.updateLocation();
-        for(Paddle player: Players) {
+        for(Paddle player: players) {
             player.updateLocation();
         }
     }
@@ -128,20 +128,20 @@ public class PongBoard extends JPanel implements ActionListener, KeyListener, Ab
 
     @Override
     public void keyPressed(KeyEvent e) {
-        Players[activePlayer].keypress(e.getKeyCode());
+        players[activePlayer].keypress(e.getKeyCode());
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        Players[activePlayer].keyrelease(e.getKeyCode());
+        players[activePlayer].keyrelease(e.getKeyCode());
     }
 
     @Override
     public boolean movePaddle(int id, int delX, int delY) {
-        if (Players == null) {
+        if (players == null) {
             return false;
         }
-        Paddle paddle = Players[id];
+        Paddle paddle = players[id];
         if (paddle == null) {
             return false;
         }
@@ -158,18 +158,18 @@ public class PongBoard extends JPanel implements ActionListener, KeyListener, Ab
     public void setPaddleAsKeyboardControlled(int paddleId, boolean owner) {
         if(owner){
             this.activePlayer = paddleId;
-            this.Players[paddleId] = new Paddle(this.runningApp, xinit[activePlayer], yinit[activePlayer], Paddle.paddleType.values()[activePlayer%2], HUMAN,activePlayer);
+            this.players[paddleId] = new Paddle(this.runningApp, xinit[activePlayer], yinit[activePlayer], Paddle.paddleType.values()[activePlayer%2], HUMAN,activePlayer);
         }
         else{
             this.keyboardPlayers.add(paddleId);
-            this.Players[paddleId] = new Paddle(this.runningApp, xinit[paddleId], yinit[paddleId], Paddle.paddleType.values()[paddleId%2], OTHER,paddleId);
+            this.players[paddleId] = new Paddle(this.runningApp, xinit[paddleId], yinit[paddleId], Paddle.paddleType.values()[paddleId%2], OTHER,paddleId);
         }
     }
 
     @Override
     public void setPaddleAsAiControlled(int paddleId) {
         this.computerPlayers.add(paddleId);
-        this.Players[paddleId] = new Paddle(this.runningApp, xinit[paddleId], yinit[paddleId], Paddle.paddleType.values()[paddleId%2], AI,paddleId);
+        this.players[paddleId] = new Paddle(this.runningApp, xinit[paddleId], yinit[paddleId], Paddle.paddleType.values()[paddleId%2], AI,paddleId);
     }
 
     public PaddleMoveListener getPaddleMoveListener(){
