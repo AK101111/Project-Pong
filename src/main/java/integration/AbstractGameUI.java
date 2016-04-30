@@ -45,4 +45,6 @@ public interface AbstractGameUI {
     void setPaddleAsAiControlled (int paddleId);
     //NOTE : make the Paddles AI/keyboard controlled only if these methods have been called before start of the game.
     //Paddles that haven't been marked as AI/keyboard controlled remain still on the board (unless they are moved by the `movePaddle` method).
+    GameState getGameState ();
+    void setGameState (GameState gameState);
 }
