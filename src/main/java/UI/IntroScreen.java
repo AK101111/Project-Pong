@@ -43,7 +43,7 @@ public class IntroScreen {
     static ReceiveListener receiveListener = new ReceiveListener() {
         @Override
         public void onReceive(String str) {
-            System.out.println("[Rx]" + str);
+//            System.out.println("[Rx]" + str);
             try {
                 JSONObject jsonObject = new JSONObject(str);
                 String type = jsonObject.getString("type");
@@ -141,6 +141,8 @@ public class IntroScreen {
                     startGame();
                 }else if(type.equals("paddleMove")){
                     pingPong.movePaddle(jsonObject.getInt("id"),jsonObject.getInt("delX"),jsonObject.getInt("delY"));
+                }else if(type.equals("sync")) {
+                    pingPong.syncState(jsonObject.getJSONObject("state"));
                 }
             } catch (JSONException ex) {
                 ex.printStackTrace();
@@ -204,6 +206,7 @@ public class IntroScreen {
     private static void startGame(){
         pingPong = pingPong.startGame(getSelectedButtonPosition(entreeGroup),ballVelocity,myName,paddleMoveListener,peersList);
         mainFrame.setVisible(false);
+        pingPong.startTimer(network);
     }
 
     private static void sendBallVelocity(){

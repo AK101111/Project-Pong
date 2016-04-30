@@ -1,10 +1,15 @@
 package UI;
 
+import Utils.MyVector;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.awt.*;
 import java.util.Random;
 
 import static UI.Constants.*;
 import static java.lang.Math.abs;
+import static javax.swing.UIManager.getInt;
 
 /**
  * Created by arnavkansal on 09/04/16.
@@ -20,9 +25,49 @@ public class Ball {
     private Random rn;
     BallVelocity ballVelocity;
 
+    public void setPos(MyVector pos) {
+        this.xpos = pos.getX();
+        this.ypos = pos.getY();
+    }
+
+    public MyVector getPos(){
+        MyVector vector = new MyVector(this.xpos,this.ypos);
+        return vector;
+    }
+
+    public void setVel(BallVelocity vel) {
+        this.ballVelocity = vel;
+    }
+
     public static class BallVelocity{
         public float xspeed;
         public float yspeed;
+
+        public BallVelocity() {
+
+        }
+
+//        public BallVelocity(float x, float y){
+//            this.yspeed = y;
+//            this.xspeed = x;
+//        }
+        public static BallVelocity fromJSON (JSONObject asJson) {
+            BallVelocity vector = null;
+            try {
+                float x = (float)asJson.getDouble("x");
+                float y = (float)asJson.getDouble("y");
+                vector = new BallVelocity();
+                vector.xspeed = x;
+                vector.yspeed = y;
+            } catch (JSONException ex) {
+                ex.printStackTrace();
+            }
+            return vector;
+        }
+
+        public JSONObject toJSON () {
+            return new JSONObject().put("x",xspeed).put("y",yspeed);
+        }
     }
     
     public Ball(PingPong app, BallVelocity velocity){
