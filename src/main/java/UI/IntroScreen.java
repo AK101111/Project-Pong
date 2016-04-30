@@ -91,7 +91,8 @@ public class IntroScreen {
                     network.addMultiplePeers(peersMap, 10, new NetworkBase.MultiplePeerConnectionListener() {
                         @Override
                         public void onAllConnectionsRes(boolean allSuccess, List<Integer> failedPeerList, List<Integer> connectedPeerList) {
-                            System.out.println("PeerList Connection result : allSuccess="+allSuccess + ", failedPeerList="+failedPeerList);
+                            System.out.println("PeerList Connection result : allSuccess="+allSuccess + ", failedPeerList="+failedPeerList + ", connectedPeerList="+connectedPeerList);
+                            System.out.println("toBeConnectedIPs="+toBeConnectedIPs);
                             if (allSuccess) {
                                 statusLabel.setText("Connected to all.");
                                 myIPAddressText.setText(myIPAddressText.getText() +  " - Ready!");
@@ -99,7 +100,7 @@ public class IntroScreen {
                                 //connected to all
                                 network.sendJSONToAll(getConnectedToAllJson());
                                 for (Integer peerName : connectedPeerList) {
-                                    if (toBeConnectedIPs.contains(peerName)) {
+                                    if (!toBeConnectedIPs.contains(peerName)) {
                                         int labelId = getUnfilledConnectionLabel();
                                         System.out.println("[print to label][peerList] labelId=" + labelId + ", senderIP=" + peersMap.get(peerName) + ", senderName=" + peerName);
                                         displayConnectedToPeer(labelId, peersMap.get(peerName), peerName, false);
