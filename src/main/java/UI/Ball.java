@@ -107,26 +107,26 @@ public class Ball {
         for(int i=0; i< Players.length; ++i) {
             switch (i){
                 case 0:
-                    if(Players[i].getxCollisionBounds(1).left<= xpos && xpos <= Players[i].getxCollisionBounds(1).right && ypos-LEN==Players[i].getypos() && !(Players[i].getdead())){
+                    if(Players[i].getxCollisionBounds(1).left< xpos && xpos < Players[i].getxCollisionBounds(1).right && ypos-LEN==Players[i].getypos() && !(Players[i].getdead())){
                         //System.out.println(String.format("Collide with %d Paddle",i+1));
                         return i;
                     }
                     break;
                 case 1:
                     //System.out.println(String.format("up %d down %d ball %d",Players[i].getyCollisionBounds().left,Players[i].getyCollisionBounds().right,ypos));
-                    if(Players[i].getyCollisionBounds(1).left<= ypos && ypos <= Players[i].getyCollisionBounds(1).right && xpos+(2*radius)>=Players[i].getxpos() && !(Players[i].getdead())){
+                    if(Players[i].getyCollisionBounds(1).left< ypos && ypos < Players[i].getyCollisionBounds(1).right && xpos+(2*radius)>=Players[i].getxpos() && !(Players[i].getdead())){
                         //System.out.println(String.format("Collide with %d Paddle %d %d",i+1,xpos,ypos));
                         return i;
                     }
                     break;
                 case 2:
-                    if(Players[i].getxCollisionBounds(-1).left<= xpos && xpos <= Players[i].getxCollisionBounds(-1).right && ypos+(2*radius)==Players[i].getypos() && !(Players[i].getdead())){
+                    if(Players[i].getxCollisionBounds(-1).left< xpos && xpos < Players[i].getxCollisionBounds(-1).right && ypos+(2*radius)==Players[i].getypos() && !(Players[i].getdead())){
                         //System.out.println(String.format("Collide with %d Paddle",i+1));
                         return i;
                     }
                     break;
                 case 3:
-                    if(Players[i].getyCollisionBounds(-1).left<= ypos && ypos <= Players[i].getyCollisionBounds(-1).right && xpos-LEN<=Players[i].getxpos() && !(Players[i].getdead())){
+                    if(Players[i].getyCollisionBounds(-1).left< ypos && ypos < Players[i].getyCollisionBounds(-1).right && xpos-LEN<=Players[i].getxpos() && !(Players[i].getdead())){
                         //System.out.println(String.format("Collide with %d Paddle",i+1));
                         return i;
                     }
