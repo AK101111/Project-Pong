@@ -1,5 +1,6 @@
 package integration;
 
+import UI.Ball;
 import Utils.MyVector;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,10 +16,38 @@ import java.util.Map;
  */
 public class GameState {
     private MyVector ballPosition;
-    private MyVector ballVelocity;
+    private Ball.BallVelocity ballVelocity;
     private Map<Integer,MyVector> paddlePositions;
 
-    public GameState (MyVector ballPosition, MyVector ballVelocity, Map<Integer,MyVector> paddlePositions) {
+    public MyVector getBallPosition(){
+        return this.ballPosition;
+    }
+
+    public Ball.BallVelocity getBallVelocity(){
+        return this.ballVelocity;
+    }
+
+    public Map<Integer,MyVector> getPaddlePositions(){
+        return this.paddlePositions;
+    }
+
+    public void setBallPosition(MyVector ballPosition){
+        this.ballPosition = ballPosition;
+    }
+
+    public void setBallVelocity(Ball.BallVelocity ballVelocity){
+        this.ballVelocity = ballVelocity;
+    }
+
+    public void setPaddlePositions(Map<Integer,MyVector> paddlePositions){
+        this.paddlePositions = paddlePositions;
+    }
+
+    public GameState(){
+
+    }
+
+    public GameState (MyVector ballPosition, Ball.BallVelocity ballVelocity, Map<Integer,MyVector> paddlePositions) {
         this.ballPosition = ballPosition;
         this.ballVelocity = ballVelocity;
         this.paddlePositions = paddlePositions;
@@ -36,7 +65,7 @@ public class GameState {
         GameState state = null;
         try {
             MyVector ballPosition = MyVector.fromJSON(jsonObject.getJSONObject("ballPos"));
-            MyVector ballVelocity = MyVector.fromJSON(jsonObject.getJSONObject("ballVel"));
+            Ball.BallVelocity ballVelocity = Ball.BallVelocity.fromJSON(jsonObject.getJSONObject("ballVel"));
             JSONObject paddlePositionsJSON = jsonObject.getJSONObject("paddlePos");
             Map<Integer,MyVector> paddlePositions = new HashMap<>();
             for (String key : paddlePositionsJSON.keySet()) {
