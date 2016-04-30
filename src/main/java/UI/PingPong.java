@@ -78,7 +78,8 @@ public class PingPong extends JFrame{
     }
 
     public void movePaddle(int id, int delX, int delY){
-        Board.movePaddle(id,delX,delY);
+        if (Board != null)
+            Board.movePaddle(id,delX,delY);
     }
 
 
