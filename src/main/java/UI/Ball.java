@@ -64,6 +64,10 @@ public class Ball {
             }
             return vector;
         }
+
+        public JSONObject toJSON () {
+            return new JSONObject().put("x",xspeed).put("y",yspeed);
+        }
     }
     
     public Ball(PingPong app, BallVelocity velocity){

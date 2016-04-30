@@ -55,8 +55,8 @@ public class GameState {
 
     public JSONObject toJSON () {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("ballPos",ballPosition);
-        jsonObject.put("ballVel",ballVelocity);
+        jsonObject.put("ballPos",ballPosition.toJSON());
+        jsonObject.put("ballVel",ballVelocity.toJSON());
         jsonObject.put("paddlePos",paddlePositions);
         return jsonObject;
     }
@@ -64,6 +64,7 @@ public class GameState {
     public static GameState fromJSON (JSONObject jsonObject) {
         GameState state = null;
         try {
+//            System.out.println("gamestate json:\n" + jsonObject.toString(4));
             MyVector ballPosition = MyVector.fromJSON(jsonObject.getJSONObject("ballPos"));
             Ball.BallVelocity ballVelocity = Ball.BallVelocity.fromJSON(jsonObject.getJSONObject("ballVel"));
             JSONObject paddlePositionsJSON = jsonObject.getJSONObject("paddlePos");
