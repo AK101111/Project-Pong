@@ -116,7 +116,7 @@ public class Paddle {
             if (this.type == HORIZONTAL) {
                 if (xpos + xchange + width < runningapp.getWidth() && xpos + xchange > 0) xpos += xchange;
             } else {
-                if (ypos + ychange + length < runningapp.getHeight() && ypos + ychange > 0) ypos += ychange;
+                if (ypos + ychange + length < 378 && ypos + ychange > 0) ypos += ychange;
             }
         }
     }
