@@ -23,6 +23,7 @@ import static UI.Constants.*;
 // some of source taken from docs.oracle.com/javase/
 // gradient idea copied
 public class IntroScreen {
+    static JFrame mainFrame;
     static JTextField ipTextField1,ipTextField2,ipTextField3;
     static JLabel ipLabel1,ipLabel2,ipLabel3,statusLabel;
     static JLabel myIPAddressText;
@@ -189,6 +190,7 @@ public class IntroScreen {
 
     private static void startGame(){
         pingPong = pingPong.startGame(getSelectedButtonPosition(entreeGroup),ballVelocity,myName,paddleMoveListener);
+        mainFrame.setVisible(false);
     }
 
     private static void sendBallVelocity(){
@@ -246,17 +248,17 @@ public class IntroScreen {
     }
 
     public static void createUI() {
-        JFrame f = new JFrame ("Ping Pong");
+        mainFrame = new JFrame ("Ping Pong");
 
 //        LayerUI<JPanel> layerUI = new SpotlightLayerUI();
         JPanel panel = createPanel();
         JLayer<JPanel> jlayer = new JLayer<JPanel>(panel);
 
-        f.add (jlayer);
-        f.pack();
-        f.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
-        f.setLocationRelativeTo (null);
-        f.setVisible (true);
+        mainFrame.add (jlayer);
+        mainFrame.pack();
+        mainFrame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
+        mainFrame.setLocationRelativeTo (null);
+        mainFrame.setVisible (true);
     }
 
     private static JPanel createPanel() {
