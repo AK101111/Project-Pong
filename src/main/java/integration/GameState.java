@@ -1,6 +1,7 @@
 package integration;
 
 import UI.Ball;
+import Utils.FloatPair;
 import Utils.MyVector;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,15 +16,15 @@ import java.util.Map;
  * Created by akedia on 30/04/16.
  */
 public class GameState {
-    private MyVector ballPosition;
-    private Ball.BallVelocity ballVelocity;
+    private FloatPair ballPosition;
+    private FloatPair ballVelocity;
     private Map<Integer,MyVector> paddlePositions;
 
-    public MyVector getBallPosition(){
+    public FloatPair getBallPosition(){
         return this.ballPosition;
     }
 
-    public Ball.BallVelocity getBallVelocity(){
+    public FloatPair getBallVelocity(){
         return this.ballVelocity;
     }
 
@@ -31,11 +32,11 @@ public class GameState {
         return this.paddlePositions;
     }
 
-    public void setBallPosition(MyVector ballPosition){
+    public void setBallPosition(FloatPair ballPosition){
         this.ballPosition = ballPosition;
     }
 
-    public void setBallVelocity(Ball.BallVelocity ballVelocity){
+    public void setBallVelocity(FloatPair ballVelocity){
         this.ballVelocity = ballVelocity;
     }
 
@@ -47,7 +48,7 @@ public class GameState {
 
     }
 
-    public GameState (MyVector ballPosition, Ball.BallVelocity ballVelocity, Map<Integer,MyVector> paddlePositions) {
+    public GameState (FloatPair ballPosition, FloatPair ballVelocity, Map<Integer,MyVector> paddlePositions) {
         this.ballPosition = ballPosition;
         this.ballVelocity = ballVelocity;
         this.paddlePositions = paddlePositions;
@@ -65,8 +66,8 @@ public class GameState {
         GameState state = null;
         try {
 //            System.out.println("gamestate json:\n" + jsonObject.toString(4));
-            MyVector ballPosition = MyVector.fromJSON(jsonObject.getJSONObject("ballPos"));
-            Ball.BallVelocity ballVelocity = Ball.BallVelocity.fromJSON(jsonObject.getJSONObject("ballVel"));
+            FloatPair ballPosition = FloatPair.fromJSON(jsonObject.getJSONObject("ballPos"));
+            FloatPair ballVelocity = FloatPair.fromJSON(jsonObject.getJSONObject("ballVel"));
 //            JSONObject paddlePositionsJSON = jsonObject.getJSONObject("paddlePos");
 //            Map<Integer,MyVector> paddlePositions = new HashMap<>();
 //            for (String key : paddlePositionsJSON.keySet()) {

@@ -1,6 +1,7 @@
 package UI;
 
 import Networking.NetworkBase;
+import Utils.FloatPair;
 import integration.AbstractGameUI;
 import integration.GameState;
 import org.json.JSONObject;
@@ -19,17 +20,17 @@ import static UI.Constants.*;
 public class PingPong extends JFrame{
     private PongBoard board;
     public int difficulty;
-    Ball.BallVelocity ballVelocity;
+    public FloatPair velocity;
     int myName;
     AbstractGameUI.PaddleMoveListener paddleMoveListener;
     Map<Integer,String> peersList;
     boolean[] isPaddleTypeSet = {false,false,false,false};
 
-    public PingPong(int difficulty, Ball.BallVelocity velocity){
+    public PingPong(int difficulty, FloatPair velocity){
         this.difficulty = difficulty;
-        this.ballVelocity = velocity;
-//        renderDisplay();
+        this.velocity = velocity;
     }
+
     public PingPong(){
 
     }
@@ -41,13 +42,9 @@ public class PingPong extends JFrame{
     private void renderDisplay(){
         setSize(SCREEN_WIDTH,SCREEN_HEIGHT);
         setResizable(false);
-        //setTitle("Ping Pong");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        //setBackground(Color.BLACK);
-        // center window on screen
         setLocationRelativeTo(null);
-        // testcomp and testactive are to be set
-        board = new PongBoard(this,testactive,testcomp,ballVelocity);//,testother);
+        board = new PongBoard(this);//,testother);
         board.setOnInternalPaddleMoveListener(paddleMoveListener);
 
         setPaddleTypes();
@@ -110,7 +107,7 @@ public class PingPong extends JFrame{
         },100,50);
     }
 
-    public static PingPong startGame(int difficulty, Ball.BallVelocity velocity, int myName, AbstractGameUI.PaddleMoveListener paddleMoveListener, Map<Integer,String> peersList){
+    public static PingPong startGame(int difficulty, FloatPair velocity, int myName, AbstractGameUI.PaddleMoveListener paddleMoveListener, Map<Integer,String> peersList){
         PingPong app = new PingPong(difficulty, velocity);
         EventQueue.invokeLater(new Runnable(){
             @Override
@@ -124,5 +121,9 @@ public class PingPong extends JFrame{
             }
         });
         return app;
+    }
+
+    public int getWorkingSize() {
+        return this.getHeight()-22;
     }
 }

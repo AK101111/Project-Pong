@@ -3,6 +3,7 @@ package UI;
 import Networking.NetworkBase;
 import Networking.PeerConnectionListener;
 import Networking.ReceiveListener;
+import Utils.FloatPair;
 import integration.AbstractGameUI;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,7 +39,7 @@ public class IntroScreen {
 
     static ArrayList<Integer> toBeConnectedIPs = new ArrayList<>();
 
-    static Ball.BallVelocity ballVelocity = new Ball.BallVelocity();
+    static FloatPair ballVelocity = new FloatPair();
 
     static ReceiveListener receiveListener = new ReceiveListener() {
         @Override
@@ -135,9 +136,7 @@ public class IntroScreen {
                             statusLabel.setText("Waiting for game to commence...");
                     }
                 }else if(type.equals("ballVelocity") && myName != 0){
-                    ballVelocity = new Ball.BallVelocity();
-                    ballVelocity.xspeed = (float) jsonObject.getDouble("xspeed");
-                    ballVelocity.yspeed = (float)jsonObject.getDouble("yspeed");
+                    ballVelocity = new FloatPair((float) jsonObject.getDouble("xspeed"),(float)jsonObject.getDouble("yspeed"));
                     startGame();
                 }else if(type.equals("paddleMove")){
                     pingPong.movePaddle(jsonObject.getInt("id"),jsonObject.getInt("delX"),jsonObject.getInt("delY"));
@@ -165,8 +164,8 @@ public class IntroScreen {
     static JSONObject getBallVelocityJson(){
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("type","ballVelocity");
-        jsonObject.put("xspeed",ballVelocity.xspeed);
-        jsonObject.put("yspeed",ballVelocity.yspeed);
+        jsonObject.put("xspeed",ballVelocity.x);
+        jsonObject.put("yspeed",ballVelocity.y);
         return jsonObject;
     }
 
@@ -210,13 +209,8 @@ public class IntroScreen {
     }
 
     private static void sendBallVelocity(){
-        Random random = new Random();
-        ballVelocity.xspeed = XSPEED[random.nextInt(100)%3];
-        ballVelocity.yspeed = YSPEED[random.nextInt(100)%3];
-        while (ballVelocity.yspeed == 0 || ballVelocity.xspeed ==0){
-            ballVelocity.xspeed = XSPEED[random.nextInt(2)];
-            ballVelocity.yspeed = YSPEED[random.nextInt(2)];
-        }
+        ballVelocity.x = (float)Math.cos(2*Math.PI*Math.random())*SPEED_MAGNITUDE;
+        ballVelocity.y = (float)Math.sin(2*Math.PI*Math.random())*SPEED_MAGNITUDE;
         network.sendJSONToAll(getBallVelocityJson());
     }
 
@@ -585,7 +579,7 @@ public class IntroScreen {
             if (button.isSelected()) {
                 return i;
             }
-            i ++;
+            i++;
         }
 
         return i;
@@ -651,19 +645,19 @@ class SpotlightLayerUI extends LayerUI<JPanel> {
         // Paint the view.
         super.paint (g2, c);
 
-        if (mActive) {
-            // Create a radial gradient, transparent in the middle.
-            java.awt.geom.Point2D center = new java.awt.geom.Point2D.Float(mX, mY);
-            float radius = 150;
-            float[] dist = {0.3f, 1.0f};
-            Color[] colors = {new Color(0.0f, 0.0f, 0.0f, 0.0f), Color.BLACK};
-            RadialGradientPaint p =
-                    new RadialGradientPaint(center, radius, dist, colors);
-            g2.setPaint(p);
-            g2.setComposite(AlphaComposite.getInstance(
-                    AlphaComposite.SRC_OVER, 1.0f));
-            g2.fillRect(0, 0, c.getWidth(), c.getHeight());
-        }
+//        if (mActive) {
+//            // Create a radial gradient, transparent in the middle.
+//            java.awt.geom.Point2D center = new java.awt.geom.Point2D.Float(mX, mY);
+//            float radius = 150;
+//            float[] dist = {0.3f, 1.0f};
+//            Color[] colors = {new Color(0.0f, 0.0f, 0.0f, 0.0f), Color.BLACK};
+//            RadialGradientPaint p =
+//                    new RadialGradientPaint(center, radius, dist, colors);
+//            g2.setPaint(p);
+//            g2.setComposite(AlphaComposite.getInstance(
+//                    AlphaComposite.SRC_OVER, 1.0f));
+//            g2.fillRect(0, 0, c.getWidth(), c.getHeight());
+//        }
 
         g2.dispose();
     }

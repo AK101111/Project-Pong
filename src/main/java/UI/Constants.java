@@ -15,6 +15,7 @@ public final class Constants {
     public static final int YCENTER = 182;
     public static final int[] XSPEED = new int[]{-1,0,1};
     public static final int[] YSPEED = new int[]{-1,0,1};
+    public static final int SPEED_MAGNITUDE = 1;
     public static final int[] xinit = new int[]{175, 395, 175, 0};
     public static final int[] yinit = new int[]{0, 182, 373, 182};
     public static final int[] scoreheight = new int[]{30,200,370,200};

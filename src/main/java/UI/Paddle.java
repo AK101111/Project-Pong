@@ -15,26 +15,20 @@ import static java.awt.event.KeyEvent.*;
  * Created by arnavkansal on 09/04/16.
  */
 public class Paddle {
-
-    private int length;
-    private int width;
+    private int length=LEN;
+    private int width=WD;
     private int xpos;
     private int ypos;
-    private Random rn;
-    private int direction;
+    private int score;
     private boolean setOutside;
-    private boolean dead;// = false;
     private AbstractGameUI.PaddleMoveListener paddleMoveListener;
     private int probdec;
     private boolean doupdate;
+    private int id;
 
-
-    public int getxchange() {
-        return xchange;
-    }
-
-    public int getychange() {
-        return ychange;
+    public void scoreDec() {
+        if(this.score>0)
+            score--;
     }
 
     public enum paddleType { HORIZONTAL, VERTICAL}; // todo use {HORIZONTAL=0,VERTICAL=1}
@@ -44,42 +38,26 @@ public class Paddle {
     private int xchange;
     private int ychange;
     private PingPong runningapp;
-    private int tage;
+    private Random rn;
 
-    public Paddle(PingPong app, int x, int y, paddleType type, playerType ptype,int tage){
+    public Paddle(PingPong app, int x, int y, paddleType type, playerType ptype,int id){
         this.xpos = x;
         this.ypos = y;
         this.type = type;
-        this.length = LEN;
-        this.width = WD;
         this.runningapp = app;
         this.ptype = ptype;
-        rn = new Random();
         this.setOutside = false;
-        //System.out.println("Here");
-        direction = rn.nextInt(2);
-        this.dead = false;
-        this.tage = tage;
+        this.id = id;
         this.doupdate = true;
-        //
+        this.paddleMoveListener = runningapp.getBoard().getPaddleMoveListener();
+        this.score = 3;
+        rn = new Random();
     }
 
-    public void setdead(boolean dead){
-        this.dead = dead;
-    }
-
-    public boolean getdead(){return this.dead;}
-
-    public int getxpos(){
-        return xpos;
-    }
-
-    public int getypos(){
-        return ypos;
-    }
+    public boolean getDead(){return (this.score==0);}
 
     public boolean setxpos(int deltaxpos){
-        if(this.xpos +deltaxpos + WD < SCREEN_WIDTH && this.xpos +deltaxpos >0){
+        if((this.xpos +deltaxpos + width <= runningapp.getWidth()) && (this.xpos +deltaxpos >=0)){
             this.xpos += deltaxpos;
             this.setOutside = true;
             return true;
@@ -88,7 +66,7 @@ public class Paddle {
     }
 
     public boolean setypos(int deltaypos){
-        if(this.ypos + deltaypos + WD < 378 && this.ypos+deltaypos>0){
+        if((this.ypos + deltaypos + width <= runningapp.getWorkingSize()) && (this.ypos+deltaypos>=0)){
             this.ypos += deltaypos;
             this.setOutside = true;
             return true;
@@ -97,11 +75,8 @@ public class Paddle {
     }
 
     public void updateLocation() {
-        this.paddleMoveListener = runningapp.getBoard().getPaddleMoveListener();
         if(this.ptype == AI) {
             findposAI();
-        }else if(this.ptype == OTHER){
-            // fetch from network
         }
         locUpdate();
     }
@@ -109,14 +84,14 @@ public class Paddle {
     private void locUpdate() {
         if (this.setOutside == false) {
             if ((xchange != 0) || (ychange != 0)) {
-                this.paddleMoveListener.handlePaddleMove(tage, xchange, ychange);
+                this.paddleMoveListener.handlePaddleMove(id, xchange, ychange);
             }
         }
         if (this.doupdate) {
             if (this.type == HORIZONTAL) {
-                if (xpos + xchange + WD < runningapp.getWidth() && xpos + xchange > 0) xpos += xchange;
+                if ((xpos + xchange + width <= runningapp.getWidth()) && (xpos + xchange >= 0)) xpos += xchange;
             } else {
-                if (ypos + ychange + WD < 378 && ypos + ychange > 0) ypos += ychange;
+                if ((ypos + ychange + width <= runningapp.getWorkingSize()) && (ypos + ychange >= 0)) ypos += ychange;
             }
         }
     }
@@ -129,17 +104,17 @@ public class Paddle {
                 if(probdec<70){
                     this.doupdate = true;
                     if(this.type == HORIZONTAL){
-                        if(runningapp.getBoard().getBall().getxpos() > xpos + WD/2){
+                        if(runningapp.getBoard().getBall().getXpos() > xpos + WD/2){
                             xchange = 1;
-                        } else if(runningapp.getBoard().getBall().getxpos()< xpos + WD/2){
+                        } else if(runningapp.getBoard().getBall().getXpos()< xpos + WD/2){
                             xchange = -1;
                         }else {
                             xchange = 0;
                         }
                     }else{
-                        if(runningapp.getBoard().getBall().getypos()> ypos + WD/2){
+                        if(runningapp.getBoard().getBall().getYpos()> ypos + WD/2){
                             ychange = 1;
-                        } else if(runningapp.getBoard().getBall().getypos()< ypos + WD/2){
+                        } else if(runningapp.getBoard().getBall().getYpos()< ypos + WD/2){
                             ychange = -1;
                         }else{
                             ychange = 0;
@@ -154,17 +129,17 @@ public class Paddle {
                 if(probdec<80){
                     this.doupdate = true;
                     if(this.type == HORIZONTAL){
-                        if(runningapp.getBoard().getBall().getxpos() > xpos + WD/2){
+                        if(runningapp.getBoard().getBall().getXpos() > xpos + width/2){
                             xchange = 1;
-                        } else if(runningapp.getBoard().getBall().getxpos()< xpos + WD/2){
+                        } else if(runningapp.getBoard().getBall().getXpos()< xpos + width/2){
                             xchange = -1;
                         }else {
                             xchange = 0;
                         }
                     }else{
-                        if(runningapp.getBoard().getBall().getypos()> ypos + WD/2){
+                        if(runningapp.getBoard().getBall().getYpos()> ypos + width/2){
                             ychange = 1;
-                        } else if(runningapp.getBoard().getBall().getypos()< ypos + WD/2){
+                        } else if(runningapp.getBoard().getBall().getYpos()< ypos + width/2){
                             ychange = -1;
                         }else{
                             ychange = 0;
@@ -176,17 +151,17 @@ public class Paddle {
                 break;
             case 2:
                 if(this.type == HORIZONTAL){
-                    if(runningapp.getBoard().getBall().getxpos() > xpos + WD/2){
+                    if(runningapp.getBoard().getBall().getXpos() > xpos + width/2){
                         xchange = 1;
-                    } else if(runningapp.getBoard().getBall().getxpos()< xpos + WD/2){
+                    } else if(runningapp.getBoard().getBall().getXpos()< xpos + width/2){
                         xchange = -1;
                     }else {
                         xchange = 0;
                     }
                 }else{
-                    if(runningapp.getBoard().getBall().getypos()> ypos + WD/2){
+                    if(runningapp.getBoard().getBall().getYpos()> ypos + width/2){
                         ychange = 1;
-                    } else if(runningapp.getBoard().getBall().getypos()< ypos + WD/2){
+                    } else if(runningapp.getBoard().getBall().getYpos()< ypos + width/2){
                         ychange = -1;
                     }else{
                         ychange = 0;
@@ -203,7 +178,7 @@ public class Paddle {
     }
 
     public void draw(Graphics g){
-        //System.out.println("Here");
+        g.drawString(String.valueOf(score), scorewidth[id],scoreheight[id]);
         g.setColor(Color.WHITE);
         if(this.type == HORIZONTAL)
             g.fillRect(xpos,ypos,width,length);
@@ -242,26 +217,36 @@ public class Paddle {
                 ychange = -1;
             if (keyCode == VK_DOWN)
                 ychange = 1;
-            //
         } else {
             if (keyCode == VK_LEFT)
                 xchange = -1;
             if (keyCode == VK_RIGHT)
                 xchange = 1;
-            //
         }
         this.setOutside = false;
     }
 
-    public Utility.pair getxCollisionBounds(int pos){
-        return Utility.pair.make_pair(xpos,xpos+WD);
-    }
-
-    public Utility.pair getyCollisionBounds(int pos){
-        return Utility.pair.make_pair(ypos,ypos+WD);
-    }
-
-    public paddleType type(){
-        return this.type;
+    public boolean paddleCollide(float ballxpos, float ballypos, int radius) {
+        switch (id){
+            case 0:
+                if(ballxpos+(2*radius)>=xpos && ballxpos<=xpos+width && ((int)ballypos==ypos-1 || (int)ballypos==ypos))
+                    return true;
+                break;
+            case 1:
+                if(ballypos+(2*radius)>=ypos && ballypos<=ypos+width && ((int)(ballxpos+(2*radius))==xpos-1 || (int)(ballxpos+(2*radius))==xpos))
+                    return true;
+                break;
+            case 2:
+                if(ballxpos+(2*radius)>=xpos && ballxpos<=xpos+width && ((int)(ballypos+(2*radius))==ypos-1 || (int)(ballypos+(2*radius))==ypos))
+                    return true;
+                break;
+            case 3:
+                if(ballypos+(2*radius)>=ypos && ballypos<=ypos+width && ((int)ballxpos==xpos+length || (int)ballxpos==xpos+length+1))
+                    return true;
+                break;
+            default:
+                return false;
+        }
+        return false;
     }
 }

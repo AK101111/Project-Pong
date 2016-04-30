@@ -1,5 +1,6 @@
 package UI;
 
+import Utils.FloatPair;
 import Utils.MyVector;
 import integration.AbstractGameUI;
 import integration.GameState;
@@ -14,8 +15,6 @@ import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 import static UI.Paddle.playerType.AI;
@@ -32,19 +31,10 @@ public class PongBoard extends JPanel implements ActionListener, KeyListener, Ab
     private Ball ball;
     private Paddle[] players;
     private int activePlayer;
-    private Dashboard dashboard;
-    //private int otherPlayers[];
-    private ArrayList<Integer> computerPlayers;
-    private ArrayList<Integer> otherPlayers;
-    private ArrayList<Integer> keyboardPlayers;
-    //private  int computerPlayers[];
-    //private int otherPlayers[];
-    private int speed;//=INIT_SPEED;
+    private int speed;
     private BufferedImage img;
     private PaddleMoveListener paddleMoveListener;
     private GameState gameState;
-
-    private Ball.BallVelocity ballVelocity;
 
     public Paddle[] getPlayers(){
         return this.players;
@@ -54,22 +44,15 @@ public class PongBoard extends JPanel implements ActionListener, KeyListener, Ab
         return this.ball;
     }
 
-    public PongBoard(PingPong app, int activePlayer, int[] computerPlayers, Ball.BallVelocity velocity){//, int[] otherPlayers)
+    public PongBoard(PingPong app){
         this.runningApp = app;
         players = new Paddle[MAXPLAYERS];
-        //this.activePlayer = activePlayer;
         this.speed = INIT_SPEED[runningApp.difficulty];
-        //this.otherPlayers = otherPlayers;
-        //this.computerPlayers = computerPlayers;
         try {
             img = ImageIO.read(new File(IMAGES_PATH+"2"+".jpg"));
         } catch (IOException e) {
             e.printStackTrace();
         }
-        this.ballVelocity = velocity;
-        this.computerPlayers = new ArrayList<>();
-        this.otherPlayers = new ArrayList<>();
-        this.keyboardPlayers = new ArrayList<>();
         this.gameState = new GameState();
     }
 
@@ -79,29 +62,13 @@ public class PongBoard extends JPanel implements ActionListener, KeyListener, Ab
         addKeyListener(this);
         setFocusable(true);
         setBoard(app);
-        this.dashboard = new Dashboard(4,app);
-    }
-
-    public Dashboard getDashboard() {
-        return this.dashboard;
     }
 
     public void setBoard(PingPong app) {
         // set Ball
-        ball = new Ball(app,ballVelocity);
-        gameState.setBallPosition(new MyVector(ball.getxpos(),ball.getypos()));
-        gameState.setBallVelocity(ballVelocity);
-        //
-        // set AI players
-//        for(int index: computerPlayers){
-//            players[index] = new Paddle(app, xinit[index], yinit[index], Paddle.paddleType.values()[index%2], AI,index);
-//        }
-        // set other network players
-//        for(int index: otherPlayers){
-//            players[index] = new Paddle(app, xinit[index], yinit[index], Paddle.paddleType.values()[index%2], OTHER,index);
-//        }
-        // set game player
-        //players[activePlayer] = new Paddle(app, xinit[activePlayer], yinit[activePlayer], Paddle.paddleType.values()[activePlayer%2], HUMAN,activePlayer);
+        ball = new Ball(app);
+        gameState.setBallPosition(new FloatPair(ball.getXpos(),ball.getYpos()));
+        gameState.setBallVelocity(new FloatPair(ball.getXspeed(),ball.getYspeed()));
     }
 
     @Override
@@ -110,17 +77,16 @@ public class PongBoard extends JPanel implements ActionListener, KeyListener, Ab
         g.drawImage(img, 0, 0, getWidth(), getHeight(), this);
         ball.draw(g);
         for(Paddle player: players) {
-            if(!(player.getdead())){
+            if(!(player.getDead())){
                 player.draw(g);
             }
         }
-        dashboard.draw(g);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        updateBoard();
         repaint();
+        updateBoard();
     }
 
     private void updateBoard() {
@@ -160,31 +126,40 @@ public class PongBoard extends JPanel implements ActionListener, KeyListener, Ab
     @Override
     public void setOnInternalPaddleMoveListener(PaddleMoveListener paddleMoveListener) {
         this.paddleMoveListener = paddleMoveListener;
-        // line
     }
 
     @Override
     public void setPaddleAsKeyboardControlled(int paddleId, boolean owner) {
         if(owner){
             this.activePlayer = paddleId;
-            this.players[paddleId] = new Paddle(this.runningApp, xinit[activePlayer], yinit[activePlayer], Paddle.paddleType.values()[activePlayer%2], HUMAN,activePlayer);
+            this.players[paddleId] = new Paddle(this.runningApp,
+                                                xinit[activePlayer],
+                                                yinit[activePlayer],
+                                                Paddle.paddleType.values()[activePlayer%2],
+                                                HUMAN,activePlayer);
         }
         else{
-            this.keyboardPlayers.add(paddleId);
-            this.players[paddleId] = new Paddle(this.runningApp, xinit[paddleId], yinit[paddleId], Paddle.paddleType.values()[paddleId%2], OTHER,paddleId);
+            this.players[paddleId] = new Paddle(this.runningApp,
+                                                xinit[paddleId],
+                                                yinit[paddleId],
+                                                Paddle.paddleType.values()[paddleId%2],
+                                                OTHER,paddleId);
         }
     }
 
     @Override
     public void setPaddleAsAiControlled(int paddleId) {
-        this.computerPlayers.add(paddleId);
-        this.players[paddleId] = new Paddle(this.runningApp, xinit[paddleId], yinit[paddleId], Paddle.paddleType.values()[paddleId%2], AI,paddleId);
+        this.players[paddleId] = new Paddle(this.runningApp,
+                                            xinit[paddleId],
+                                            yinit[paddleId],
+                                            Paddle.paddleType.values()[paddleId%2],
+                                            AI,paddleId);
     }
 
     @Override
     public GameState getGameState() {
-        gameState.setBallPosition(ball.getPos());
-//        gameState.setBallVelocity(ball.ballVelocity);
+        gameState.setBallPosition(new FloatPair(ball.getXpos(),ball.getYpos()));
+        gameState.setBallVelocity(new FloatPair(ball.getXspeed(),ball.getYspeed()));
 //        Map<Integer,MyVector> paddlePositions = new HashMap<>();
 //        for(int i=0;i<players.length;++i){
 //            paddlePositions.put(i,new MyVector(players[i].getxpos(),players[i].getypos()));
@@ -197,9 +172,11 @@ public class PongBoard extends JPanel implements ActionListener, KeyListener, Ab
     @Override
     public void setGameState(GameState gameState) {
         this.gameState = gameState;
-        this.ball.setPos(gameState.getBallPosition());
-        this.ball.setVel(gameState.getBallVelocity());
-//        Map<Integer,MyVector> paddlePositions = gameState.getPaddlePositions();
+        this.ball.setXpos(gameState.getBallPosition().x);
+        this.ball.setYpos(gameState.getBallPosition().y);
+        this.ball.setXvel(gameState.getBallVelocity().x);
+        this.ball.setYvel(gameState.getBallVelocity().y);
+          Map<Integer,MyVector> paddlePositions = gameState.getPaddlePositions();
 //        for(int i=0;i<players.length;++i){
 //            players[i].setxpos(paddlePositions.get(i).getX());
 //            players[i].setypos(paddlePositions.get(i).getY());
@@ -210,6 +187,4 @@ public class PongBoard extends JPanel implements ActionListener, KeyListener, Ab
     public PaddleMoveListener getPaddleMoveListener(){
         return this.paddleMoveListener;
     }
-
-
 }
