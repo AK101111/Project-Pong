@@ -584,97 +584,10 @@ public class IntroScreen {
 
         return i;
     }
-}
-class AnimatedJPanel extends JPanel implements ActionListener{
-    private Timer clock;
-    private ImageIcon imageArray[];
-    private int delay=PHOTO_DELAY, totalFrames=N_PHOTOS, currentFrame=0;
-
-    public AnimatedJPanel(String photo){
-        imageArray = new ImageIcon[totalFrames];
-        for(int i=1;i<=imageArray.length; ++i){
-            imageArray[i-1] = new ImageIcon(IMAGES_PATH+photo+i+".png");
-        }
-        clock = new Timer(delay,this);
-        clock.start();
-    }
-    @Override
-    public void paintComponent(Graphics g){
-        super.paintComponent(g);
-        if(currentFrame==imageArray.length) currentFrame = 0;
-        imageArray[currentFrame++].paintIcon(this,g,this.getWidth()/2-25,this.getHeight()/2-25);
-    }
-    @Override
-    public void actionPerformed(ActionEvent e){
-       // System.out.println("Here");
-        repaint();
-    }
     public static void pausePanel(){
         //clock.stop();
     }
     public void resumePanel(){
         //clock.start();
     }
-}
-
-class SpotlightLayerUI extends LayerUI<JPanel> {
-    private boolean mActive;
-    private int mX, mY;
-
-    @Override
-    public void installUI(JComponent c) {
-        super.installUI(c);
-        JLayer jlayer = (JLayer)c;
-        jlayer.setLayerEventMask(
-                AWTEvent.MOUSE_EVENT_MASK |
-                        AWTEvent.MOUSE_MOTION_EVENT_MASK
-        );
-    }
-
-    @Override
-    public void uninstallUI(JComponent c) {
-        JLayer jlayer = (JLayer)c;
-        jlayer.setLayerEventMask(0);
-        super.uninstallUI(c);
-    }
-
-    @Override
-    public void paint (Graphics g, JComponent c) {
-        Graphics2D g2 = (Graphics2D)g.create();
-
-        // Paint the view.
-        super.paint (g2, c);
-
-//        if (mActive) {
-//            // Create a radial gradient, transparent in the middle.
-//            java.awt.geom.Point2D center = new java.awt.geom.Point2D.Float(mX, mY);
-//            float radius = 150;
-//            float[] dist = {0.3f, 1.0f};
-//            Color[] colors = {new Color(0.0f, 0.0f, 0.0f, 0.0f), Color.BLACK};
-//            RadialGradientPaint p =
-//                    new RadialGradientPaint(center, radius, dist, colors);
-//            g2.setPaint(p);
-//            g2.setComposite(AlphaComposite.getInstance(
-//                    AlphaComposite.SRC_OVER, 1.0f));
-//            g2.fillRect(0, 0, c.getWidth(), c.getHeight());
-//        }
-
-        g2.dispose();
-    }
-
-    @Override
-    protected void processMouseEvent(MouseEvent e, JLayer l) {
-        if (e.getID() == MouseEvent.MOUSE_ENTERED) mActive = true;
-        if (e.getID() == MouseEvent.MOUSE_EXITED) mActive = false;
-        l.repaint();
-    }
-
-    @Override
-    protected void processMouseMotionEvent(MouseEvent e, JLayer l) {
-        Point p = SwingUtilities.convertPoint(e.getComponent(), e.getPoint(), l);
-        mX = p.x;
-        mY = p.y;
-        l.repaint();
-    }
-
 }
