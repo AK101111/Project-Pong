@@ -31,8 +31,8 @@ public class Dashboard {
         Players = runningapp.getBoard().getPlayers();
         if(player!=-1) {
             if(Scores[player] == 1 && change == -1){
-                //Players[player].setdead(true);
                 Scores[player]=0;
+                //Players[player].setdead(true);
             }
             if (!(Scores[player] == 0 && change == -1))
                 Scores[player] += change;
