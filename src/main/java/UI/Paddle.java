@@ -290,7 +290,7 @@ public class Paddle {
     }
 
     public Utility.pair getyCollisionBounds(int pos){
-        return Utility.pair.make_pair(ypos,ypos+LEN);
+        return Utility.pair.make_pair(ypos,ypos+WD);
     }
 
     public paddleType type(){
