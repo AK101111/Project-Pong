@@ -277,6 +277,7 @@ public class IntroScreen {
         network = new NetworkBase(8080, receiveListener, new NetworkBase.OnDisconnectListener() {
             @Override
             public void onDisconnect(String peerName) {
+                System.out.println("[Disconnect] peer disconnected : " + peerName);
                 try {
                     int paddleId = Integer.valueOf(peerName);
                     if (pingPong.getBoard() != null) {
