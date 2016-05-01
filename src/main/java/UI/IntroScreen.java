@@ -52,7 +52,7 @@ public class IntroScreen {
     static ReceiveListener receiveListener = new ReceiveListener() {
         @Override
         public void onReceive(String str) {
-            System.out.println("[Rx]" + str);
+//            System.out.println("[Rx]" + str);
             try {
                 JSONObject jsonObject = new JSONObject(str);
                 String type = jsonObject.getString("type");
