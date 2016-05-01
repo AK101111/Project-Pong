@@ -17,10 +17,17 @@ public class NetworkBase {
     private ConnectionServer server;
     private Map<String,Socket> peerSockets;
 
-    public NetworkBase(int port, ReceiveListener receiveListener) {
+    private OnDisconnectListener onDisconnectListener;
+
+    public interface OnDisconnectListener {
+        void onDisconnect (String peerName);
+    }
+    public NetworkBase(int port, ReceiveListener receiveListener, OnDisconnectListener onDisconnectListener) {
         server = new ConnectionServer(port,receiveListener);
         (new Thread(server)).start();
         peerSockets = new HashMap<String, Socket>();
+
+        this.onDisconnectListener = onDisconnectListener;
     }
 
     public void addPeer(final String name, final String ip, final int port, final long timeoutMillis, final PeerConnectionListener connectionListener) {
@@ -160,6 +167,9 @@ public class NetworkBase {
             out.write((msg+"\n").getBytes());
         } catch (IOException e) {
             e.printStackTrace();
+            peerSockets.remove(peerName);
+            if (onDisconnectListener != null)
+                onDisconnectListener.onDisconnect(peerName);
         }
     }
 

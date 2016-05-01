@@ -13,6 +13,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.Exchanger;
 import javax.swing.*;
 import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
@@ -274,7 +275,20 @@ public class IntroScreen {
     }
 
     public static void main(String[] args) {
-        network = new NetworkBase(8080,receiveListener);
+        network = new NetworkBase(8080, receiveListener, new NetworkBase.OnDisconnectListener() {
+            @Override
+            public void onDisconnect(String peerName) {
+                System.out.println("[Disconnect] peer disconnected : " + peerName);
+                try {
+                    int paddleId = Integer.valueOf(peerName);
+                    if (pingPong.getBoard() != null) {
+                        pingPong.getBoard().removePaddleFromScreen(paddleId);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
@@ -442,6 +456,13 @@ public class IntroScreen {
 
     //0, 1, 2
     private static void connectToPeerList (final Map<Integer,String> peerList, final JLabel indicatorLabel, final JButton connectButton) {
+        myName = 0;
+        indicatorLabel.setText("Playing alone ;)");
+        if (peerList.isEmpty()) {
+            actionButton.removeMouseListener(onConnectListener);
+            setActionButton(true, "Play", startGameListener);
+        }
+
 
         final PeerConnectionStore connectionStore = new PeerConnectionStore(peerList.size(), new PeerConnectionStore.AllConnectionsResListener() {
             @Override
@@ -475,7 +496,6 @@ public class IntroScreen {
             }
         });
 
-        myName = 0;
         for (final Integer i : peerList.keySet()) {
             if (!peerList.get(i).isEmpty()) {
                 network.addPeer(Integer.toString(i), peerList.get(i), 8080, 1, new PeerConnectionListener() {
