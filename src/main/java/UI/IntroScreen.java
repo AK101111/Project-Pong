@@ -190,6 +190,10 @@ public class IntroScreen {
     static integration.AbstractGameUI.PaddleMoveListener paddleMoveListener = new AbstractGameUI.PaddleMoveListener() {
         @Override
         public void handlePaddleMove(int id, int delX, int delY) {
+            if (pingPong != null) {
+                if (pingPong.toNotTrackMoves.contains(id))
+                    return;
+            }
             network.sendJSONToAll(getPaddleMoveJson(id,delX,delY));
         }
     };

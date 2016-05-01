@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.TimerTask;
 
@@ -25,6 +26,8 @@ public class PingPong extends JFrame{
     AbstractGameUI.PaddleMoveListener paddleMoveListener;
     Map<Integer,String> peersList;
     boolean[] isPaddleTypeSet = {false,false,false,false};
+
+    public ArrayList<Integer> toNotTrackMoves = new ArrayList<>();
 
     public PingPong(int difficulty, FloatPair velocity){
         this.difficulty = difficulty;
@@ -70,6 +73,7 @@ public class PingPong extends JFrame{
         for(int i = 0; i < 4; i++){
             if(!isPaddleTypeSet[i]) {
                 //if(myName == 0)
+                toNotTrackMoves.add(i);
                     board.setPaddleAsAiControlled(i);
 //                else
 //                    board.setPaddleAsKeyboardControlled(i, false);
