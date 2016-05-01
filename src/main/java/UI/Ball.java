@@ -1,5 +1,7 @@
 package UI;
 
+import com.sun.javafx.geom.AreaOp;
+
 import java.awt.*;
 
 import static UI.Constants.*;
@@ -15,6 +17,7 @@ public class Ball {
     private PingPong runningapp;
     private float xvel;
     private float yvel;
+
 
     public Ball(PingPong app){
         this.runningapp = app;
@@ -139,7 +142,29 @@ public class Ball {
             runningapp.getBoard().getPlayers()[3].scoreDec();
             return 3;
         }
+        if(getGameWinner() != null)
+            showGameOverWindow();
         return -1;
+    }
+
+    private void showGameOverWindow(){
+        GameOverScreen gameOverScreen = new GameOverScreen();
+        gameOverScreen.setWinCount(IntroScreen.winCount);
+        runningapp.setVisible(false);
+    }
+
+    private Paddle getGameWinner(){
+        int zeroScoreCount = 0;
+        Paddle winner = null;
+        for(Paddle paddle : runningapp.getBoard().getPlayers()){
+            if(paddle.getScore() == 0)
+                zeroScoreCount += 1;
+            else
+                winner = paddle;
+        }
+        if(zeroScoreCount == 3)
+            return winner;
+        return null;
     }
 
     public void draw(Graphics g){
