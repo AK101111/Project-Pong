@@ -13,6 +13,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.Exchanger;
 import javax.swing.*;
 import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
@@ -260,7 +261,19 @@ public class IntroScreen {
     }
 
     public static void main(String[] args) {
-        network = new NetworkBase(8080,receiveListener);
+        network = new NetworkBase(8080, receiveListener, new NetworkBase.OnDisconnectListener() {
+            @Override
+            public void onDisconnect(String peerName) {
+                try {
+                    int paddleId = Integer.valueOf(peerName);
+                    if (pingPong.getBoard() != null) {
+                        pingPong.getBoard().removePaddleFromScreen(paddleId);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
