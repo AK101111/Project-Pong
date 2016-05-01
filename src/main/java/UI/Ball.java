@@ -150,6 +150,7 @@ public class Ball {
     private void showGameOverWindow(){
         GameOverScreen gameOverScreen = new GameOverScreen();
         gameOverScreen.setWinCount(IntroScreen.winCount);
+        gameOverScreen.showWindow(getGameWinner().id);
         runningapp.setVisible(false);
     }
 

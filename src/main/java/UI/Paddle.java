@@ -24,7 +24,8 @@ public class Paddle {
     private AbstractGameUI.PaddleMoveListener paddleMoveListener;
     private int probdec;
     private boolean doupdate;
-    private int id;
+    public int id;
+
 
     public void scoreDec() {
         if(this.score>0)
