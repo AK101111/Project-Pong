@@ -32,7 +32,7 @@ public class IntroScreen {
     static MouseAdapter onConnectListener;
     static Map<Integer,String> peersList;
     static JButton actionButton = new JButton();
-    static int myName;
+    public static int myName;
     static NetworkBase network;
     static ButtonGroup entreeGroup;
     static Map<String,Boolean> isPeerReady = new HashMap<>();
@@ -42,6 +42,11 @@ public class IntroScreen {
 
     static FloatPair ballVelocity = new FloatPair();
 
+    public static int[] winCount = new int[]{0,0,0,0};
+
+    public static void setWinCount(int[] countArray){
+        winCount = countArray;
+    }
     static long randomSeed;
 
     static ReceiveListener receiveListener = new ReceiveListener() {
@@ -182,18 +187,26 @@ public class IntroScreen {
         @Override
         public void mouseClicked(MouseEvent e) {
             super.mouseClicked(e);
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    if(myName == 0) {
+            onPlayButtonClicked();
+        }
+    };
+
+    public static void onPlayButtonClicked(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    if (myName == 0) {
                         statusLabel.setText("Starting game...");
                         sendBallVelocity();
                         startGame();
                     }
+                }catch (Exception e){
+
                 }
-            }).start();
-        }
-    };
+            }
+        }).start();
+    }
 
     static integration.AbstractGameUI.PaddleMoveListener paddleMoveListener = new AbstractGameUI.PaddleMoveListener() {
         @Override
