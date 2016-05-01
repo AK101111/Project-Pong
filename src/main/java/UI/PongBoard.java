@@ -36,6 +36,7 @@ public class PongBoard extends JPanel implements ActionListener, KeyListener, Ab
     private BufferedImage img;
     private PaddleMoveListener paddleMoveListener;
     private GameState gameState;
+    public Timer timer;
 
     public Paddle[] getPlayers(){
         return this.players;
@@ -58,7 +59,7 @@ public class PongBoard extends JPanel implements ActionListener, KeyListener, Ab
     }
 
     public void startpongBoard(PingPong app){
-        Timer timer = new Timer(speed, this);
+        timer = new Timer(speed, this);
         timer.start();
         addKeyListener(this);
         setFocusable(true);

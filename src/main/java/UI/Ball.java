@@ -151,7 +151,7 @@ public class Ball {
         GameOverScreen gameOverScreen = new GameOverScreen();
         gameOverScreen.setWinCount(IntroScreen.winCount);
         gameOverScreen.showWindow(getGameWinner().id);
-        runningapp.setVisible(false);
+        runningapp.getBoard().timer.stop();
     }
 
     private Paddle getGameWinner(){
