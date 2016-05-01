@@ -69,10 +69,10 @@ public class PingPong extends JFrame{
         //setting remaining paddle's type to AI
         for(int i = 0; i < 4; i++){
             if(!isPaddleTypeSet[i]) {
-                if(myName == 0)
+                //if(myName == 0)
                     board.setPaddleAsAiControlled(i);
-                else
-                    board.setPaddleAsKeyboardControlled(i, false);
+//                else
+//                    board.setPaddleAsKeyboardControlled(i, false);
                 isPaddleTypeSet[i] = true;
             }
         }

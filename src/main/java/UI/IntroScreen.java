@@ -137,7 +137,7 @@ public class IntroScreen {
                     }
                 }else if(type.equals("ballVelocity") && myName != 0){
                     ballVelocity = new FloatPair((float) jsonObject.getDouble("xspeed"),(float)jsonObject.getDouble("yspeed"));
-                    startGame();
+                    startGame(jsonObject.getInt("difficulty"));
                 }else if(type.equals("paddleMove")){
                     pingPong.movePaddle(jsonObject.getInt("id"),jsonObject.getInt("delX"),jsonObject.getInt("delY"));
                 }else if(type.equals("sync")) {
@@ -166,6 +166,7 @@ public class IntroScreen {
         jsonObject.put("type","ballVelocity");
         jsonObject.put("xspeed",ballVelocity.x);
         jsonObject.put("yspeed",ballVelocity.y);
+        jsonObject.put("difficulty",getSelectedButtonPosition(entreeGroup));
         return jsonObject;
     }
 
@@ -203,7 +204,10 @@ public class IntroScreen {
     }
 
     private static void startGame(){
-        pingPong = pingPong.startGame(getSelectedButtonPosition(entreeGroup),ballVelocity,myName,paddleMoveListener,peersList);
+        startGame(getSelectedButtonPosition(entreeGroup));
+    }
+    private static void startGame(int difficulty){
+        pingPong = pingPong.startGame(difficulty,ballVelocity,myName,paddleMoveListener,peersList);
         mainFrame.setVisible(false);
         pingPong.startTimer(network);
     }
