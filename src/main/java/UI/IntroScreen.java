@@ -46,6 +46,7 @@ public class IntroScreen {
     public static void setWinCount(int[] countArray){
         winCount = countArray;
     }
+    static long randomSeed;
 
     static ReceiveListener receiveListener = new ReceiveListener() {
         @Override
@@ -143,6 +144,7 @@ public class IntroScreen {
                     }
                 }else if(type.equals("ballVelocity") && myName != 0){
                     ballVelocity = new FloatPair((float) jsonObject.getDouble("xspeed"),(float)jsonObject.getDouble("yspeed"));
+                    randomSeed = jsonObject.getLong("rndSeed");
                     startGame(jsonObject.getInt("difficulty"));
                 }else if(type.equals("paddleMove")){
                     pingPong.movePaddle(jsonObject.getInt("id"),jsonObject.getInt("delX"),jsonObject.getInt("delY"));
@@ -173,6 +175,10 @@ public class IntroScreen {
         jsonObject.put("xspeed",ballVelocity.x);
         jsonObject.put("yspeed",ballVelocity.y);
         jsonObject.put("difficulty",getSelectedButtonPosition(entreeGroup));
+
+        randomSeed = System.currentTimeMillis();
+        jsonObject.put("rndSeed",randomSeed);
+
         return jsonObject;
     }
 
@@ -222,7 +228,7 @@ public class IntroScreen {
         startGame(getSelectedButtonPosition(entreeGroup));
     }
     private static void startGame(int difficulty){
-        pingPong = pingPong.startGame(difficulty,ballVelocity,myName,paddleMoveListener,peersList);
+        pingPong = pingPong.startGame(difficulty,ballVelocity,myName,paddleMoveListener,peersList,randomSeed);
         mainFrame.setVisible(false);
         pingPong.startTimer(network);
     }

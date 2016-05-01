@@ -25,6 +25,7 @@ public class PingPong extends JFrame{
     AbstractGameUI.PaddleMoveListener paddleMoveListener;
     Map<Integer,String> peersList;
     boolean[] isPaddleTypeSet = {false,false,false,false};
+    private long seeder;
 
     public PingPong(int difficulty, FloatPair velocity){
         this.difficulty = difficulty;
@@ -107,7 +108,7 @@ public class PingPong extends JFrame{
         },100,50);
     }
 
-    public static PingPong startGame(int difficulty, FloatPair velocity, int myName, AbstractGameUI.PaddleMoveListener paddleMoveListener, Map<Integer,String> peersList){
+    public static PingPong startGame(int difficulty, FloatPair velocity, int myName, AbstractGameUI.PaddleMoveListener paddleMoveListener, Map<Integer,String> peersList, long seed){
         PingPong app = new PingPong(difficulty, velocity);
         EventQueue.invokeLater(new Runnable(){
             @Override
@@ -117,7 +118,7 @@ public class PingPong extends JFrame{
                 app.peersList = peersList;
                 app.renderDisplay();
                 app.setVisible(true);
-
+                app.setSeeder(seed);
             }
         });
         return app;
@@ -126,4 +127,11 @@ public class PingPong extends JFrame{
     public int getWorkingSize() {
         return this.getHeight()-22;
     }
+
+    public void setSeeder(long seeder){
+        this.seeder = seeder;
+    }
+
+    public long getSeeder(){return this.seeder;}
+
 }

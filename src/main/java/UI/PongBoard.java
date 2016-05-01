@@ -137,14 +137,14 @@ public class PongBoard extends JPanel implements ActionListener, KeyListener, Ab
                                                 xinit[activePlayer],
                                                 yinit[activePlayer],
                                                 Paddle.paddleType.values()[activePlayer%2],
-                                                HUMAN,activePlayer);
+                                                HUMAN,activePlayer,this.runningApp.getSeeder());
         }
         else{
             this.players[paddleId] = new Paddle(this.runningApp,
                                                 xinit[paddleId],
                                                 yinit[paddleId],
                                                 Paddle.paddleType.values()[paddleId%2],
-                                                OTHER,paddleId);
+                                                OTHER,paddleId,this.runningApp.getSeeder());
         }
     }
 
@@ -154,7 +154,7 @@ public class PongBoard extends JPanel implements ActionListener, KeyListener, Ab
                                             xinit[paddleId],
                                             yinit[paddleId],
                                             Paddle.paddleType.values()[paddleId%2],
-                                            AI,paddleId);
+                                            AI,paddleId,this.runningApp.getSeeder());
     }
 
     @Override
@@ -187,6 +187,11 @@ public class PongBoard extends JPanel implements ActionListener, KeyListener, Ab
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void removePaddleFromScreen(int paddleId) {
+        players[paddleId].setDead();
     }
 
 

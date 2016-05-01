@@ -39,6 +39,10 @@ public class Paddle {
         this.score = score;
     }
 
+    public void setDead() {
+        this.score=0;
+    }
+
     public enum paddleType { HORIZONTAL, VERTICAL}; // todo use {HORIZONTAL=0,VERTICAL=1}
     public enum playerType { AI,HUMAN,OTHER};
     private paddleType type;
@@ -53,7 +57,7 @@ public class Paddle {
         return this.ptype;
     }
 
-    public Paddle(PingPong app, int x, int y, paddleType type, playerType ptype,int id){
+    public Paddle(PingPong app, int x, int y, paddleType type, playerType ptype,int id, long seeder){
         this.xpos = x;
         this.ypos = y;
         this.type = type;
@@ -65,6 +69,7 @@ public class Paddle {
         this.paddleMoveListener = runningapp.getBoard().getPaddleMoveListener();
         this.score = 3;
         rn = new Random();
+        rn.setSeed(seeder);
     }
 
     public boolean getDead(){return (this.score==0);}

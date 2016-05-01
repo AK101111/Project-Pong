@@ -47,4 +47,6 @@ public interface AbstractGameUI {
     //Paddles that haven't been marked as AI/keyboard controlled remain still on the board (unless they are moved by the `movePaddle` method).
     GameState getGameState ();
     void setGameState (GameState gameState);
+
+    void removePaddleFromScreen (int paddleId);
 }
