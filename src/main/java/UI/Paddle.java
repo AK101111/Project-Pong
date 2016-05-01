@@ -124,7 +124,7 @@ public class Paddle {
         switch (runningapp.difficulty) {
             case 0:
                 probdec = rn.nextInt(100);
-                if(probdec<70){
+                if(probdec<50){
                     this.doupdate = true;
                     if(this.type == HORIZONTAL){
                         if(runningapp.getBoard().getBall().getXpos() > xpos + WD/2){

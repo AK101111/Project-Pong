@@ -152,6 +152,7 @@ public class Ball {
         gameOverScreen.setWinCount(IntroScreen.winCount);
         gameOverScreen.showWindow(getGameWinner().id);
         runningapp.getBoard().timer.stop();
+        runningapp.setVisible(false);
     }
 
     private Paddle getGameWinner(){
