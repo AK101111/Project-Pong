@@ -189,6 +189,11 @@ public class PongBoard extends JPanel implements ActionListener, KeyListener, Ab
         }
     }
 
+    @Override
+    public void removePaddleFromScreen(int paddleId) {
+        players[paddleId].setDead();
+    }
+
 
     public PaddleMoveListener getPaddleMoveListener(){
         return this.paddleMoveListener;

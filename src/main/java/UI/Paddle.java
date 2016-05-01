@@ -39,6 +39,10 @@ public class Paddle {
         this.score = score;
     }
 
+    public void setDead() {
+        this.score=0;
+    }
+
     public enum paddleType { HORIZONTAL, VERTICAL}; // todo use {HORIZONTAL=0,VERTICAL=1}
     public enum playerType { AI,HUMAN,OTHER};
     private paddleType type;
