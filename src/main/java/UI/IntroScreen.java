@@ -190,7 +190,8 @@ public class IntroScreen {
     static integration.AbstractGameUI.PaddleMoveListener paddleMoveListener = new AbstractGameUI.PaddleMoveListener() {
         @Override
         public void handlePaddleMove(int id, int delX, int delY) {
-            network.sendJSONToAll(getPaddleMoveJson(id,delX,delY));
+            if(pingPong.getBoard().getPlayers()[id].getPlayerType() != Paddle.playerType.AI)
+                network.sendJSONToAll(getPaddleMoveJson(id,delX,delY));
         }
     };
 

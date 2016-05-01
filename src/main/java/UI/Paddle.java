@@ -48,6 +48,11 @@ public class Paddle {
     private PingPong runningapp;
     private Random rn;
 
+
+    public playerType getPlayerType(){
+        return this.ptype;
+    }
+
     public Paddle(PingPong app, int x, int y, paddleType type, playerType ptype,int id){
         this.xpos = x;
         this.ypos = y;
